@@ -2,7 +2,7 @@
 
 An open metadata commons for music software, starting with internet radio stations. It complements [MusicBrainz](https://musicbrainz.org/) and does not copy it.
 
-> **Status:** early. The first dataset is in [`moondust`](https://github.com/12moon-open/moondust). `data.12moon.app` is not live yet, and streams have not been checked for playback.
+> **Status:** early. The first dataset is live at `data.12moon.app` and in [`moondust`](https://github.com/12moon-open/moondust). It is not updated daily yet, and streams have not been checked for playback.
 
 ## What it is
 
@@ -17,15 +17,11 @@ No audio, cover art, lyrics, reviews or biographies. No personal data of any kin
 
 ## Using the data
 
-Planned address:
-
 ```
 https://data.12moon.app/v1/manifest.json
 ```
 
-Until then, use the files in [`moondust`](https://github.com/12moon-open/moondust).
-
-The manifest lists every file with its checksum. Fetch only what changed. See [the data model](docs/data-model.md) and [the contract](contract/README.md).
+The manifest lists every file with its checksum. Fetch only what changed. Files can be cached for up to 5 minutes: if a checksum does not match, try again later. Query strings are refused. See [the data model](docs/data-model.md) and [the contract](contract/README.md).
 
 Please cache locally and treat every URL as untrusted.
 
