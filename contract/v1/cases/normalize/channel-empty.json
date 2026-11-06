@@ -1,0 +1,6 @@
+{
+  "description": "channel empty",
+  "function": "stream_channel",
+  "input": "https://a.example.org/live",
+  "expected": ""
+}

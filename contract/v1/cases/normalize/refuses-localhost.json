@@ -1,0 +1,6 @@
+{
+  "description": "refuses localhost",
+  "function": "web_url",
+  "input": "http://localhost:8096/",
+  "expected": null
+}

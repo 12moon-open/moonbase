@@ -1,0 +1,6 @@
+{
+  "description": "key cyrillic",
+  "function": "name_key",
+  "input": "Радио России",
+  "expected": "радиороссии"
+}

@@ -1,0 +1,6 @@
+{
+  "description": "refuses numeric host",
+  "function": "web_url",
+  "input": "http://2130706433/",
+  "expected": null
+}

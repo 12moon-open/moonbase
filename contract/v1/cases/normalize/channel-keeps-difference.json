@@ -1,0 +1,6 @@
+{
+  "description": "channel keeps difference",
+  "function": "stream_channel",
+  "input": "https://a.example.org/x/fipgroove-hifi.aac",
+  "expected": "fipgroove"
+}

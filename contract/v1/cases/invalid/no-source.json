@@ -1,0 +1,19 @@
+{
+  "description": "Provenance is required",
+  "schema": "station",
+  "input": {
+    "id": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "rev": 1,
+    "status": "active",
+    "name": "Example FM",
+    "streams": [
+      {
+        "id": "sm_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "url": "https://stream.example.org/live",
+        "protocol": "http"
+      }
+    ],
+    "sources": [],
+    "updated_at": "2026-11-06T12:00:00Z"
+  }
+}

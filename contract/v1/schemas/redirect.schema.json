@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/redirect.schema.json",
+  "title": "Redirect",
+  "type": "object",
+  "required": ["from", "to", "at"],
+  "properties": {
+    "from": { "type": "string", "pattern": "^st_[0-9a-z]{26}$" },
+    "to": { "type": "string", "pattern": "^st_[0-9a-z]{26}$" },
+    "at": { "type": "string", "format": "date" }
+  }
+}

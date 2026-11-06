@@ -1,0 +1,6 @@
+{
+  "description": "refuses local name",
+  "function": "web_url",
+  "input": "http://nas.local/stream",
+  "expected": null
+}

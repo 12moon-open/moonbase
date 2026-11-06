@@ -1,0 +1,6 @@
+{
+  "description": "protocol hls",
+  "function": "stream_protocol",
+  "input": "https://example.org/a/live.m3u8",
+  "expected": "hls"
+}

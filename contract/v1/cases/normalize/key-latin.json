@@ -1,0 +1,6 @@
+{
+  "description": "key latin",
+  "function": "name_key",
+  "input": "Fip",
+  "expected": "fip"
+}

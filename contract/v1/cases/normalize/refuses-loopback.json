@@ -1,0 +1,6 @@
+{
+  "description": "refuses loopback",
+  "function": "web_url",
+  "input": "http://127.0.0.1:8096/",
+  "expected": null
+}

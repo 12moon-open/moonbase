@@ -1,0 +1,6 @@
+{
+  "description": "refuses ipv6 loopback",
+  "function": "web_url",
+  "input": "http://[::1]/",
+  "expected": null
+}

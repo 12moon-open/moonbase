@@ -1,0 +1,6 @@
+{
+  "description": "refuses link local",
+  "function": "web_url",
+  "input": "http://169.254.169.254/latest/meta-data",
+  "expected": null
+}

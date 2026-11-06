@@ -1,0 +1,6 @@
+{
+  "description": "refuses other scheme",
+  "function": "web_url",
+  "input": "file:///etc/passwd",
+  "expected": null
+}

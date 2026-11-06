@@ -1,0 +1,18 @@
+{
+  "description": "A retired station may have no stream",
+  "schema": "station",
+  "input": {
+    "id": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "rev": 1,
+    "status": "retired",
+    "name": "Example FM",
+    "streams": [],
+    "sources": [
+      {
+        "source": "radio-browser",
+        "retrieved_at": "2026-11-06"
+      }
+    ],
+    "updated_at": "2026-11-06T12:00:00Z"
+  }
+}

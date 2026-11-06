@@ -1,0 +1,6 @@
+{
+  "description": "drops tracking",
+  "function": "web_url",
+  "input": "https://Example.org:443/live?utm_source=x&id=fip&fbclid=1&ref=a",
+  "expected": "https://example.org/live?id=fip"
+}

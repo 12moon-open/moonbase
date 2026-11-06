@@ -1,0 +1,6 @@
+{
+  "description": "keeps public ip port",
+  "function": "web_url",
+  "input": "http://8.8.8.8:8000/stream",
+  "expected": "http://8.8.8.8:8000/stream"
+}

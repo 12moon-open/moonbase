@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/manifest.schema.json",
+  "title": "Manifest",
+  "type": "object",
+  "required": ["contract", "dataset_version", "generated_at", "license", "datasets"],
+  "properties": {
+    "contract": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "dataset_version": { "type": "string", "minLength": 1 },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "license": { "const": "CC0-1.0" },
+    "datasets": {
+      "type": "object",
+      "required": ["stations", "redirects"],
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["shard", "path", "sha256", "bytes", "count"],
+          "properties": {
+            "shard": { "type": "string", "minLength": 1 },
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "bytes": { "type": "integer", "minimum": 0 },
+            "count": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    }
+  }
+}

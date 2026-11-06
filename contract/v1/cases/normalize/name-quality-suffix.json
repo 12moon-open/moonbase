@@ -1,0 +1,6 @@
+{
+  "description": "name quality suffix",
+  "function": "clean_name",
+  "input": "FIP (hifi.aac)",
+  "expected": "FIP"
+}

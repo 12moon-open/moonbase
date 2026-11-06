@@ -1,0 +1,6 @@
+{
+  "description": "key chinese",
+  "function": "name_key",
+  "input": "希望之声",
+  "expected": "希望之声"
+}

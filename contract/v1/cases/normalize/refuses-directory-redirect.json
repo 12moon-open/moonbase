@@ -1,0 +1,6 @@
+{
+  "description": "refuses directory redirect",
+  "function": "web_url",
+  "input": "https://cdn.streema.com/x/logo.png",
+  "expected": null
+}

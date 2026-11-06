@@ -1,0 +1,6 @@
+{
+  "description": "channel from hls",
+  "function": "stream_channel",
+  "input": "https://a.example.org/fip/fip_hifi.m3u8",
+  "expected": "fip"
+}

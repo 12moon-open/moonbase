@@ -1,0 +1,9 @@
+{
+  "description": "Redirect",
+  "schema": "redirect",
+  "input": {
+    "from": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "to": "st_cccccccccccccccccccccccccc",
+    "at": "2026-11-06"
+  }
+}

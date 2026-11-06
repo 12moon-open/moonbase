@@ -1,0 +1,6 @@
+{
+  "description": "name spaces",
+  "function": "clean_name",
+  "input": "  Radio\t  One ",
+  "expected": "Radio One"
+}
