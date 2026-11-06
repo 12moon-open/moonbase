@@ -124,3 +124,10 @@ class Build(unittest.TestCase):
         path.write_text("".join(json.dumps(r) + "\n" for r in records))
         with self.assertRaises(b.Refused):
             self.run_build(FIP + filler(), LATER)
+
+
+class Fetch(unittest.TestCase):
+    def test_picks_the_newest_export(self):
+        from pipeline.fetch import latest_name
+        html = '<a href="radiobrowser_stations_20261105_014528.json.gz">x</a> radiobrowser_stations_20261106_122303.json.gz'
+        self.assertEqual(latest_name(html), "radiobrowser_stations_20261106_122303.json.gz")
