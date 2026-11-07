@@ -71,6 +71,28 @@ class Build(unittest.TestCase):
                         row("b2", "Radio One", "https://b.example.com/y")] + filler())
         self.assertEqual(len(self.named("Radio One")), 2)
 
+    def test_row_without_country_joins_its_only_country(self):
+        self.run_build(FIP + [row("a9", "FIP", "http://icecast.radiofrance.fr/fip-midfi.mp3", country="")] + filler())
+        fip = self.named("FIP")
+        self.assertEqual(len(fip), 1)
+        self.assertEqual(fip[0]["country"], "FR")
+        self.assertEqual(len(fip[0]["streams"]), 3)
+
+    def test_row_without_country_stays_apart_when_two_countries_share_the_name(self):
+        self.run_build([
+            row("c1", "Radio Uno", "https://a.example.org/uno/uno.mp3", country="IT"),
+            row("c2", "Radio Uno", "https://b.example.org/uno/uno.mp3", country="ES"),
+            row("c3", "Radio Uno", "https://c.example.org/uno/uno.mp3", country=""),
+        ] + filler())
+        self.assertEqual(len(self.named("Radio Uno")), 3)
+
+    def test_wikimedia_logo_gets_a_served_width(self):
+        source = FIP + filler()
+        source[0] = {**source[0], "url_favicon":
+                     "https://upload.wikimedia.org/wikipedia/fr/thumb/d/d5/F.svg/1024px-F.svg.png"}
+        self.run_build(source)
+        self.assertTrue(self.named("FIP")[0]["logo_url"].endswith("/1280px-F.svg.png"))
+
     def test_rebuild_is_byte_identical(self):
         source = FIP + filler()
         self.run_build(source)
@@ -100,6 +122,17 @@ class Build(unittest.TestCase):
         redirects = b.load_previous(self.out)[1]
         self.assertEqual(len(redirects), 1)
         self.assertEqual({redirects[0]["from"], redirects[0]["to"]}, {old["Alpha"], old["Beta"]})
+
+    def test_merge_keeps_the_id_of_the_biggest_record(self):
+        self.run_build(FIP + filler())
+        fip_id = self.named("FIP")[0]["id"]
+        self.run_build(FIP + [row("a0", "FIP", "http://icecast.radiofrance.fr/fip-midfi.mp3", country="BE")] + filler(), LATER)
+        lone = [s for s in self.stations().values() if s["name"] == "FIP" and s.get("country") == "BE"][0]
+        self.run_build(FIP + [row("a0", "FIP", "http://icecast.radiofrance.fr/fip-midfi.mp3", country="")] + filler(),
+                       "2026-11-08T12:00:00Z")
+        redirects = b.load_previous(self.out)[1]
+        self.assertEqual(redirects, [{"from": lone["id"], "to": fip_id, "at": "2026-11-08"}])
+        self.assertEqual([s["id"] for s in self.named("FIP") if s["status"] == "active"], [fip_id])
 
     def test_private_stream_is_refused(self):
         report = self.run_build([row("d1", "Evil", "http://192.168.1.1/")] + filler())

@@ -23,6 +23,9 @@ QUALITY_SUFFIX = re.compile(
 CHANNEL_NOISE = re.compile(
     r"hifi|midfi|lofi|aacp?|mp3|ogg|opus|flac|stream|listen|live|icecast|audio|radio|\d+k?|[^a-z0-9]"
 )
+# Wikimedia serves thumbnails only at these widths and answers 400 to the others.
+WIKIMEDIA_WIDTHS = (20, 40, 60, 120, 250, 330, 500, 960, 1280, 1920, 3840)
+WIKIMEDIA_THUMB = re.compile(r"^(https://upload\.wikimedia\.org/.+/thumb/.+/)(\d+)px-([^/]+)$")
 SECOND_LEVEL = frozenset({"co", "com", "org", "net", "ac", "gov", "edu", "or", "ne"})
 
 
@@ -71,6 +74,17 @@ def web_url(raw):
         if k.lower() not in TRACKING_PARAMS and not k.lower().startswith("utm_")
     ]
     return urlunsplit((scheme, netloc, parts.path, urlencode(query), ""))
+
+
+def logo_url(raw):
+    """Like web_url, with Wikimedia thumbnails moved to the nearest width it serves."""
+    url = web_url(raw)
+    match = WIKIMEDIA_THUMB.match(url or "")
+    if not match:
+        return url
+    wanted = int(match.group(2))
+    width = next((w for w in WIKIMEDIA_WIDTHS if w >= wanted), WIKIMEDIA_WIDTHS[-1])
+    return f"{match.group(1)}{width}px-{match.group(3)}"
 
 
 def stream_key(url):

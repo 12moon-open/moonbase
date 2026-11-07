@@ -4,6 +4,9 @@ Two rows are one station when they share a stream, or when they have the same
 name in the same country and either the same channel in their path, or no
 channel at all and a domain that is not shared hosting.
 
+A row with no country is compared with the rows of the only country that has its
+name, if there is exactly one.
+
 A name alone is never enough: source rows are sometimes mislabelled, and a
 duplicate record does less harm than a wrong stream in a record.
 """
@@ -49,10 +52,19 @@ def group_rows(rows):
             names_by_domain[domain].add(row["name_key"])
     shared = {d for d, names in names_by_domain.items() if len(names) > SHARED_DOMAIN_NAMES}
 
+    countries_by_name = defaultdict(set)
+    for row in rows:
+        if row["name_key"] and row["country"]:
+            countries_by_name[row["name_key"]].add(row["country"])
+
     buckets = defaultdict(list)
     for i, row in enumerate(rows):
-        if row["name_key"]:
-            buckets[(row["country"], row["name_key"])].append(i)
+        if not row["name_key"]:
+            continue
+        country = row["country"]
+        if not country and len(countries_by_name[row["name_key"]]) == 1:
+            country = next(iter(countries_by_name[row["name_key"]]))
+        buckets[(country, row["name_key"])].append(i)
     for members in buckets.values():
         if len({rows[i]["stream_key"] for i in members}) > MAX_STREAMS_BY_NAME:
             continue

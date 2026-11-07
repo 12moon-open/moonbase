@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .group import group_rows
-from .normalize import clean_name, name_key, stream_key, stream_protocol, web_url
+from .normalize import clean_name, logo_url, name_key, stream_key, stream_protocol, web_url
 from .tags import clean_tags
 
 CONTRACT = "1.0.0"
@@ -52,7 +52,7 @@ def prepare_rows(source):
             "country": country if re.fullmatch(r"[A-Z]{2}", country) else "",
             "subdivision": (item.get("iso_3166_2") or "").strip().upper(),
             "homepage": None if homepage and stream_key(homepage) == stream_key(stream) else homepage,
-            "logo": web_url(item.get("url_favicon")),
+            "logo": logo_url(item.get("url_favicon")),
             "languages": item.get("iso_639") or "",
             "tags": item.get("tags") or "",
             "lat": item.get("geo_lat"),
@@ -157,7 +157,9 @@ def merge(groups, previous, redirects, as_of):
     stream_ids = {stream_key(m["url"]): m["id"] for s in previous.values() for m in s["streams"]}
     stations, seen, new_redirects = {}, set(), list(redirects)
     for rows in sorted(groups, key=lambda g: min(r["uuid"] for r in g)):
-        known = sorted({id_by_uuid[r["uuid"]] for r in rows if r["uuid"] in id_by_uuid} - seen)
+        # The record that brings the most rows keeps its id: a well-known station stays put.
+        weight = Counter(id_by_uuid[r["uuid"]] for r in rows if r["uuid"] in id_by_uuid)
+        known = sorted(set(weight) - seen, key=lambda i: (-weight[i], i))
         station_id = known[0] if known else _stable_id("st_", min(r["uuid"] for r in rows))
         seen.add(station_id)
         for old in known[1:]:

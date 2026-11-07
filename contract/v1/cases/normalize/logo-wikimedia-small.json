@@ -1,0 +1,6 @@
+{
+  "description": "Small Wikimedia thumbnail rounded up",
+  "function": "logo_url",
+  "input": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logo.png/220px-Logo.png",
+  "expected": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logo.png/250px-Logo.png"
+}

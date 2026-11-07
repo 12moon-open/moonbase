@@ -1,0 +1,6 @@
+{
+  "description": "Other logos are only cleaned",
+  "function": "logo_url",
+  "input": "https://www.example.org/img/220px-logo.png?utm_source=x",
+  "expected": "https://www.example.org/img/220px-logo.png"
+}
