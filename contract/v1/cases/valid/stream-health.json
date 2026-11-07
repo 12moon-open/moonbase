@@ -1,0 +1,5 @@
+{
+  "description": "A published stream score",
+  "schema": "stream-health",
+  "input": { "id": "sm_feoydw2o5i6hhry4gvnoppdbv6", "window": "2026-W42/2026-W45", "reports": "10+", "success_rate": 0.97, "startup_ms_p50": 1700, "stalls_per_play": 0.1, "geo_restricted": false, "codec": "aac", "bitrate_kbps": 192 }
+}

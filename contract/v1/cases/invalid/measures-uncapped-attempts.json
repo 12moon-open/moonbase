@@ -1,0 +1,1 @@
+{ "description": "Attempts are capped at 20", "schema": "stream-measures", "input": { "kind": "stream_measures", "week": "2026-W45", "streams": [{ "stream": "sm_feoydw2o5i6hhry4gvnoppdbv6", "attempts": 57 }] } }

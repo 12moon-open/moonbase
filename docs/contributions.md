@@ -43,8 +43,38 @@ Signed text, one field per line: `v1`, method, path, Unix timestamp, nonce, hex 
 | `POST /v1/reports` | Signed. Report a published link: `wrong_match`, `duplicate`, `other` |
 | `DELETE /v1/contributors/me` | Signed. Erase this installation |
 | `GET /v1/links/release-matches?after=` | Public export of published and retracted links |
+| `POST /v1/measures` | Signed. One week of stream measures. `202` accepted, `409` week already reported |
+| `GET /v1/measures/streams?after=` | Public stream scores |
 
 Limits: 200 proposals and 20 reports per installation per day, 16 KiB per request.
+
+## Stream measures
+
+Separate from proposals: an installation can report what it saw when playing published streams, so that every stream gets a score. It needs the user's explicit consent, given apart from any other.
+
+```json
+{ "kind": "stream_measures", "week": "2026-W45", "streams": [
+  { "stream": "sm_…", "attempts": 4, "failures": { "timeout": 1 }, "startup_ms": 1800, "stalls": 2, "codec": "aac", "bitrate_kbps": 192 } ] }
+```
+
+See [`stream-measures.schema.json`](../contract/v1/schemas/stream-measures.schema.json). What a report never holds: listening time, any time finer than the week, a user identifier, a local station.
+
+- **One finished week** per report, among the last four. Clients send it at a random time, later.
+- **Capped values**: 20 attempts, 50 stalls, startup delay rounded to 100 ms.
+- **Signed but not linked.** The signature only proves integrity. The key is never stored and creates no contributor. Clients should use a key kept for measures only, and may change it every week.
+- **One report per key and week.** The server keeps `HMAC(week secret, key)` for that, and deletes both once the week can no longer be reported.
+- **Rows are not linked.** Each stream of a report is stored on its own, in stream order, without the report it came from.
+
+### Scores
+
+`GET /v1/measures/streams?after=` gives one score per stream over the last four finished weeks ([`stream-health.schema.json`](../contract/v1/schemas/stream-health.schema.json)).
+
+- A week counts for a stream only when **at least three installations** measured it that week. One installation cannot make or break a score, and nobody's listening to a rare station is exposed.
+- Each report is one voice. Success rate, startup delay and stalls per play are **medians** across reports, not sums of plays.
+- A codec or bitrate appears only when three reports agree.
+- `geo_blocked` is not a failure. It sets `geo_restricted` when three reports saw it.
+- `reports` is a range (`3+`, `10+`, `100+`), never an exact count.
+- Measures older than eight weeks are deleted.
 
 ## Not done yet
 

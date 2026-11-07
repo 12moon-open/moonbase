@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/stream-measures.schema.json",
+  "title": "Stream measures",
+  "description": "What one installation saw when playing published streams during one finished ISO week. No listening time, no time finer than the week, no user identifier.",
+  "type": "object",
+  "required": ["kind", "week", "streams"],
+  "additionalProperties": false,
+  "properties": {
+    "kind": { "const": "stream_measures" },
+    "week": { "type": "string", "pattern": "^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$" },
+    "streams": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": ["stream", "attempts"],
+        "additionalProperties": false,
+        "properties": {
+          "stream": { "type": "string", "pattern": "^sm_[0-9a-z]{26}$" },
+          "attempts": { "description": "Plays started, capped at 20.", "type": "integer", "minimum": 1, "maximum": 20 },
+          "failures": {
+            "description": "Failed starts by reason. Their total never exceeds attempts.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "timeout": { "type": "integer", "minimum": 0, "maximum": 20 },
+              "http_error": { "type": "integer", "minimum": 0, "maximum": 20 },
+              "not_audio": { "type": "integer", "minimum": 0, "maximum": 20 },
+              "tls": { "type": "integer", "minimum": 0, "maximum": 20 },
+              "dns": { "type": "integer", "minimum": 0, "maximum": 20 },
+              "geo_blocked": { "type": "integer", "minimum": 0, "maximum": 20 }
+            }
+          },
+          "startup_ms": { "description": "Median delay to the first sound, rounded to 100 ms.", "type": "integer", "minimum": 0, "maximum": 60000, "multipleOf": 100 },
+          "stalls": { "description": "Interruptions during playback, capped at 50.", "type": "integer", "minimum": 0, "maximum": 50 },
+          "codec": { "type": "string", "pattern": "^[a-z0-9-]{2,16}$" },
+          "bitrate_kbps": { "type": "integer", "minimum": 1, "maximum": 10000 }
+        }
+      }
+    }
+  }
+}

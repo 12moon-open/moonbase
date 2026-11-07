@@ -27,6 +27,7 @@ Lire selon le sujet : [modèle de données](docs/data-model.md), [contrat](contr
 - Aucun identifiant de contributeur dans git ni dans un fichier publié.
 - Une contribution est une proposition, jamais une écriture directe.
 - **Un contributeur anonyme ne propose que des liens entre identifiants** : pas de texte libre, pas d'URL, pas de nouvelle donnée. Rien n'est ajouté à MusicBrainz. Voir [docs/contributions.md](docs/contributions.md).
+- Les mesures de flux sont la seule autre contribution : anonymes, par semaine, sans durée d'écoute, publiées seulement à partir de trois installations. Voir la même page.
 - Une adresse de flux est une donnée sensible : toute URL est non fiable, adresses privées refusées.
 - Le stable (fiches) et le volatil (état des flux) restent dans des fichiers séparés.
 

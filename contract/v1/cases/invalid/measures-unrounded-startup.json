@@ -1,0 +1,1 @@
+{ "description": "Startup delay is rounded to 100 ms", "schema": "stream-measures", "input": { "kind": "stream_measures", "week": "2026-W45", "streams": [{ "stream": "sm_feoydw2o5i6hhry4gvnoppdbv6", "attempts": 1, "startup_ms": 1834 }] } }

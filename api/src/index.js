@@ -1,4 +1,5 @@
 import { verifyRequest } from "./auth.js";
+import { addMeasures, purgeMeasures, streamHealth, validateMeasures } from "./measures.js";
 import { addProposal, addReport, contributor, eraseContributor, exportLinks, proposalStatus, useNonce } from "./store.js";
 import { validateProposal } from "./validate.js";
 import { verifyPending } from "./verify.js";
@@ -83,6 +84,27 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
     return reply(202, { id: result.id });
   }
 
+  if (request.method === "POST" && path === "/v1/measures") {
+    // Not tied to a contributor: the key only signs the report and is never stored.
+    const { auth, bytes, response } = await signed(request, env, now);
+    if (response) return response;
+    const body = parseJson(bytes);
+    const invalid = validateMeasures(body);
+    if (invalid) return reply(422, { error: invalid });
+    const result = await addMeasures(env.DB, auth.publicKey, body, now);
+    if (result.error) return reply(422, { error: result.error });
+    if (result.duplicate) return reply(409, { error: "week already reported" });
+    return reply(202, { accepted: result.accepted });
+  }
+
+  if (request.method === "GET" && path === "/v1/measures/streams") {
+    const after = url.searchParams.get("after") || "";
+    if (after && !/^sm_[0-9a-z]{26}$/.test(after)) return reply(400, { error: "invalid cursor" });
+    const limit = Math.min(Math.max(Number(url.searchParams.get("limit")) || 1000, 1), 1000);
+    const streams = await streamHealth(env.DB, now, after, limit);
+    return reply(200, { streams, next: streams.length === limit ? streams.at(-1).id : null }, { "cache-control": "public, max-age=3600" });
+  }
+
   if (request.method === "DELETE" && path === "/v1/contributors/me") {
     const { auth, response } = await signed(request, env, now);
     if (response) return response;
@@ -97,6 +119,8 @@ export default {
   fetch: (request, env) => handle(request, env),
   scheduled: (event, env, ctx) => {
     if (env.READ_ONLY === "true") return;
-    ctx.waitUntil(verifyPending(env.DB, { now: Math.floor(Date.now() / 1000) }));
+    const now = Math.floor(Date.now() / 1000);
+    ctx.waitUntil(verifyPending(env.DB, { now }));
+    if (event.cron === "17 3 * * *") ctx.waitUntil(purgeMeasures(env.DB, now));
   },
 };

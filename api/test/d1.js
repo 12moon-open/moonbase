@@ -1,5 +1,5 @@
 // A small stand-in for Cloudflare D1, on Node's built-in SQLite, for tests only.
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 
 class Statement {
@@ -26,7 +26,10 @@ class Statement {
 export function makeDb() {
   const db = new DatabaseSync(":memory:");
   db.exec("PRAGMA foreign_keys = ON");
-  db.exec(readFileSync(new URL("../migrations/0001_init.sql", import.meta.url), "utf8"));
+  const dir = new URL("../migrations/", import.meta.url);
+  for (const name of readdirSync(dir).filter((n) => n.endsWith(".sql")).sort()) {
+    db.exec(readFileSync(new URL(name, dir), "utf8"));
+  }
   return {
     raw: db,
     prepare: (sql) => new Statement(db, sql),

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/stream-health.schema.json",
+  "title": "Stream health",
+  "description": "Score of one stream over recent weeks. Only weeks measured by at least three installations count.",
+  "type": "object",
+  "required": ["id", "window", "reports"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^sm_[0-9a-z]{26}$" },
+    "window": { "type": "string", "pattern": "^[0-9]{4}-W[0-9]{2}/[0-9]{4}-W[0-9]{2}$" },
+    "reports": { "description": "A range, never an exact count: 3+, 10+, 100+. Open list.", "type": "string", "minLength": 1 },
+    "success_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "startup_ms_p50": { "type": "integer", "minimum": 0 },
+    "stalls_per_play": { "type": "number", "minimum": 0 },
+    "geo_restricted": { "description": "Some installations could not play it from where they are.", "type": "boolean" },
+    "codec": { "type": "string" },
+    "bitrate_kbps": { "type": "integer", "minimum": 1 }
+  }
+}

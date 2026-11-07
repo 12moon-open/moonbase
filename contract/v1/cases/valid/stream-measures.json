@@ -1,0 +1,12 @@
+{
+  "description": "One week of measures for two streams",
+  "schema": "stream-measures",
+  "input": {
+    "kind": "stream_measures",
+    "week": "2026-W45",
+    "streams": [
+      { "stream": "sm_feoydw2o5i6hhry4gvnoppdbv6", "attempts": 4, "failures": { "timeout": 1 }, "startup_ms": 1800, "stalls": 2, "codec": "aac", "bitrate_kbps": 192 },
+      { "stream": "sm_01jc8w5m2c4t8h1p9e3rkvz7qd", "attempts": 1 }
+    ]
+  }
+}

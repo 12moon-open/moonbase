@@ -1,0 +1,1 @@
+{ "description": "No time finer than the week", "schema": "stream-measures", "input": { "kind": "stream_measures", "week": "2026-W45", "played_at": "2026-11-03T21:14:00Z", "streams": [{ "stream": "sm_feoydw2o5i6hhry4gvnoppdbv6", "attempts": 1 }] } }

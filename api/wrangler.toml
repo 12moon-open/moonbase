@@ -14,4 +14,4 @@ database_id = "REPLACE_ME"
 migrations_dir = "migrations"
 
 [triggers]
-crons = ["* * * * *"]
+crons = ["* * * * *", "17 3 * * *"]
