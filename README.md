@@ -38,7 +38,7 @@ The build refuses to publish a truncated source or a large drop in stations.
 
 ## Contributing
 
-A contribution API is planned. Every contribution will be a proposal, checked before publication. Until then, please report errors, including rights issues or a request to remove a station, in the [issues](https://github.com/12moon-open/moonbase/issues).
+A contribution API is written but not deployed. Anonymous installations can only propose links between identifiers, checked against MusicBrainz before publication: see [contributions](docs/contributions.md). Until then, please report errors, including rights issues or a request to remove a station, in the [issues](https://github.com/12moon-open/moonbase/issues).
 
 If a correction belongs in Radio Browser, Wikidata or MusicBrainz, it should go there first.
 

@@ -1,0 +1,14 @@
+{
+  "description": "Durations are at least one second",
+  "schema": "proposal",
+  "input": {
+    "kind": "release_match",
+    "media": [
+      [
+        0,
+        180
+      ]
+    ],
+    "musicbrainz_release": "1b022e01-4da6-387b-8658-8678046e4cef"
+  }
+}

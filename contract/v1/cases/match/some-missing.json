@@ -1,0 +1,40 @@
+{
+  "description": "Enough known lengths, all close",
+  "function": "compareRelease",
+  "input": {
+    "media": [
+      [
+        215,
+        180,
+        200,
+        240,
+        300
+      ]
+    ],
+    "release": {
+      "id": "1b022e01-4da6-387b-8658-8678046e4cef",
+      "media": [
+        {
+          "tracks": [
+            {
+              "length": 215000
+            },
+            {
+              "length": 180000
+            },
+            {
+              "length": 200000
+            },
+            {
+              "length": 240000
+            },
+            {
+              "length": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": "match"
+}

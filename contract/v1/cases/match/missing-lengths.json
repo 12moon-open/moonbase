@@ -1,0 +1,32 @@
+{
+  "description": "Too few known lengths to decide",
+  "function": "compareRelease",
+  "input": {
+    "media": [
+      [
+        215,
+        180,
+        200
+      ]
+    ],
+    "release": {
+      "id": "1b022e01-4da6-387b-8658-8678046e4cef",
+      "media": [
+        {
+          "tracks": [
+            {
+              "length": 215000
+            },
+            {
+              "length": null
+            },
+            {
+              "length": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": "insufficient"
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/proposal.schema.json",
+  "title": "Proposal",
+  "description": "A link between identifiers, proposed by an anonymous installation. It never carries free text, URLs or personal data.",
+  "type": "object",
+  "required": ["kind", "media", "musicbrainz_release"],
+  "additionalProperties": false,
+  "properties": {
+    "kind": { "const": "release_match" },
+    "media": {
+      "description": "Track durations in whole seconds, one array per disc, in order.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 200,
+        "items": { "type": "integer", "minimum": 1, "maximum": 36000 }
+      }
+    },
+    "musicbrainz_release": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    }
+  }
+}

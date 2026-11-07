@@ -1,0 +1,10 @@
+{
+  "name": "12moon-api",
+  "private": true,
+  "type": "module",
+  "description": "Contribution API: anonymous installations propose links between identifiers.",
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "engines": { "node": ">=22.5" }
+}

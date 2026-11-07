@@ -1,0 +1,28 @@
+{
+  "description": "Within three seconds",
+  "function": "compareRelease",
+  "input": {
+    "media": [
+      [
+        215,
+        180
+      ]
+    ],
+    "release": {
+      "id": "1b022e01-4da6-387b-8658-8678046e4cef",
+      "media": [
+        {
+          "tracks": [
+            {
+              "length": 217900
+            },
+            {
+              "length": 177100
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": "match"
+}

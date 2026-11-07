@@ -26,6 +26,7 @@ Lire selon le sujet : [modèle de données](docs/data-model.md), [contrat](contr
 - Le dépôt `moondust` est la base publiée. D1 n'est qu'une file d'attente pour les propositions.
 - Aucun identifiant de contributeur dans git ni dans un fichier publié.
 - Une contribution est une proposition, jamais une écriture directe.
+- **Un contributeur anonyme ne propose que des liens entre identifiants** : pas de texte libre, pas d'URL, pas de nouvelle donnée. Rien n'est ajouté à MusicBrainz. Voir [docs/contributions.md](docs/contributions.md).
 - Une adresse de flux est une donnée sensible : toute URL est non fiable, adresses privées refusées.
 - Le stable (fiches) et le volatil (état des flux) restent dans des fichiers séparés.
 

@@ -1,0 +1,19 @@
+{
+  "description": "No other field is accepted, so no free text",
+  "schema": "proposal",
+  "input": {
+    "kind": "release_match",
+    "media": [
+      [
+        215,
+        180,
+        302
+      ],
+      [
+        240
+      ]
+    ],
+    "musicbrainz_release": "1b022e01-4da6-387b-8658-8678046e4cef",
+    "comment": "great album"
+  }
+}

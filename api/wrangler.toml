@@ -1,0 +1,17 @@
+# Not deployed yet. Fill database_id when the D1 database is created.
+name = "12moon-api"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+
+[vars]
+READ_ONLY = "false"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "12moon"
+database_id = "REPLACE_ME"
+migrations_dir = "migrations"
+
+[triggers]
+crons = ["* * * * *"]

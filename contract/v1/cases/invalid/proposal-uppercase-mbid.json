@@ -1,0 +1,18 @@
+{
+  "description": "MBIDs are lowercase",
+  "schema": "proposal",
+  "input": {
+    "kind": "release_match",
+    "media": [
+      [
+        215,
+        180,
+        302
+      ],
+      [
+        240
+      ]
+    ],
+    "musicbrainz_release": "1B022E01-4DA6-387B-8658-8678046E4CEF"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/release-match.schema.json",
+  "title": "Release match",
+  "description": "A published link from a list of track durations to a MusicBrainz release.",
+  "type": "object",
+  "required": ["id", "status", "media", "musicbrainz_release", "verified_by", "updated_at"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^lk_[0-9a-z]{26}$" },
+    "status": { "type": "string", "minLength": 1 },
+    "media": {
+      "type": "array",
+      "items": { "type": "array", "items": { "type": "integer", "minimum": 1 } }
+    },
+    "musicbrainz_release": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+    "verified_by": { "type": "string", "minLength": 1 },
+    "updated_at": { "type": "string", "format": "date-time" }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "description": "Only release_match exists",
+  "schema": "proposal",
+  "input": {
+    "kind": "station_edit",
+    "media": [
+      [
+        215,
+        180,
+        302
+      ],
+      [
+        240
+      ]
+    ],
+    "musicbrainz_release": "1b022e01-4da6-387b-8658-8678046e4cef"
+  }
+}

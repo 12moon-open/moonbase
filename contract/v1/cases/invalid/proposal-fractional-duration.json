@@ -1,0 +1,13 @@
+{
+  "description": "Durations are whole seconds",
+  "schema": "proposal",
+  "input": {
+    "kind": "release_match",
+    "media": [
+      [
+        215.5
+      ]
+    ],
+    "musicbrainz_release": "1b022e01-4da6-387b-8658-8678046e4cef"
+  }
+}
