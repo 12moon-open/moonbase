@@ -34,8 +34,8 @@ class Build(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.tmp)
         self.out, self.dist = self.tmp / "data", self.tmp / "dist"
 
-    def run_build(self, source, as_of=AS_OF):
-        return b.build(source, self.out, self.dist, as_of)
+    def run_build(self, source, as_of=AS_OF, checks=None):
+        return b.build(source, self.out, self.dist, as_of, checks)
 
     def stations(self):
         return b.load_previous(self.out)[0]
@@ -165,6 +165,40 @@ class Build(unittest.TestCase):
         self.assertEqual(urls, ["https://a.example.org/live", "https://a.example.org/stream"])
         ids = [s["id"] for s in self.stations().values()]
         self.assertEqual(len(ids), len(set(ids)))
+
+    def test_checker_measures_fill_codec_and_bitrate(self):
+        checks = b.read_checks([
+            {"stationuuid": "a1", "codec": "AAC+", "bitrate": 48, "hls": 0, "lastcheckok": 1},
+            {"stationuuid": "a3", "codec": "AAC", "bitrate": 192, "hls": 1, "lastcheckok": 1},
+            {"stationuuid": "a4", "codec": "MP3", "bitrate": 128, "hls": 0, "lastcheckok": 0},
+        ])
+        self.run_build(FIP + filler(), checks=checks)
+        streams = {m["url"]: m for m in self.named("FIP")[0]["streams"]}
+        aac = streams["https://icecast.radiofrance.fr/fip-hifi.aac"]
+        self.assertEqual((aac["codec"], aac["bitrate_kbps"]), ("he-aac", 48))
+        hls = streams["https://stream.radiofrance.fr/fip/fip_hifi.m3u8"]
+        self.assertEqual((hls["codec"], hls["bitrate_kbps"], hls["protocol"]), ("aac", 192, "hls"))
+        groove = self.named("FIP Groove")[0]["streams"][0]
+        self.assertNotIn("codec", groove)  # failed check: nothing published
+
+    def test_unknown_codecs_are_left_out(self):
+        checks = b.read_checks([
+            {"stationuuid": "a1", "codec": "OGG", "bitrate": 0, "hls": 0, "lastcheckok": 1},
+            {"stationuuid": "a3", "codec": "AAC,H.264", "bitrate": 99999, "hls": 0, "lastcheckok": 1},
+        ])
+        self.run_build(FIP + filler(), checks=checks)
+        for stream in self.named("FIP")[0]["streams"]:
+            self.assertNotIn("codec", stream)
+            self.assertNotIn("bitrate_kbps", stream)
+
+    def test_measures_are_kept_when_not_fetched(self):
+        checks = b.read_checks([{"stationuuid": "a1", "codec": "MP3", "bitrate": 128, "hls": 0, "lastcheckok": 1}])
+        self.run_build(FIP + filler(), checks=checks)
+        before = self.named("FIP")[0]
+        self.run_build(FIP + filler(), LATER)
+        after = self.named("FIP")[0]
+        self.assertEqual(after["streams"], before["streams"])
+        self.assertEqual(after["rev"], before["rev"])
 
     def test_private_stream_is_refused(self):
         report = self.run_build([row("d1", "Evil", "http://192.168.1.1/")] + filler())

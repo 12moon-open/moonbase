@@ -38,7 +38,29 @@ def _fresh_id(seed, taken):
     return station_id
 
 
-def prepare_rows(source):
+# Radio Browser codec names. AAC+ is HE-AAC. OGG says the container, not the codec,
+# and the others are video: they are left out.
+CODECS = {"MP3": "mp3", "AAC": "aac", "AAC+": "he-aac", "FLAC": "flac", "OPUS": "opus"}
+MAX_BITRATE = 10_000
+
+
+def read_checks(items):
+    """Measures of Radio Browser's own checker, by station uuid. Failed checks are left out."""
+    checks = {}
+    for item in items:
+        if item.get("lastcheckok") != 1 or not isinstance(item.get("stationuuid"), str):
+            continue
+        bitrate = item.get("bitrate")
+        checks[item["stationuuid"]] = {
+            "codec": CODECS.get(str(item.get("codec") or "").strip().upper()),
+            "bitrate": bitrate if isinstance(bitrate, int) and 0 < bitrate <= MAX_BITRATE else None,
+            "hls": item.get("hls") == 1,
+        }
+    return checks
+
+
+def prepare_rows(source, checks=None):
+    """checks: from read_checks, or None when no measures were fetched."""
     rows, refused = [], Counter()
     for item in source:
         stream = web_url(item.get("url_stream"))
@@ -51,8 +73,13 @@ def prepare_rows(source):
             continue
         country = (item.get("iso_3166_1") or "").strip().upper()
         homepage = web_url(item.get("url_homepage"))
+        measure = (checks or {}).get(item["stationuuid"], {})
         rows.append({
             "uuid": item["stationuuid"],
+            "measured": checks is not None,
+            "codec": measure.get("codec"),
+            "bitrate": measure.get("bitrate"),
+            "hls": measure.get("hls", False),
             "name": name,
             "name_key": name_key(name),
             "stream": stream,
@@ -83,31 +110,49 @@ def _display_name(rows):
     return sorted(counts, key=lambda n: (-counts[n], -sum(c.isupper() for c in n), n))[0]
 
 
-def _streams(rows, stream_ids):
-    urls = {}
+def _streams(rows, previous_streams):
+    urls, by_key = {}, {}
     for row in rows:
         known = urls.get(row["stream_key"])
         if known is None or (known.startswith("http:") and row["stream"].startswith("https:")):
             urls[row["stream_key"]] = row["stream"]
+        by_key.setdefault(row["stream_key"], []).append(row)
     ordered = sorted(urls.items(), key=lambda kv: (not kv[1].startswith("https:"), kv[0]))
     streams = []
     for index, (key, url) in enumerate(ordered):
-        streams.append({
-            "id": stream_ids.get(key) or _stable_id("sm_", key),
+        before = previous_streams.get(key, {})
+        stream = {
+            "id": before.get("id") or _stable_id("sm_", key),
             "url": url,
             "protocol": stream_protocol(url),
             "role": "primary" if index == 0 else "alternate",
-        })
+        }
+        members = by_key[key]
+        if any(r["measured"] for r in members):
+            codec = _most_common(r["codec"] for r in members)
+            bitrate = _most_common(r["bitrate"] for r in members)
+            if stream["protocol"] == "http" and any(r["hls"] for r in members):
+                stream["protocol"] = "hls"
+        else:
+            # No measures fetched this time: keep the last known ones.
+            codec, bitrate = before.get("codec"), before.get("bitrate_kbps")
+            if before.get("protocol") == "hls":
+                stream["protocol"] = "hls"
+        if codec:
+            stream["codec"] = codec
+        if bitrate:
+            stream["bitrate_kbps"] = bitrate
+        streams.append(stream)
     return streams
 
 
-def _content(rows, stream_ids):
+def _content(rows, previous_streams):
     """Everything in a record except id, rev, sources and updated_at."""
     name = _display_name(rows)
     record = {
         "status": "active",
         "name": name,
-        "streams": _streams(rows, stream_ids),
+        "streams": _streams(rows, previous_streams),
         "ids": {"radio_browser": sorted(r["uuid"] for r in rows)},
     }
     others = sorted({r["name"] for r in rows if r["name_key"] != name_key(name)})
@@ -162,7 +207,7 @@ def load_previous(out):
 def merge(groups, previous, redirects, as_of):
     date, stamp = as_of[:10], as_of
     id_by_uuid = {u: s["id"] for s in previous.values() for u in s.get("ids", {}).get("radio_browser", [])}
-    stream_ids = {stream_key(m["url"]): m["id"] for s in previous.values() for m in s["streams"]}
+    previous_streams = {stream_key(m["url"]): m for s in previous.values() for m in s["streams"]}
     stations, seen, new_redirects = {}, set(), list(redirects)
     # Ids never reused: those in service, those of the previous build and old redirects.
     taken = set(previous) | {r["from"] for r in redirects}
@@ -176,7 +221,7 @@ def merge(groups, previous, redirects, as_of):
         for old in known[1:]:
             seen.add(old)
             new_redirects.append({"from": old, "to": station_id, "at": date})
-        content = _content(rows, stream_ids)
+        content = _content(rows, previous_streams)
         before = previous.get(station_id)
         if before and all(before.get(k) == v for k, v in content.items()) and set(before) - {"id", "rev", "sources", "updated_at"} == set(content):
             stations[station_id] = before
@@ -263,8 +308,8 @@ def write(stations, redirects, out, dist, as_of):
     return manifest
 
 
-def build(source, out, dist, as_of):
-    rows, refused = prepare_rows(source)
+def build(source, out, dist, as_of, checks=None):
+    rows, refused = prepare_rows(source, checks)
     previous, redirects = load_previous(out)
     stations, redirects = merge(group_rows(rows), previous, redirects, as_of)
     check(stations, previous, len(source))
@@ -275,6 +320,7 @@ def build(source, out, dist, as_of):
         "stations": len(stations),
         "active": sum(s["status"] == "active" for s in stations.values()),
         "streams": sum(len(s["streams"]) for s in stations.values()),
+        "measured_streams": sum("codec" in m for s in stations.values() for m in s["streams"]),
         "redirects": len(redirects),
         "shards": len(manifest["datasets"]["stations"]),
         "bytes": sum(e["bytes"] for e in manifest["datasets"]["stations"]),
@@ -294,11 +340,16 @@ def main():
     parser.add_argument("--input", required=True, type=Path, help="Radio Browser export (.json.gz)")
     parser.add_argument("--out", required=True, type=Path, help="data repository")
     parser.add_argument("--dist", required=True, type=Path, help="directory to deploy")
+    parser.add_argument("--checks", type=Path, help="Radio Browser checker measures (.json.gz), optional")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
         source = json.load(handle)
+    checks = None
+    if args.checks:
+        with gzip.open(args.checks, "rt", encoding="utf-8") as handle:
+            checks = read_checks(json.load(handle))
     try:
-        report = build(source, args.out, args.dist, as_of_from_name(args.input.name))
+        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

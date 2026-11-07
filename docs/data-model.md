@@ -108,9 +108,11 @@ The values above are illustrative.
 | `id` | yes | `sm_` + 26 lowercase characters, opaque, permanent |
 | `url` | yes | `http` or `https`, public host only, no credentials, no session or tracking parameters |
 | `protocol` | yes | `http`, `hls`, `dash`, or an unknown value to ignore |
-| `codec` | no | `mp3`, `aac`, `flac`, `opus`, `vorbis`, … |
+| `codec` | no | `mp3`, `aac`, `he-aac`, `flac`, `opus`, `vorbis`, … Open list. Measured, not declared: see below |
 | `bitrate_kbps` | no | Integer |
 | `role` | no | `primary`, `alternate`, `low-bandwidth` |
+
+`codec` and `bitrate_kbps` come from the last successful check of the Radio Browser checker. A failed check publishes nothing. A codec the checker cannot name (an Ogg container, a video stream) is left out. When the measures cannot be fetched, a build keeps the last known values. A protocol measured as HLS is published as `hls`, even without `.m3u8` in the address.
 
 **Clients must treat every URL as untrusted.** They must refuse private, loopback and link-local addresses, including after DNS resolution and redirects.
 
