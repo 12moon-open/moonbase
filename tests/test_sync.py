@@ -87,6 +87,9 @@ class Sync(unittest.TestCase):
     def run_sync(self, archive, digest=None):
         return sync_module.sync(self.root, fetcher(archive, digest))
 
+    def versions(self):
+        return sorted(p.name for p in (self.root / "releases").iterdir() if not p.name.startswith("."))
+
     def current(self):
         return (self.root / "current").resolve().name
 
@@ -112,7 +115,7 @@ class Sync(unittest.TestCase):
         with self.assertRaises(sync_module.Refused):
             self.run_sync(archive, digest)
         self.assertEqual(self.current(), "2026-11-06.1")
-        self.assertEqual([p.name for p in (self.root / "releases").iterdir()], ["2026-11-06.1"])
+        self.assertEqual(self.versions(), ["2026-11-06.1"])
 
     def test_bad_archive_checksum(self):
         self.refused(release("2026-11-07.1"), "0" * 64)
@@ -167,6 +170,6 @@ class Sync(unittest.TestCase):
     def test_keeps_seven_versions(self):
         for day in range(1, 11):
             self.run_sync(release(f"2026-11-{day:02}.1"))
-        names = sorted(p.name for p in (self.root / "releases").iterdir())
+        names = self.versions()
         self.assertEqual(len(names), 7)
         self.assertEqual(names[-1], "2026-11-10.1")
