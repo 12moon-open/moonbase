@@ -38,10 +38,12 @@ def release(version, stations=40_000, extra=None, tamper=False, drop_path=None):
     return buffer.getvalue()
 
 
-def fetcher(archive, digest=None):
+def fetcher(archive, digest=None, calls=None):
     digest = digest or hashlib.sha256(archive).hexdigest()
 
     def fetch(name, limit):
+        if calls is not None:
+            calls.append(name)
         return archive if name == "dist.tar.gz" else f"{digest}  dist.tar.gz\n".encode()
     return fetch
 
@@ -143,6 +145,13 @@ class Sync(unittest.TestCase):
 
     def test_bad_version_string(self):
         self.refused(release("../../etc"))
+
+    def test_unchanged_archive_is_not_downloaded(self):
+        archive = release("2026-11-06.1")
+        self.run_sync(archive)
+        calls = []
+        result = sync_module.sync(self.root, fetcher(archive, calls=calls))
+        self.assertEqual((result, calls), ("up to date: same archive", ["dist.tar.gz.sha256"]))
 
     def test_too_many_entries(self):
         self.refused(release("2026-11-07.1", extra=[add_many_files]))

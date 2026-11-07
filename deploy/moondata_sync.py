@@ -126,9 +126,14 @@ def make_readable(directory):
 
 
 def sync(root=ROOT, fetch=download):
-    archive_bytes = fetch(ARCHIVE, MAX_ARCHIVE)
     line = fetch(ARCHIVE + ".sha256", 256).decode("ascii", "replace").split()
-    if not line or not SHA256.fullmatch(line[0]) or hashlib.sha256(archive_bytes).hexdigest() != line[0]:
+    if not line or not SHA256.fullmatch(line[0]):
+        raise Refused("invalid checksum file")
+    marker = root / "releases" / ".last-archive"
+    if marker.is_file() and marker.read_text(encoding="ascii").strip() == line[0] and (root / "current").exists():
+        return "up to date: same archive"
+    archive_bytes = fetch(ARCHIVE, MAX_ARCHIVE)
+    if hashlib.sha256(archive_bytes).hexdigest() != line[0]:
         raise Refused("archive checksum mismatch")
     for stale in (root / "releases").glob(".incoming-*"):
         shutil.rmtree(stale, ignore_errors=True)
@@ -142,6 +147,7 @@ def sync(root=ROOT, fetch=download):
         unpack(archive, unpacked)
         version, count = check(unpacked, current_version, current_count)
         if version is None:
+            marker.write_text(line[0], encoding="ascii")
             return f"up to date: {current_version}"
         make_readable(unpacked)
         target = root / "releases" / version
@@ -149,6 +155,7 @@ def sync(root=ROOT, fetch=download):
             shutil.rmtree(target)
         unpacked.rename(target)
     activate(root, version)
+    marker.write_text(line[0], encoding="ascii")
     prune(root, version)
     return f"installed {version}: {count} stations"
 
