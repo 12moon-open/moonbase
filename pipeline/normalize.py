@@ -2,7 +2,7 @@
 import ipaddress
 import re
 import unicodedata
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qsl, unquote, urlencode, urlsplit, urlunsplit
 
 TRACKING_PARAMS = frozenset({
     "fbclid", "gclid", "_ga", "playsessionid", "listenerid", "userid", "user_hash",
@@ -89,7 +89,7 @@ def logo_url(raw):
 
 def stream_key(url):
     """Identity of a stream: the same address over http and https is one stream."""
-    return re.sub(r"^https?://", "", url).rstrip("/;")
+    return unquote(re.sub(r"^https?://", "", url)).rstrip("/;")
 
 
 def stream_protocol(url):
@@ -103,7 +103,7 @@ def stream_protocol(url):
 
 def stream_channel(url):
     """Channel named by the path, without quality words: fip_hifi.m3u8 gives fip."""
-    segments = [s for s in urlsplit(url).path.lower().split("/") if s]
+    segments = [s for s in unquote(urlsplit(url).path).lower().split("/") if s]
     if not segments:
         return ""
     return CHANNEL_NOISE.sub("", segments[-1].rsplit(".", 1)[0])

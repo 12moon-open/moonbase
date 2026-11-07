@@ -93,6 +93,24 @@ class Build(unittest.TestCase):
         self.run_build(source)
         self.assertTrue(self.named("FIP")[0]["logo_url"].endswith("/1280px-F.svg.png"))
 
+    def test_same_name_and_domain_is_one_station(self):
+        self.run_build([row("d1", "Radio Max", "https://streams.radiomax.de/live/mp3-192"),
+                        row("d2", "Radio Max", "https://cdn.radiomax.de/max/aac-64")] + filler())
+        self.assertEqual(len(self.named("Radio Max")), 1)
+
+    def test_same_domain_with_other_channels_stays_apart(self):
+        self.run_build([row("e1", "SomaFM Black Rock FM", "https://somafm.com/brfm64.pls", country="US"),
+                        row("e2", "SomaFM Black Rock FM", "https://somafm.com/beatblender130.pls", country="US")] + filler())
+        self.assertEqual(len(self.named("SomaFM Black Rock FM")), 2)
+
+    def test_encoded_url_is_the_same_stream(self):
+        self.run_build([row("g1", "BBC Radio 6 Music", "http://x.akamaized.net/6music/bbc_6music-audio=320000.m3u8", country="GB"),
+                        row("g2", "BBC Radio 6 Music", "http://x.akamaized.net/6music/bbc_6music-audio%3d320000.m3u8", country="GB")]
+                       + filler())
+        six = self.named("BBC Radio 6 Music")
+        self.assertEqual(len(six), 1)
+        self.assertEqual(len(six[0]["streams"]), 1)
+
     def test_rebuild_is_byte_identical(self):
         source = FIP + filler()
         self.run_build(source)

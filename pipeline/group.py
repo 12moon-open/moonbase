@@ -1,8 +1,10 @@
 """Group source rows, one per stream, into stations.
 
 Two rows are one station when they share a stream, or when they have the same
-name in the same country and either the same channel in their path, or no
-channel at all and a domain that is not shared hosting.
+name in the same country and either the same channel in their path, or a domain
+that is not shared hosting and compatible channels (one empty, or one the start
+of the other). The domain rule is not used for a row whose stream also carries
+another name: such a row may be mislabelled.
 
 A row with no country is compared with the rows of the only country that has its
 name, if there is exactly one.
@@ -39,6 +41,11 @@ def _signals(row):
     return {d for d in map(registrable_domain, urls) if d}
 
 
+def _compatible(a, b):
+    """Channels that may name one station: fip and fiphd, or an unnamed path."""
+    return not a or not b or a.startswith(b) or b.startswith(a)
+
+
 def group_rows(rows):
     """Return lists of rows. Each row has stream, stream_key, name_key, country."""
     sets = _Sets(len(rows))
@@ -65,17 +72,25 @@ def group_rows(rows):
         if not country and len(countries_by_name[row["name_key"]]) == 1:
             country = next(iter(countries_by_name[row["name_key"]]))
         buckets[(country, row["name_key"])].append(i)
+    names_by_stream = defaultdict(set)
+    for row in rows:
+        names_by_stream[row["stream_key"]].add(row["name_key"])
+
     for members in buckets.values():
         if len({rows[i]["stream_key"] for i in members}) > MAX_STREAMS_BY_NAME:
             continue
-        by_channel, by_domain = {}, {}
+        by_channel, by_domain = {}, defaultdict(list)
         for i in members:
             channel = stream_channel(rows[i]["stream"])
             if channel:
                 sets.union(i, by_channel.setdefault(channel, i))
+            if len(names_by_stream[rows[i]["stream_key"]]) > 1:
                 continue
             for domain in sorted(_signals(rows[i]) - shared):
-                sets.union(i, by_domain.setdefault(domain, i))
+                for j, other in by_domain[domain]:
+                    if _compatible(channel, other):
+                        sets.union(i, j)
+                by_domain[domain].append((i, channel))
 
     groups = defaultdict(list)
     for i, row in enumerate(rows):
