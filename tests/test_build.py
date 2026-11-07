@@ -152,6 +152,20 @@ class Build(unittest.TestCase):
         self.assertEqual(redirects, [{"from": lone["id"], "to": fip_id, "at": "2026-11-08"}])
         self.assertEqual([s["id"] for s in self.named("FIP") if s["status"] == "active"], [fip_id])
 
+    def test_split_station_loses_no_stream(self):
+        one = row("h1", "Radio Hm", "https://a.example.org/live")
+        two = row("h2", "Radio Hm", "https://a.example.org/stream")
+        self.run_build([one, two] + filler())
+        self.assertEqual(len(self.named("Radio Hm")), 1)
+        # h2's stream now also carries another name: h2 leaves, and the group sorted first
+        # takes the old id. The old id was derived from h1, which must not get it back.
+        self.run_build([one, two, row("a0", "Other", "https://a.example.org/stream")] + filler(), LATER)
+        urls = sorted(m["url"] for s in self.stations().values() if s["status"] == "active"
+                      for m in s["streams"] if "a.example.org" in m["url"])
+        self.assertEqual(urls, ["https://a.example.org/live", "https://a.example.org/stream"])
+        ids = [s["id"] for s in self.stations().values()]
+        self.assertEqual(len(ids), len(set(ids)))
+
     def test_private_stream_is_refused(self):
         report = self.run_build([row("d1", "Evil", "http://192.168.1.1/")] + filler())
         self.assertEqual(report["refused"], {"stream": 1})

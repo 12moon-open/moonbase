@@ -30,6 +30,14 @@ def _stable_id(prefix, seed):
     return prefix + base64.b32encode(digest).decode().lower()[:26]
 
 
+def _fresh_id(seed, taken):
+    """A new station id that no record, past or present, has used."""
+    station_id, n = _stable_id("st_", seed), 1
+    while station_id in taken:
+        station_id, n = _stable_id("st_", f"{seed}#{n}"), n + 1
+    return station_id
+
+
 def prepare_rows(source):
     rows, refused = [], Counter()
     for item in source:
@@ -156,12 +164,15 @@ def merge(groups, previous, redirects, as_of):
     id_by_uuid = {u: s["id"] for s in previous.values() for u in s.get("ids", {}).get("radio_browser", [])}
     stream_ids = {stream_key(m["url"]): m["id"] for s in previous.values() for m in s["streams"]}
     stations, seen, new_redirects = {}, set(), list(redirects)
+    # Ids never reused: those in service, those of the previous build and old redirects.
+    taken = set(previous) | {r["from"] for r in redirects}
     for rows in sorted(groups, key=lambda g: min(r["uuid"] for r in g)):
         # The record that brings the most rows keeps its id: a well-known station stays put.
         weight = Counter(id_by_uuid[r["uuid"]] for r in rows if r["uuid"] in id_by_uuid)
         known = sorted(set(weight) - seen, key=lambda i: (-weight[i], i))
-        station_id = known[0] if known else _stable_id("st_", min(r["uuid"] for r in rows))
+        station_id = known[0] if known else _fresh_id(min(r["uuid"] for r in rows), taken)
         seen.add(station_id)
+        taken.add(station_id)
         for old in known[1:]:
             seen.add(old)
             new_redirects.append({"from": old, "to": station_id, "at": date})
