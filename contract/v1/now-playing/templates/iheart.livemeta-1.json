@@ -1,7 +1,7 @@
 {
   "format": "12moon.now_playing_template/1",
   "id": "iheart.livemeta/1",
-  "status": "needs_permission",
+  "status": "active",
   "terms": {
     "robots_txt": "https://us.api.iheart.com/robots.txt",
     "checked_at": "2026-11-08",
