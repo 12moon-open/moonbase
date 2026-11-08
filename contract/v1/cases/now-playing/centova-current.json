@@ -1,0 +1,25 @@
+{
+  "description": "Centova streaminfo on port 2199, https",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "centova.streaminfo/1",
+    "params": {
+      "scheme": "https",
+      "host": "cast.example.org",
+      "username": "kxmpfm"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"type\": \"result\", \"data\": [{\"song\": \"Example Artist - Example Song\", \"track\": {\"artist\": \"Example Artist\", \"title\": \"Example Song\", \"album\": \"Example Album\", \"started\": 1794127300}}]}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "album": "Example Album",
+    "started_at": "2026-11-08T08:41:40Z"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "description": "http towards any other host is refused",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "icecast.status/1",
+    "params": {
+      "scheme": "http",
+      "host": "other.example.org",
+      "port": "8000",
+      "mount": "/high"
+    }
+  },
+  "context": {
+    "stream_hosts": [
+      "stream.example.org"
+    ]
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"icestats\": {\"source\": [{\"listenurl\": \"http://stream.example.org:8000/low\", \"title\": \"Other Artist - Other Song\"}, {\"listenurl\": \"http://stream.example.org:8000/high\", \"title\": \"Example Artist - Example Song\"}]}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "error": "invalid_adapter"
+  }
+}

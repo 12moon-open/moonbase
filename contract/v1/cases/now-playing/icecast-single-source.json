@@ -1,0 +1,24 @@
+{
+  "description": "Icecast status with one mount: source is an object",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "icecast.status/1",
+    "params": {
+      "scheme": "https",
+      "host": "stream.example.org",
+      "port": "8443",
+      "mount": "/live"
+    }
+  },
+  "response": {
+    "content_type": "application/json; charset=utf-8",
+    "body": "{\"icestats\": {\"source\": {\"listenurl\": \"http://stream.example.org:8000/live\", \"title\": \"Solo Artist - Solo Song\"}}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Solo Artist",
+    "title": "Solo Song"
+  }
+}

@@ -12,7 +12,7 @@ for (const [name, c] of read("cases/now-playing/")) {
   test(`now playing: ${name}`, () => {
     let got;
     try {
-      got = run(resolve(c.adapter, templates), c.response, c.now, c.station_name);
+      got = run(resolve(c.adapter, templates, c.context || {}), c.response, c.now, c.station_name);
     } catch (error) {
       if (!(error instanceof AdapterError)) throw error;
       got = { error: error.reason };

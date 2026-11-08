@@ -1,0 +1,56 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "corus.fmplaylist/1",
+  "status": "active",
+  "terms": {
+    "robots_txt": "https://globalnewselection.s3.amazonaws.com/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "public_page"
+  },
+  "params": {
+    "call": {
+      "pattern": "^[A-Z0-9]{3,6}$"
+    }
+  },
+  "request": {
+    "url": "https://globalnewselection.s3.amazonaws.com/fm-playlist/results/{call}FM_np.js",
+    "hosts": [
+      "globalnewselection.s3.amazonaws.com"
+    ],
+    "expect": "json",
+    "unwrap": "jsonp",
+    "accept_types": [
+      "application/javascript",
+      "text/javascript",
+      "binary/octet-stream",
+      "application/octet-stream"
+    ]
+  },
+  "extract": {
+    "items": "$",
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.artist_name"
+      },
+      "title": {
+        "path": "$.song_name"
+      },
+      "started_at": {
+        "path": "$.last_played",
+        "time": "unix_s"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 900
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

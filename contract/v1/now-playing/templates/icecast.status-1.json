@@ -1,0 +1,73 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "icecast.status/1",
+  "status": "active",
+  "terms": {
+    "basis": "public_page",
+    "checked_at": "2026-11-08"
+  },
+  "params": {
+    "scheme": {
+      "pattern": "^(?:https|http)$"
+    },
+    "host": {
+      "pattern": "^[a-z0-9-]{1,63}(?:\\.[a-z0-9-]{1,63}){1,5}$"
+    },
+    "port": {
+      "pattern": "^[0-9]{2,5}$"
+    },
+    "mount": {
+      "pattern": "^/[A-Za-z0-9._/-]{1,60}$"
+    }
+  },
+  "request": {
+    "url": "https://{host}/status-json.xsl",
+    "hosts": [
+      "{host}"
+    ],
+    "expect": "json",
+    "scheme": "{scheme}",
+    "port": "{port}",
+    "accept_types": [
+      "text/plain",
+      "application/javascript",
+      "text/javascript"
+    ]
+  },
+  "extract": {
+    "items": "$.icestats.source[*]",
+    "wrap_single": true,
+    "match": {
+      "path": "$.listenurl",
+      "ends_with": "{mount}"
+    },
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.title",
+        "split": {
+          "sep": " - ",
+          "part": 0
+        }
+      },
+      "title": {
+        "path": "$.title",
+        "split": {
+          "sep": " - ",
+          "part": 1
+        }
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 300
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

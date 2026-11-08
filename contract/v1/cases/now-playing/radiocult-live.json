@@ -1,0 +1,23 @@
+{
+  "description": "Radio Cult: live schedule metadata",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "radiocult.live/1",
+    "params": {
+      "station": "example-radio"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"result\": {\"status\": \"schedule\", \"metadata\": {\"artist\": \"Example Artist\", \"title\": \"Example Song\", \"album\": \"Example Album\", \"playoutStartIsoTimestamp\": \"2026-11-08T08:41:40.000Z\"}}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "album": "Example Album",
+    "started_at": "2026-11-08T08:41:40Z"
+  }
+}

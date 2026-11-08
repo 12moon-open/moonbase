@@ -1,0 +1,19 @@
+{
+  "description": "Corus: a file frozen in 2017 is stale, whatever its page says",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "corus.fmplaylist/1",
+    "params": {
+      "call": "CKXM"
+    }
+  },
+  "response": {
+    "content_type": "binary/octet-stream",
+    "body": "jsonpcallback({\"artist_name\": \"Old Artist\", \"song_name\": \"Old Song\", \"last_played\": 1500000000})"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "stale"
+  }
+}

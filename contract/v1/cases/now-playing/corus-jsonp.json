@@ -1,0 +1,22 @@
+{
+  "description": "Corus: JSONP envelope removed, served as JavaScript",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "corus.fmplaylist/1",
+    "params": {
+      "call": "CKXM"
+    }
+  },
+  "response": {
+    "content_type": "application/javascript",
+    "body": "jsonpcallback({\"artist_name\": \"Example Artist\", \"song_name\": \"Example Song\", \"last_played\": 1794127300});"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "started_at": "2026-11-08T08:41:40Z"
+  }
+}

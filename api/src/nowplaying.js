@@ -18,8 +18,16 @@ export class AdapterError extends Error {
 
 // ---------- Templates ----------
 
-/** A full adapter from a template-based one. Each param must match its pattern; hosts must cover the URL. */
-export function resolve(adapter, templates) {
+/** Ports allowed besides 443 (https) and 80 (http): Centova, Icecast and Shoutcast status pages. */
+export function allowedPort(port) {
+  return port === 2199 || port === 10443 || (port >= 8000 && port <= 8999) || (port >= 18000 && port <= 18999);
+}
+
+/**
+ * A full adapter from a template-based one. Each param must match its pattern; hosts must cover the URL.
+ * context.stream_hosts: hosts of the station's own streams. http is allowed only towards them (1.2).
+ */
+export function resolve(adapter, templates, context = {}) {
   let full = adapter;
   if (adapter.template) {
     const template = templates[adapter.template];
@@ -33,10 +41,19 @@ export function resolve(adapter, templates) {
       if (!new RegExp(template.params[name].pattern).test(params[name])) throw new AdapterError("invalid_adapter");
     }
     const fill = (text) => text.replace(/\{([a-z_]+)\}/g, (_, n) => encodeURIComponent(params[n]));
+    const request = { ...template.request, url: fill(template.request.url), hosts: template.request.hosts.map(fill) };
+    if (typeof request.scheme === "string") request.scheme = fill(request.scheme);
+    if (typeof request.port === "string") request.port = Number(fill(request.port));
+    const extract = { ...template.extract };
+    if (extract.match) {
+      // Compared as text, not sent in a URL: the param goes in as it is.
+      const raw = (text) => text.replace(/\{([a-z_]+)\}/g, (_, n) => params[n]);
+      extract.match = Object.fromEntries(Object.entries(extract.match).map(([k, v]) => [k, k === "path" ? v : raw(v)]));
+    }
     full = {
       ...template,
       ...Object.fromEntries(Object.entries(adapter).filter(([k]) => !["template", "params"].includes(k))),
-      request: { ...template.request, url: fill(template.request.url), hosts: template.request.hosts.map(fill) },
+      request, extract,
       ignore: adapter.ignore || template.ignore,
     };
   }
@@ -49,6 +66,20 @@ export function resolve(adapter, templates) {
   if (url.protocol !== "https:" || url.username || url.password || (url.port && url.port !== "443")) throw new AdapterError("invalid_adapter");
   if (/^[0-9.]+$/.test(url.hostname) || url.hostname.includes(":")) throw new AdapterError("invalid_adapter");
   if (!full.request.hosts.includes(url.hostname)) throw new AdapterError("invalid_adapter");
+  const placeholder = /\{[a-z_]{1,30}\}/;
+  const values = [full.request.url, ...full.request.hosts, full.request.scheme, full.request.port,
+    ...Object.values(full.extract.match || {})].filter((v) => v !== undefined);
+  if (values.some((v) => placeholder.test(String(v)))) {
+    throw new AdapterError("invalid_adapter");
+  }
+  const scheme = full.request.scheme || "https";
+  if (scheme !== "https" && scheme !== "http") throw new AdapterError("invalid_adapter");
+  if (scheme === "http" && !(context.stream_hosts || []).includes(url.hostname)) throw new AdapterError("invalid_adapter");
+  const port = full.request.port ?? (scheme === "https" ? 443 : 80);
+  if (!Number.isInteger(port) || !(port === (scheme === "https" ? 443 : 80) || allowedPort(port))) throw new AdapterError("invalid_adapter");
+  url.protocol = `${scheme}:`;
+  url.port = String(port);
+  full.request = { ...full.request, effective_url: url.toString() };
   return full;
 }
 
@@ -253,6 +284,12 @@ function toTime(value, kind, timeZone, now) {
     return Number.isFinite(n) ? (kind === "unix_s" ? n * 1000 : n) : null;
   }
   const text = String(value).trim();
+  if (kind === "datetime_offset") {
+    const m = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) ([+-]\d{2}):?(\d{2})$/.exec(text);
+    if (!m) return null;
+    const ms = Date.parse(`${m[1]}T${m[2]}${m[3]}:${m[4]}`);
+    return Number.isFinite(ms) ? ms : null;
+  }
   if (kind === "iso8601") {
     if (!/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d{1,6})?)?(?:Z|[+-]\d{2}:?\d{2})$/.test(text)) return null;
     const ms = Date.parse(text.replace(" ", "T"));
@@ -315,16 +352,25 @@ export function run(adapter, response, nowText, stationName = "") {
   const now = Date.parse(nowText);
   const mode = adapter.request.expect;
   const type = String(response.content_type || "").split(";")[0].trim().toLowerCase();
-  const typeOk = mode === "json" ? /^application\/(?:[\w.+-]*\+)?json$/.test(type)
+  // Never read a stream by mistake: an audio or video answer is cut before its body is read.
+  if (/^(?:audio|video)\//.test(type) || type === "application/ogg") throw new AdapterError("audio_response");
+  const extra = adapter.request.accept_types || [];
+  const typeOk = extra.includes(type) || (mode === "json" ? /^application\/(?:[\w.+-]*\+)?json$/.test(type)
     : mode === "html" ? type === "text/html" || type === "application/xhtml+xml"
-    : /^(?:application|text)\/(?:[\w.+-]*\+)?xml$/.test(type);
+    : /^(?:application|text)\/(?:[\w.+-]*\+)?xml$/.test(type));
   if (!typeOk) throw new AdapterError("wrong_type");
   const body = response.body;
   if (new TextEncoder().encode(body).length > adapter.limits.max_bytes) throw new AdapterError("too_large");
   let root;
   if (mode === "json") {
+    let text = body;
+    if (adapter.request.unwrap === "jsonp") {
+      const m = /^\s*[A-Za-z_$][\w$.]{0,60}\s*\(([\s\S]*)\)\s*;?\s*$/.exec(text);
+      if (!m) throw new AdapterError("wrong_type");
+      text = m[1];
+    }
     try {
-      root = JSON.parse(body);
+      root = JSON.parse(text);
     } catch {
       throw new AdapterError("wrong_type");
     }
@@ -332,7 +378,24 @@ export function run(adapter, response, nowText, stationName = "") {
     root = parseMarkup(body, mode === "xml");
   }
   const ex = adapter.extract;
-  const items = mode === "json" ? jsonSelect(root, ex.items).filter((i) => i && typeof i === "object") : cssSelect(root, ex.items, mode === "xml");
+  let items;
+  if (mode === "json") {
+    items = jsonSelect(root, ex.items);
+    if (!items.length && ex.wrap_single && ex.items.endsWith("[*]")) {
+      items = jsonSelect(root, ex.items.slice(0, -3)).filter((i) => i && typeof i === "object" && !Array.isArray(i));
+    }
+    items = items.filter((i) => i && typeof i === "object");
+  } else {
+    items = cssSelect(root, ex.items, mode === "xml");
+  }
+  if (ex.match) {
+    items = items.filter((item) => {
+      const found = mode === "json" ? jsonSelect(item, ex.match.path)[0] : undefined;
+      if (found === undefined || found === null || typeof found === "object") return false;
+      const text = String(found);
+      return ex.match.equals !== undefined ? text === ex.match.equals : text.endsWith(ex.match.ends_with);
+    });
+  }
   const read = (item) => {
     const out = {};
     for (const [name, spec] of Object.entries(ex.fields)) {

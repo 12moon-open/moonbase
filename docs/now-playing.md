@@ -18,6 +18,20 @@ Schemas: [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.sche
    - `stale` when `started_at`, or else `observed_at`, is older than `max_age_s`; a start more than 5 minutes in the future is `invalid_value`;
    - otherwise `current`, with `artist`, `title`, and when known `album`, `isrc`, `show`, `started_at`, `ended_at`.
 
+## Since 1.2
+
+- **Scheme and port.** `request.scheme` and `request.port` (or template params). https on 443 by default. Other ports, only: 2199 (Centova), 8000-8999, 10443, 18000-18999 (Icecast, Shoutcast, AzuraCast). http only towards the host of one of the station's own streams, which the listener's server already reaches in clear for the audio.
+- **Formats.** `request.unwrap: "jsonp"` removes a `callback(...)` envelope. `request.accept_types` accepts JSON served as `application/javascript`, `text/javascript`, `text/plain` or octet-stream.
+- **Choosing an item.** `extract.match` keeps the items whose value at `path` equals, or ends with, a text: an Icecast status lists every mount, and the station's own is chosen by the end of `listenurl`. `extract.wrap_single` reads a single object where a list was expected.
+- **Times.** `datetime_offset`: `2026-11-08 10:54:45 +0100`.
+- **Audio.** Any `audio/*`, `video/*` or `application/ogg` answer is cut before its body is read (`audio_response`). Some pages redirect robots to the stream itself.
+
+## Rules that do not change
+
+- **robots.txt always applies**, documented API or not. AzuraCast, Sveriges Radio and Bauer forbid their API to robots: no adapter reads them.
+- **A webradio is not its parent station.** The page of titles played by a group's main station says nothing about its theme webradios. An adapter is checked against the stream's ICY title when it has one. 12moon puts in `needs_review` an adapter whose request is the same as another station's.
+- **No endless response.** One request, one answer: a server-sent events stream (Zeno) is out of scope.
+
 Regular expressions are at most 200 characters, with no lookaround and no back-reference, so that .NET (`NonBacktracking`) and JavaScript agree.
 
 ## Publication

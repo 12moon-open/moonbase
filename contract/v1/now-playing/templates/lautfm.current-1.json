@@ -1,0 +1,57 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "lautfm.current/1",
+  "status": "active",
+  "terms": {
+    "robots_txt": "https://api.laut.fm/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "public_api"
+  },
+  "params": {
+    "name": {
+      "pattern": "^[a-z0-9_-]{1,40}$"
+    }
+  },
+  "request": {
+    "url": "https://api.laut.fm/station/{name}/current_song",
+    "hosts": [
+      "api.laut.fm"
+    ],
+    "expect": "json"
+  },
+  "extract": {
+    "items": "$",
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.artist.name"
+      },
+      "title": {
+        "path": "$.title"
+      },
+      "album": {
+        "path": "$.album"
+      },
+      "started_at": {
+        "path": "$.started_at",
+        "time": "datetime_offset"
+      },
+      "ended_at": {
+        "path": "$.ends_at",
+        "time": "datetime_offset"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 900,
+    "grace_after_end_s": 60
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

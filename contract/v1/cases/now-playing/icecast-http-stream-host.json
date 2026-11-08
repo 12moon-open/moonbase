@@ -1,0 +1,29 @@
+{
+  "description": "http is allowed towards the host of the station's own stream",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "icecast.status/1",
+    "params": {
+      "scheme": "http",
+      "host": "stream.example.org",
+      "port": "8000",
+      "mount": "/high"
+    }
+  },
+  "context": {
+    "stream_hosts": [
+      "stream.example.org"
+    ]
+  },
+  "response": {
+    "content_type": "text/plain",
+    "body": "{\"icestats\": {\"source\": [{\"listenurl\": \"http://stream.example.org:8000/low\", \"title\": \"Other Artist - Other Song\"}, {\"listenurl\": \"http://stream.example.org:8000/high\", \"title\": \"Example Artist - Example Song\"}]}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "centova.streaminfo/1",
+  "status": "active",
+  "terms": {
+    "basis": "public_page",
+    "checked_at": "2026-11-08"
+  },
+  "params": {
+    "scheme": {
+      "pattern": "^(?:https|http)$"
+    },
+    "host": {
+      "pattern": "^[a-z0-9-]{1,63}(?:\\.[a-z0-9-]{1,63}){1,5}$"
+    },
+    "username": {
+      "pattern": "^[a-z0-9_-]{1,40}$"
+    }
+  },
+  "request": {
+    "url": "https://{host}/rpc/{username}/streaminfo.get",
+    "hosts": [
+      "{host}"
+    ],
+    "expect": "json",
+    "scheme": "{scheme}",
+    "port": 2199,
+    "accept_types": [
+      "text/plain",
+      "application/javascript",
+      "text/javascript"
+    ]
+  },
+  "extract": {
+    "items": "$.data[0]",
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.track.artist"
+      },
+      "title": {
+        "path": "$.track.title"
+      },
+      "album": {
+        "path": "$.track.album"
+      },
+      "started_at": {
+        "path": "$.track.started",
+        "time": "unix_s"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 900
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

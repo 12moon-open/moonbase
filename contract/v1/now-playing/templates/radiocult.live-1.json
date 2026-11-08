@@ -1,0 +1,52 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "radiocult.live/1",
+  "status": "active",
+  "terms": {
+    "robots_txt": "https://api.radiocult.fm/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "public_page"
+  },
+  "params": {
+    "station": {
+      "pattern": "^[a-z0-9-]{1,40}$"
+    }
+  },
+  "request": {
+    "url": "https://api.radiocult.fm/api/station/{station}/schedule/live",
+    "hosts": [
+      "api.radiocult.fm"
+    ],
+    "expect": "json"
+  },
+  "extract": {
+    "items": "$.result.metadata",
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.artist"
+      },
+      "title": {
+        "path": "$.title"
+      },
+      "album": {
+        "path": "$.album"
+      },
+      "started_at": {
+        "path": "$.playoutStartIsoTimestamp",
+        "time": "iso8601"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 1800
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

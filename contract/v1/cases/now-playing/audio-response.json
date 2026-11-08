@@ -1,0 +1,19 @@
+{
+  "description": "An audio answer is cut before its body is read",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_bbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "template": "lautfm.current/1",
+    "params": {
+      "name": "examplestation"
+    }
+  },
+  "response": {
+    "content_type": "audio/mpeg",
+    "body": ""
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "error": "audio_response"
+  }
+}

@@ -126,6 +126,55 @@
             "html",
             "xml"
           ]
+        },
+        "scheme": {
+          "description": "1.2. Default https. http only towards the host of one of the station's own streams.",
+          "anyOf": [
+            {
+              "enum": [
+                "https",
+                "http"
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "^\\{[a-z_]{1,30}\\}$"
+            }
+          ]
+        },
+        "port": {
+          "description": "1.2. Default 443 (https) or 80 (http). Otherwise one of the allowed ports: 2199, 8000-8999, 10443, 18000-18999.",
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            {
+              "type": "string",
+              "pattern": "^\\{[a-z_]{1,30}\\}$"
+            }
+          ]
+        },
+        "unwrap": {
+          "description": "1.2. jsonp: remove a callback(...) envelope before reading JSON.",
+          "enum": [
+            "jsonp"
+          ]
+        },
+        "accept_types": {
+          "description": "1.2. Extra Content-Types accepted for this response, besides the one of expect.",
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "enum": [
+              "application/octet-stream",
+              "text/plain",
+              "application/javascript",
+              "text/javascript",
+              "binary/octet-stream"
+            ]
+          }
         }
       }
     },
@@ -183,8 +232,10 @@
             "unix_s",
             "unix_ms",
             "local_hm",
-            "local_hms"
-          ]
+            "local_hms",
+            "datetime_offset"
+          ],
+          "description": "1.2 adds datetime_offset: 2026-11-08 10:54:45 +0100."
         },
         "timezone": {
           "type": "string",
@@ -292,6 +343,47 @@
             "last",
             "latest_started"
           ]
+        },
+        "match": {
+          "description": "1.2. Keep only items whose value at path equals, or ends with, this text. {name} takes a template param.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "maxLength": 200,
+              "pattern": "^\\$(?:\\.[A-Za-z_][A-Za-z0-9_-]*|\\['[^'\\]]{1,60}'\\]|\\[-?[0-9]{1,3}\\]|\\[\\*\\])*$"
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "ends_with": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "oneOf": [
+            {
+              "required": [
+                "equals"
+              ]
+            },
+            {
+              "required": [
+                "ends_with"
+              ]
+            }
+          ]
+        },
+        "wrap_single": {
+          "description": "1.2. When the list at items ([*]) is a single object instead of an array, read it as the only item.",
+          "type": "boolean"
         }
       }
     },
