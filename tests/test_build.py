@@ -338,3 +338,39 @@ class Fetch(unittest.TestCase):
         from pipeline.fetch import latest_name
         html = '<a href="radiobrowser_stations_20261105_014528.json.gz">x</a> radiobrowser_stations_20261106_122303.json.gz'
         self.assertEqual(latest_name(html), "radiobrowser_stations_20261106_122303.json.gz")
+
+
+class EditsTest(unittest.TestCase):
+    A, B, OLD = "st_" + "a" * 26, "st_" + "b" * 26, "st_" + "c" * 26
+
+    def edit(self, id, station, change, status="accepted", at="2026-11-08T10:00:00Z"):
+        return {"id": id, "station": station, "change": change, "status": status, "created_at": at}
+
+    def test_edits_add_up_in_order_and_follow_redirects(self):
+        editor = {"aggregator_homepages": ["x.org"], "stations": {self.A: {"homepage": None}}}
+        edits = [
+            self.edit("ed_2", self.OLD, {"set": {"name": "Later"}, "add_streams": ["https://s.example.org/b"]}, at="2026-11-08T11:00:00Z"),
+            self.edit("ed_1", self.A, {"set": {"name": "Earlier", "tags": ["jazz"]}, "add_streams": ["https://s.example.org/a"]}),
+            self.edit("ed_3", self.A, {"retire": True}, status="withdrawn"),
+            self.edit("ed_4", self.B, {"same_as": self.OLD}),
+        ]
+        merged, pairs = b.editor_from_edits(editor, edits, [{"from": self.OLD, "to": self.A, "at": "2026-11-01"}])
+        self.assertEqual(merged["aggregator_homepages"], ["x.org"])
+        self.assertEqual(merged["stations"][self.A], {"homepage": None, "name": "Later", "tags": ["jazz"],
+                                                      "add_streams": ["https://s.example.org/a", "https://s.example.org/b"]})
+        self.assertEqual(pairs, [[self.B, self.A]])
+        self.assertEqual(editor["stations"][self.A], {"homepage": None})
+
+    def test_apply_editor_fields(self):
+        record = {"name": "Old", "status": "active", "country": "FR", "tags": ["pop"],
+                  "streams": [{"id": "sm_1", "url": "https://a.example.org/x", "protocol": "http", "role": "primary"},
+                              {"id": "sm_2", "url": "https://b.example.org/y", "protocol": "http", "role": "alternate"}]}
+        self.assertTrue(b.apply_editor(record, {"name": "New", "country": "BE", "place": {"name": "Liège"}, "tags": [],
+                                                "logo_url": "https://a.example.org/logo.png", "remove_streams": ["sm_1"]}, {}))
+        self.assertEqual(record["name"], "New")
+        self.assertEqual(record["place"], {"name": "Liège", "scope": "editor"})
+        self.assertNotIn("tags", record)
+        self.assertEqual([(m["id"], m["role"]) for m in record["streams"]], [("sm_2", "primary")])
+        self.assertEqual(record["status"], "active")
+        b.apply_editor(record, {"remove_streams": ["sm_2"]}, {})
+        self.assertEqual(record["status"], "retired")

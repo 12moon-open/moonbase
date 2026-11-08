@@ -311,14 +311,47 @@ def _sources(rows, before, date, item=None, edited=False):
 
 
 def apply_editor(record, edit, previous_streams):
-    """A maintainer's checked correction. Returns True when something was applied."""
+    """A maintainer's or an editor's checked correction. Returns True when something was applied.
+
+    edit: homepage and logo_url (null removes), name, country, place (null removes),
+    languages, tags, add_streams, remove_streams (stream ids), retire.
+    """
     applied = False
-    if "homepage" in edit:
-        url = web_url(edit["homepage"]) if edit["homepage"] else None
-        if url:
-            record["homepage"] = url
+    for key, clean in (("homepage", web_url), ("logo_url", logo_url)):
+        if key in edit:
+            url = clean(edit[key]) if edit[key] else None
+            if url:
+                record[key] = url
+            else:
+                record.pop(key, None)
+            applied = True
+    if edit.get("name"):
+        record["name"] = clean_name(edit["name"]) or record["name"]
+        applied = True
+    if edit.get("country"):
+        record["country"] = edit["country"]
+        applied = True
+    if "place" in edit:
+        if edit["place"]:
+            record["place"] = {**{k: v for k, v in edit["place"].items() if k in ("name", "lat", "lon")}, "scope": "editor"}
         else:
-            record.pop("homepage", None)
+            record.pop("place", None)
+        applied = True
+    for key in ("languages", "tags"):
+        if key in edit:
+            if edit[key]:
+                record[key] = sorted(set(edit[key]))
+            else:
+                record.pop(key, None)
+            applied = True
+    gone = set(edit.get("remove_streams", ()))
+    if gone and any(m["id"] in gone for m in record["streams"]):
+        kept = [m for m in record["streams"] if m["id"] not in gone]
+        if kept and not any(m.get("role") == "primary" for m in kept) and any(m.get("role") == "primary" for m in record["streams"]):
+            kept[0] = {**kept[0], "role": "primary"}
+        record["streams"] = kept
+        if not kept:
+            record["status"] = "retired"
         applied = True
     keys = {stream_key(m["url"]) for m in record["streams"]}
     for raw in edit.get("add_streams", []):
@@ -333,6 +366,30 @@ def apply_editor(record, edit, previous_streams):
         record["status"] = "retired"
         applied = True
     return applied
+
+
+def editor_from_edits(editor, edits, redirects):
+    """Adds the accepted edits from the API to the maintainer's file, oldest first.
+
+    Returns (editor, same pairs). An edit of a merged station follows its redirect;
+    a later edit of a field replaces an earlier one; streams to add or remove add up.
+    """
+    moved = {r["from"]: r["to"] for r in redirects}
+    stations = {k: dict(v) for k, v in (editor or {}).get("stations", {}).items()}
+    pairs = []
+    for item in sorted((e for e in edits if e["status"] == "accepted"), key=lambda e: (e["created_at"], e["id"])):
+        station = moved.get(item["station"], item["station"])
+        change = item["change"]
+        entry = stations.setdefault(station, {})
+        entry.update(change.get("set", {}))
+        for key in ("add_streams", "remove_streams"):
+            if change.get(key):
+                entry[key] = list(dict.fromkeys(entry.get(key, []) + change[key]))
+        if change.get("retire"):
+            entry["retire"] = True
+        if change.get("same_as"):
+            pairs.append([station, moved.get(change["same_as"], change["same_as"])])
+    return {**(editor or {}), "stations": stations}, pairs
 
 
 def join_same(groups, previous, pairs):
@@ -515,14 +572,15 @@ def write(stations, redirects, out, dist, as_of, build_date=None, now_playing=No
 
 
 def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=(), editor=None,
-          radioarg=(), now_playing=None):
+          radioarg=(), now_playing=None, edits=()):
     """now_playing: (adapters, templates, blocked hosts) as read by now_playing.load(), or None to leave it out."""
     editor = editor or {}
     rows, refused = prepare_rows(source, checks, editor.get("aggregator_homepages", ()))
     rows += contribution_rows(contributions, editor.get("aggregator_homepages", ()))
     rows += radioarg_rows(radioarg, editor.get("aggregator_homepages", ()))
     previous, redirects = load_previous(out)
-    groups = join_same(group_rows(rows), previous, same)
+    editor, edited_pairs = editor_from_edits(editor, edits, redirects)
+    groups = join_same(group_rows(rows), previous, list(same) + edited_pairs)
     found = match_groups(groups, wikidata, shared_domains(rows)) if wikidata else {}
     matches = {id(groups[index]): item for index, item in found.items()}
     stations, redirects = merge(groups, previous, redirects, as_of, matches, editor.get("stations", {}))
@@ -568,6 +626,7 @@ def main():
     parser.add_argument("--same-stations", type=Path, help="pairs of station ids confirmed as one station (.json)")
     parser.add_argument("--wikidata", type=Path, help="radio stations from Wikidata (.json.gz), optional")
     parser.add_argument("--editor", type=Path, help="corrections checked by the maintainer (.json), optional")
+    parser.add_argument("--edits", type=Path, help="accepted edits from the edit API (.json), optional")
     parser.add_argument("--now-playing", action="store_true",
                         help="publish the now_playing dataset from data/now-playing and the contract templates")
     parser.add_argument("--radioarg", type=Path, help="stations listed by radioarg.net, streams checked (.json.gz), optional")
@@ -586,7 +645,8 @@ def main():
         editor = json.loads(args.editor.read_text(encoding="utf-8")) if args.editor else None
         radioarg = json.loads(gzip.decompress(args.radioarg.read_bytes())) if args.radioarg else ()
         report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata, editor,
-                       radioarg, now_playing_data.load() if args.now_playing else None)
+                       radioarg, now_playing_data.load() if args.now_playing else None,
+                       json.loads(args.edits.read_text(encoding="utf-8")) if args.edits else ())
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

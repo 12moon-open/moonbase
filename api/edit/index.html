@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>12moon edit</title>
+<link rel="stylesheet" href="/edit/app.css">
+</head>
+<body>
+<header><b>12moon</b> edit <span id="who"></span> <button id="logout" hidden>Sign out</button></header>
+<form id="login" hidden>
+  <p>Paste your editor token. It stays in this tab only and is forgotten when the tab closes.</p>
+  <input id="token" type="password" autocomplete="off" placeholder="12m_…" required>
+  <button>Sign in</button> <span id="login-error" class="error"></span>
+</form>
+<main id="app" hidden>
+  <nav>
+    <button data-tab="search">Search</button>
+    <button data-tab="review" data-role="maintainer">To review</button>
+    <button data-tab="add">Add a station</button>
+    <button data-tab="editors" data-role="maintainer">Editors</button>
+  </nav>
+  <section id="search">
+    <form id="search-form">
+      <input id="q" placeholder="name, address, st_… or sm_…" autofocus>
+      <input id="country" placeholder="FR" maxlength="2" size="3">
+      <button>Search</button> <span id="catalog" class="muted"></span>
+    </form>
+    <table id="results"></table>
+    <div id="station"></div>
+  </section>
+  <section id="review" hidden></section>
+  <section id="add" hidden></section>
+  <section id="editors" hidden></section>
+</main>
+<datalist id="tags"></datalist>
+<script src="/edit/app.js"></script>
+</body>
+</html>

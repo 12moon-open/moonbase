@@ -1,4 +1,9 @@
 import { verifyRequest } from "./auth.js";
+import {
+  addEdit, addStation, catalogState, createEditor, decideEdit, editorOf, exportEdits, listEditors, listEdits,
+  refreshCatalog, revokeEditor, search, stationView,
+} from "./edits.js";
+import { EDIT_CSS, EDIT_HTML, EDIT_JS } from "./editpage.js";
 import { addMeasures, purgeMeasures, streamHealth, validateMeasures } from "./measures.js";
 import {
   addStationProposal, addStationReport, claimStationProposals, decideStationProposal, decideStationReport,
@@ -84,6 +89,26 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
   }
 
   if (path.startsWith("/v1/admin/")) return admin(request, env, url, path, now);
+  if (path.startsWith("/v1/edit/")) return edit(request, env, url, path, now);
+
+  if (request.method === "GET" && path === "/v1/edits") {
+    const [updated, id] = (url.searchParams.get("after") || "0.").split(/\.(.*)/s);
+    const limit = Math.min(Math.max(Number(url.searchParams.get("limit")) || 1000, 1), 1000);
+    const edits = await exportEdits(env.DB, Number(updated) || 0, id || "", limit);
+    return reply(200, { edits, next: edits.length === limit ? edits.at(-1).cursor : null }, { "cache-control": "no-store" });
+  }
+
+  const page = { "/edit": [EDIT_HTML, "text/html"], "/edit/app.js": [EDIT_JS, "text/javascript"], "/edit/app.css": [EDIT_CSS, "text/css"] }[path];
+  if (page && (request.method === "GET" || request.method === "HEAD")) {
+    return new Response(page[0], { headers: {
+      "content-type": `${page[1]}; charset=utf-8`,
+      "cache-control": "no-cache",
+      "content-security-policy": "default-src 'none'; script-src 'self'; style-src 'self'; img-src https:; connect-src 'self'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+      "cross-origin-opener-policy": "same-origin",
+    } });
+  }
 
   if (request.method === "POST" && path === "/v1/proposals") {
     const { auth, bytes, response } = await signed(request, env, now);
@@ -166,7 +191,73 @@ async function role(request, env) {
   const given = (request.headers.get("authorization") || "").replace(/^Bearer /, "");
   if (await sameToken(given, env.ADMIN_TOKEN)) return "admin";
   if (await sameToken(given, env.CHECKER_TOKEN)) return "checker";
-  return null;
+  const editor = await editorOf(env.DB, given, Math.floor(Date.now() / 1000));
+  return editor && editor.role === "maintainer" ? "admin" : null;
+}
+
+/** The editor behind the request: an editor token, or the admin token acting as the maintainer. */
+async function editorFor(request, env, now) {
+  const given = (request.headers.get("authorization") || "").replace(/^Bearer /, "");
+  if (await sameToken(given, env.ADMIN_TOKEN)) {
+    await env.DB.prepare("INSERT OR IGNORE INTO editors (id, name, role, token_hash, created_at) VALUES ('ed_admin', 'admin token', 'maintainer', 'admin-token', ?)").bind(now).run();
+    return { id: "ed_admin", name: "admin token", role: "maintainer" };
+  }
+  return editorOf(env.DB, given, now);
+}
+
+/** Searching and editing stations, for editors. */
+async function edit(request, env, url, path, now) {
+  const editor = await editorFor(request, env, now);
+  if (!editor) return reply(401, { error: "unauthorized" }, { "www-authenticate": "Bearer" });
+  const body = async () => {
+    const bytes = await readBody(request);
+    return bytes ? parseJson(bytes) : undefined;
+  };
+  const answer = (result, created = 200) => {
+    if (result.limited) return reply(429, { error: "daily limit reached" }, { "retry-after": "86400" });
+    if (result.error) return reply(result.status || 422, { error: result.error, ...(result.station ? { station: result.station } : {}) });
+    return reply(created, result);
+  };
+  if (request.method === "GET" && path === "/v1/edit/me") {
+    return reply(200, { name: editor.name, role: editor.role, catalog: await catalogState(env.DB) });
+  }
+  if (request.method === "GET" && path === "/v1/edit/search") {
+    const country = url.searchParams.get("country") || "";
+    if (country && !/^[A-Z]{2}$/.test(country)) return reply(400, { error: "invalid country" });
+    return reply(200, { stations: await search(env.DB, url.searchParams.get("q") || "", country, Number(url.searchParams.get("limit")) || 50) });
+  }
+  const one = path.match(/^\/v1\/edit\/stations\/(st_[0-9a-z]{26})$/);
+  if (request.method === "GET" && one) {
+    const view = await stationView(env.DB, one[1]);
+    return view ? reply(200, view) : reply(404, { error: "unknown station" });
+  }
+  if (request.method === "POST" && path === "/v1/edit/stations") return answer(await addStation(env.DB, editor, await body(), now), 202);
+  if (request.method === "POST" && path === "/v1/edit/changes") return answer(await addEdit(env.DB, editor, await body(), now), 201);
+  if (request.method === "GET" && path === "/v1/edit/changes") {
+    const status = url.searchParams.get("status") || "";
+    if (status && !["pending", "accepted", "rejected", "reverted"].includes(status)) return reply(400, { error: "invalid status" });
+    const mine = editor.role === "maintainer" ? {} : { editor: editor.id };
+    return reply(200, { edits: await listEdits(env.DB, { status, ...mine }) });
+  }
+  if (request.method === "GET" && path === "/v1/edit/new-stations") {
+    const { results } = await env.DB.prepare(
+      "SELECT id, status, reason, station, body, created_at FROM station_proposals WHERE editor_id = ? ORDER BY created_at DESC LIMIT 200",
+    ).bind(editor.id).all();
+    return reply(200, { stations: results.map((r) => ({ ...r, body: JSON.parse(r.body) })) });
+  }
+  // Below: the maintainer only.
+  if (editor.role !== "maintainer") return reply(403, { error: "forbidden" });
+  const decision = path.match(/^\/v1\/edit\/changes\/(ed_[0-9a-z]{26})$/);
+  if (request.method === "POST" && decision) {
+    const given = await body();
+    return answer(await decideEdit(env.DB, editor, decision[1], given && given.status, now));
+  }
+  if (request.method === "GET" && path === "/v1/edit/editors") return reply(200, { editors: await listEditors(env.DB) });
+  if (request.method === "POST" && path === "/v1/edit/editors") return answer(await createEditor(env.DB, await body(), now), 201);
+  const revoke = path.match(/^\/v1\/edit\/editors\/(ed_[0-9a-z]{26})\/revoke$/);
+  if (request.method === "POST" && revoke) return answer(await revokeEditor(env.DB, revoke[1], now));
+  if (request.method === "POST" && path === "/v1/edit/catalog/refresh") return reply(200, await refreshCatalog(env.DB));
+  return reply(404, { error: "not found" });
 }
 
 const CHECKER_DECISIONS = new Set(["published", "duplicate", "rejected", "pending"]);
@@ -217,5 +308,6 @@ export default {
     const now = Math.floor(Date.now() / 1000);
     ctx.waitUntil(verifyPending(env.DB, { now }));
     if (event.cron === "17 3 * * *") ctx.waitUntil(purgeMeasures(env.DB, now));
+    else ctx.waitUntil(refreshCatalog(env.DB).catch((error) => console.error("catalog", String(error))));
   },
 };
