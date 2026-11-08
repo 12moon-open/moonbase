@@ -1,0 +1,27 @@
+{
+  "description": "Corrections checked by hand by the maintainer, applied by the daily build under the source editor. A station's status depends on its streams only: a dead website removes the homepage, never the station.",
+  "aggregator_homepages": [
+    "pcradio.ru", "you.radio", "radioarg.net", "top-radio.ru", "radiopotok.ru", "mintone.app"
+  ],
+  "stations": {
+    "st_av57g2yvjbfny7hqdxjx3dex5d": { "homepage": null, "note": "site is no longer the station" },
+    "st_ujgsvxkijdvhbellv2smuwh7em": { "homepage": null, "note": "dead site" },
+    "st_tagqfrn6hvaofckq5grp76azmj": { "homepage": null, "note": "dead site" },
+    "st_lv2qfbbmstnvh3z3oc6qbntzku": { "homepage": null, "note": "dead site" },
+    "st_2dxgsppdmrcdp4lfird26bloom": { "homepage": null, "note": "domain taken by a squatter" },
+    "st_ash3szg7rx75rfmj5bwll365x5": { "homepage": null, "note": "domain no longer the station's" },
+    "st_7aurdkwild4mpqozy26aeygqtq": { "homepage": null, "note": "dead site" },
+    "st_lf2udzqov5hnvxttpzqofkmy4p": { "homepage": null, "note": "dead site" },
+    "st_jjk5zixfhucpx6v5zbebsss475": { "homepage": null, "note": "dead site" },
+    "st_zw4fyaqrnisfkgb2s2m4ju7z7w": { "homepage": null, "note": "dead site" },
+    "st_e44wtvo3x42nuvpqk57o5tb5zc": { "homepage": null, "note": "dead site" },
+    "st_6yejysuwh42f6bgozvkgqyy7sr": { "homepage": null, "note": "dead site" },
+    "st_7s4daihqfbho34hgndknf4vfpe": { "homepage": null, "note": "dead site" },
+    "st_thtq6hr4jankgmdflu3wlzyrhz": { "homepage": "https://xerezdfcradio.com/" },
+    "st_jqdvic4bslywd3rv3je5zzhdjj": { "homepage": "https://www.phoenixradio1208.com/" },
+    "st_mbwj3vkpmvrcwi3n6rrfl6hj2z": { "homepage": "https://life.com.mk/" },
+    "st_cqhspn5xnuwttvcvmiaktms3wy": { "homepage": "https://www.radiodacha.ru/" },
+    "st_abhd5zbesaoyh25k2mab4xfnjs": { "add_streams": ["http://148.225.54.10/broadwavehigh.mp3?src=1"] },
+    "st_smrjyv64iwkuezfafcmahtdxqe": { "retire": true, "note": "a television channel, no sound" }
+  }
+}

@@ -17,6 +17,9 @@ from urllib.parse import quote
 
 from .normalize import name_key, registrable_domain, web_url
 
+CALL_SIGN = re.compile(r"\b([KW][A-Z]{2,3}|C[FHIJKY][A-Z]{2}|X[EH][A-Z]{2,3})(?:-(?:FM|AM|LP|LPFM|HD\d))?\b")
+CALL_COUNTRIES = {"US", "CA", "MX"}
+COLLEGE_TAG = "college radio"
 LOGO_WIDTH = 500
 LOGO_TYPES = (".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp")
 
@@ -52,6 +55,17 @@ def _main_key(rows):
     return max(names, key=lambda k: (names[k], k)) if names else ""
 
 
+def _calls(texts):
+    return {m.group(1) for t in texts for m in CALL_SIGN.finditer(t.upper())}
+
+
+def _item_call(item):
+    """The item's call sign (P2317), or a label that is one: WJCU, KEXP-FM."""
+    call = item.get("call_sign") or ""
+    found = _calls([call]) or {n for n in _calls(item["names"]) if any(re.fullmatch(rf"{n}(?:-(?:FM|AM|LP))?", x.upper()) for x in item["names"])}
+    return next(iter(sorted(found)), None) if len(found) == 1 else None
+
+
 def match_groups(groups, items, shared=frozenset()):
     """Returns {group index: item} for sure matches only."""
     by_name, by_site_domain = defaultdict(list), defaultdict(list)
@@ -68,10 +82,27 @@ def match_groups(groups, items, shared=frozenset()):
         infos.append((country, main, {r["name_key"] for r in rows} - {""}))
         if main:
             group_count[(country, main)] += 1
+    # Call signs, in North America: a sure identifier, once common words are left out.
+    by_call = defaultdict(list)
+    for item in items:
+        if item["country"] in CALL_COUNTRIES:
+            call = _item_call(item)
+            if call:
+                by_call[(item["country"], call)].append(item)
+    group_calls = [_calls(r["name"] for r in rows) if infos[i][0] in CALL_COUNTRIES else set() for i, rows in enumerate(groups)]
+    call_use = defaultdict(int)
+    for i, calls in enumerate(group_calls):
+        for call in calls:
+            call_use[(infos[i][0], call)] += 1
     found = {}
     for index, rows in enumerate(groups):
+        country = infos[index][0]
+        known = {c for c in group_calls[index] if call_use[(country, c)] <= 2 and len(by_call.get((country, c), [])) == 1}
+        if len(known) == 1:
+            found[index] = (by_call[(country, known.pop())][0], True)
+    for index, rows in enumerate(groups):
         country, main, keys = infos[index]
-        if not country or not main:
+        if index in found or not country or not main:
             continue
         # The main name first: other names often come from mislabelled source rows.
         candidates = {i["q"]: i for i in by_name.get((country, main), [])}
@@ -132,4 +163,6 @@ def enrich(record, item):
     logo = commons_thumbnail(item["logo"]) if item.get("logo") else None
     if logo:
         record["logo_url"] = logo
+    if item.get("college"):
+        record["tags"] = sorted(set(record.get("tags", [])) | {COLLEGE_TAG})
     return record

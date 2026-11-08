@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import sys
+from urllib.parse import urlsplit
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -60,8 +61,14 @@ def read_checks(items):
     return checks
 
 
-def prepare_rows(source, checks=None):
-    """checks: from read_checks, or None when no measures were fetched."""
+def _aggregator(url, aggregators):
+    host = (urlsplit(url).hostname or "") if url else ""
+    return any(host == d or host.endswith("." + d) for d in aggregators)
+
+
+def prepare_rows(source, checks=None, aggregators=()):
+    """checks: from read_checks, or None when no measures were fetched.
+    aggregators: domains whose pages are listings, never a station's own site."""
     rows, refused = [], Counter()
     for item in source:
         stream = web_url(item.get("url_stream"))
@@ -74,6 +81,8 @@ def prepare_rows(source, checks=None):
             continue
         country = (item.get("iso_3166_1") or "").strip().upper()
         homepage = web_url(item.get("url_homepage"))
+        if _aggregator(homepage, aggregators):
+            homepage = None
         measure = (checks or {}).get(item["stationuuid"], {})
         rows.append({
             "uuid": item["stationuuid"],
@@ -100,7 +109,7 @@ def prepare_rows(source, checks=None):
     return rows, refused
 
 
-def contribution_rows(items):
+def contribution_rows(items, aggregators=()):
     """Rows from stations added by installations and checked by the stream checker.
 
     items: the public export of the contribution API. Only published stations count;
@@ -116,6 +125,8 @@ def contribution_rows(items):
             continue
         place = item.get("place") or {}
         homepage = web_url(item.get("homepage"))
+        if _aggregator(homepage, aggregators):
+            homepage = None
         for stream in item.get("streams") or []:
             url = web_url(stream.get("url"))
             if not url:
@@ -254,14 +265,39 @@ def load_previous(out):
     return stations, read_ndjson(out / "v1" / "redirects.ndjson")
 
 
-def _source_names(rows, item):
-    return sorted({r["source"] for r in rows} | ({"wikidata"} if item else set()))
+def _source_names(rows, item, edited=False):
+    return sorted({r["source"] for r in rows} | ({"wikidata"} if item else set()) | ({"editor"} if edited else set()))
 
 
-def _sources(rows, before, date, item=None):
+def _sources(rows, before, date, item=None, edited=False):
     """One entry per source of the record, keeping the first date each was seen."""
     seen = {s["source"]: s["retrieved_at"] for s in (before or {}).get("sources", [])}
-    return [{"source": source, "retrieved_at": seen.get(source, date)} for source in _source_names(rows, item)]
+    return [{"source": source, "retrieved_at": seen.get(source, date)} for source in _source_names(rows, item, edited)]
+
+
+def apply_editor(record, edit, previous_streams):
+    """A maintainer's checked correction. Returns True when something was applied."""
+    applied = False
+    if "homepage" in edit:
+        url = web_url(edit["homepage"]) if edit["homepage"] else None
+        if url:
+            record["homepage"] = url
+        else:
+            record.pop("homepage", None)
+        applied = True
+    keys = {stream_key(m["url"]) for m in record["streams"]}
+    for raw in edit.get("add_streams", []):
+        url = web_url(raw)
+        if url and stream_key(url) not in keys:
+            key = stream_key(url)
+            record["streams"].append({"id": previous_streams.get(key, {}).get("id") or _stable_id("sm_", key),
+                                      "url": url, "protocol": stream_protocol(url), "role": "alternate"})
+            keys.add(key)
+            applied = True
+    if edit.get("retire"):
+        record["status"] = "retired"
+        applied = True
+    return applied
 
 
 def join_same(groups, previous, pairs):
@@ -296,9 +332,10 @@ def join_same(groups, previous, pairs):
     return list(joined.values())
 
 
-def merge(groups, previous, redirects, as_of, matches=None):
-    """matches: {id(rows): Wikidata item}, from wikidata.match_groups."""
+def merge(groups, previous, redirects, as_of, matches=None, editor=None):
+    """matches: {id(rows): Wikidata item}, from wikidata.match_groups. editor: {station id: correction}."""
     matches = matches or {}
+    editor = editor or {}
     date, stamp = as_of[:10], as_of
     id_by_uuid = {u: s["id"] for s in previous.values()
                   for key in ("radio_browser", "contributions") for u in s.get("ids", {}).get(key, [])}
@@ -320,16 +357,17 @@ def merge(groups, previous, redirects, as_of, matches=None):
         item = matches.get(id(rows))
         if item:
             enrich(content, item)
+        edited = station_id in editor and apply_editor(content, editor[station_id], previous_streams)
         before = previous.get(station_id)
         if before and all(before.get(k) == v for k, v in content.items()) and set(before) - {"id", "rev", "sources", "updated_at"} == set(content) \
-                and [x["source"] for x in before["sources"]] == _source_names(rows, item):
+                and [x["source"] for x in before["sources"]] == _source_names(rows, item, edited):
             stations[station_id] = before
         else:
             stations[station_id] = {
                 "id": station_id,
                 "rev": before["rev"] + 1 if before else 1,
                 **content,
-                "sources": _sources(rows, before, date, item),
+                "sources": _sources(rows, before, date, item, edited),
                 "updated_at": stamp,
             }
     moved = {r["from"]: r["to"] for r in new_redirects}
@@ -426,14 +464,15 @@ def write(stations, redirects, out, dist, as_of, build_date=None):
     return manifest
 
 
-def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=()):
-    rows, refused = prepare_rows(source, checks)
-    rows += contribution_rows(contributions)
+def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=(), editor=None):
+    editor = editor or {}
+    rows, refused = prepare_rows(source, checks, editor.get("aggregator_homepages", ()))
+    rows += contribution_rows(contributions, editor.get("aggregator_homepages", ()))
     previous, redirects = load_previous(out)
     groups = join_same(group_rows(rows), previous, same)
     found = match_groups(groups, wikidata, shared_domains(rows)) if wikidata else {}
     matches = {id(groups[index]): item for index, item in found.items()}
-    stations, redirects = merge(groups, previous, redirects, as_of, matches)
+    stations, redirects = merge(groups, previous, redirects, as_of, matches, editor.get("stations", {}))
     check(stations, previous, len(source))
     manifest = write(stations, redirects, out, dist, as_of, build_date)
     return {
@@ -468,6 +507,7 @@ def main():
     parser.add_argument("--contributions", type=Path, help="stations added by installations (.json), optional")
     parser.add_argument("--same-stations", type=Path, help="pairs of station ids confirmed as one station (.json)")
     parser.add_argument("--wikidata", type=Path, help="radio stations from Wikidata (.json.gz), optional")
+    parser.add_argument("--editor", type=Path, help="corrections checked by the maintainer (.json), optional")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
         source = json.load(handle)
@@ -480,7 +520,8 @@ def main():
         contributions = json.loads(args.contributions.read_text(encoding="utf-8")) if args.contributions else ()
         same = json.loads(args.same_stations.read_text(encoding="utf-8"))["same"] if args.same_stations else ()
         wikidata = json.loads(gzip.decompress(args.wikidata.read_bytes())) if args.wikidata else ()
-        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata)
+        editor = json.loads(args.editor.read_text(encoding="utf-8")) if args.editor else None
+        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata, editor)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

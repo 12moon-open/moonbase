@@ -239,6 +239,26 @@ class Build(unittest.TestCase):
         self.assertEqual(len(active[0]["streams"]), 2)
         self.assertEqual(len(b.load_previous(self.out)[1]), 1)
 
+    def test_editor_corrections(self):
+        rows = FIP + [row("e1", "Radio Squat", "https://squat.example.org/live", homepage="https://squat.example.org/"),
+                      row("e2", "Radio Index", "https://idx.example.net/live", homepage="https://you.radio/station/x"),
+                      row("e3", "TV Channel", "https://tv.example.org/live")] + filler()
+        self.run_build(rows)
+        ids = {s["name"]: s["id"] for s in self.stations().values()}
+        editor = {"aggregator_homepages": ["you.radio"], "stations": {
+            ids["Radio Squat"]: {"homepage": None},
+            ids["FIP"]: {"homepage": "https://www.radiofrance.fr/fip", "add_streams": ["https://extra.radiofrance.fr/fip.mp3"]},
+            ids["TV Channel"]: {"retire": True}}}
+        b.build(rows, self.out, self.dist, LATER, None, None, (), (), (), editor)
+        st = {s["name"]: s for s in self.stations().values()}
+        self.assertNotIn("homepage", st["Radio Squat"])
+        self.assertEqual(st["Radio Squat"]["status"], "active")  # a dead site never retires a station
+        self.assertNotIn("homepage", st["Radio Index"])
+        self.assertEqual(st["FIP"]["homepage"], "https://www.radiofrance.fr/fip")
+        self.assertIn("https://extra.radiofrance.fr/fip.mp3", [m["url"] for m in st["FIP"]["streams"]])
+        self.assertEqual([x["source"] for x in st["FIP"]["sources"]], ["editor", "radio-browser"])
+        self.assertEqual(st["TV Channel"]["status"], "retired")
+
     def version(self):
         return json.loads((self.dist / "v1" / "manifest.json").read_text())["dataset_version"]
 

@@ -71,6 +71,18 @@ class Matching(unittest.TestCase):
         found = w.match_groups(groups, items)
         self.assertEqual([i["q"] for i in found.values()], ["Q761627"])
 
+    def test_call_sign_matches_and_adds_the_college_tag(self):
+        groups = self.groups([row("w1", "WJCU 88.7 FM University Heights", "https://jcu.example.org/live", country="US"),
+                              row("w2", "Kiss FM", "https://a.example.org/kiss", country="US"),
+                              row("w3", "KISS 104", "https://b.example.org/kiss", country="US"),
+                              row("w4", "Kiss Country", "https://c.example.org/kc", country="US")])
+        items = [item("Q1", ["WJCU"], country="US", wikipedia={"en": "WJCU"}), item("Q2", ["KISS"], country="US")]
+        items[0]["college"] = True
+        found = w.match_groups(groups, items)
+        self.assertEqual([i["q"] for i in found.values()], ["Q1"])  # KISS is a common word here
+        record = w.enrich({"tags": ["rock"]}, items[0])
+        self.assertEqual(record["tags"], ["college radio", "rock"])
+
     def test_other_country_never_matches(self):
         groups = self.groups([row("y1", "Radio Uno", "https://a.example.org/x", country="IT")])
         self.assertEqual(w.match_groups(groups, [item("Q1", ["Radio Uno"], country="FR")]), {})
