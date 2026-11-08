@@ -36,44 +36,83 @@ def _domains(urls, shared):
     return {d for d in map(registrable_domain, urls) if d and d not in shared}
 
 
+def _page(url):
+    """host and path of a site address, for addresses on a shared domain: radiofrance.fr/fip."""
+    match = re.match(r"https?://(?:www\.)?([^/?#]+)(/[^?#]*)?", url or "", re.IGNORECASE)
+    if not match:
+        return None
+    path = (match.group(2) or "").rstrip("/").lower()
+    return f"{match.group(1).lower()}{path}" if path else None
+
+
+def _main_key(rows):
+    names = defaultdict(int)
+    for row in rows:
+        names[row["name_key"]] += 1
+    return max(names, key=lambda k: (names[k], k)) if names else ""
+
+
 def match_groups(groups, items, shared=frozenset()):
     """Returns {group index: item} for sure matches only."""
-    by_name = defaultdict(list)
+    by_name, by_site_domain = defaultdict(list), defaultdict(list)
+    for item in items:
+        for domain in _domains(item.get("websites", []), shared):
+            by_site_domain[(item["country"], domain)].append(item)
     for item in items:
         for key in {name_key(n) for n in item["names"]} - {""}:
             by_name[(item["country"], key)].append(item)
-    group_names, group_count = [], defaultdict(int)
+    infos, group_count = [], defaultdict(int)
     for rows in groups:
         country = max((r["country"] for r in rows), key=lambda c: (sum(r["country"] == c for r in rows), c))
-        keys = {r["name_key"] for r in rows} - {""}
-        group_names.append((country, keys))
-        for key in keys:
-            group_count[(country, key)] += 1
+        main = _main_key(rows)
+        infos.append((country, main, {r["name_key"] for r in rows} - {""}))
+        if main:
+            group_count[(country, main)] += 1
     found = {}
     for index, rows in enumerate(groups):
-        country, keys = group_names[index]
-        if not country:
+        country, main, keys = infos[index]
+        if not country or not main:
             continue
-        candidates = {item["q"]: item for key in keys for item in by_name.get((country, key), [])}
+        # The main name first: other names often come from mislabelled source rows.
+        candidates = {i["q"]: i for i in by_name.get((country, main), [])}
+        by_main = bool(candidates)
         if not candidates:
+            candidates = {i["q"]: i for k in keys for i in by_name.get((country, k), [])}
+        if not candidates:
+            # Same official site and one name inside the other: "KEXP 90.3 FM" and "KEXP".
+            site = _domains([r["homepage"] for r in rows if r.get("homepage")], shared)
+            near = {i["q"]: i for d in site for i in by_site_domain.get((country, d), [])
+                    if any(len(k) >= 4 and (k in main or main in k) for k in {name_key(n) for n in i["names"]} - {""})}
+            if len(near) == 1:
+                found[index] = (next(iter(near.values())), False)
             continue
-        mine = _domains([r["stream"] for r in rows] + [r["homepage"] for r in rows if r.get("homepage")], shared)
-        by_domain = [i for i in candidates.values() if _domains(i.get("websites", []), shared) & mine]
-        if len(by_domain) == 1:
-            found[index] = by_domain[0]
+        addresses = [r["stream"] for r in rows] + [r["homepage"] for r in rows if r.get("homepage")]
+        mine = _domains(addresses, shared)
+        pages = {_page(r["homepage"]) for r in rows if r.get("homepage")} - {None}
+        by_site = [i for i in candidates.values()
+                   if _domains(i.get("websites", []), shared) & mine or {_page(w) for w in i.get("websites", [])} & pages]
+        if len(by_site) == 1:
+            found[index] = (by_site[0], by_main)
             continue
-        if len(candidates) != 1 or by_domain:
+        if len(candidates) != 1 or by_site:
             continue
         item = next(iter(candidates.values()))
-        unique = all(group_count[(country, k)] == 1 for k in keys if (country, k) in by_name)
         theirs = _domains(item.get("websites", []), shared)
         homepage = _domains([r["homepage"] for r in rows if r.get("homepage")], shared)
-        if unique and (not theirs or not homepage):
-            found[index] = item
+        if by_main and group_count[(country, main)] == 1 and (not theirs or not homepage):
+            found[index] = (item, by_main)
     claimed = defaultdict(list)
-    for index, item in found.items():
-        claimed[item["q"]].append(index)
-    return {index: item for index, item in found.items() if len(claimed[item["q"]]) == 1}
+    for index, (item, main_name) in found.items():
+        claimed[item["q"]].append((index, main_name))
+    result = {}
+    for claims in claimed.values():
+        if len(claims) == 1:
+            winners = claims
+        else:  # Several stations claim one item: only a single claim by the main name wins.
+            winners = [c for c in claims if c[1]]
+        if len(winners) == 1:
+            result[winners[0][0]] = found[winners[0][0]][0]
+    return result
 
 
 def enrich(record, item):

@@ -53,6 +53,24 @@ class Matching(unittest.TestCase):
                               row("y2", "Radio Uno", "https://b.example.net/y")])
         self.assertEqual(w.match_groups(groups, [item("Q1", ["Radio Uno"])]), {})
 
+    def test_main_name_wins_over_a_secondary_name(self):
+        groups = self.groups(FIP + [row("g9", "FIP", "https://stream.radiofrance.fr/fipgroove/fipgroove.m3u8"),
+                                    row("g8", "FIP Groove", "https://stream.radiofrance.fr/fipgroove/fipgroove.m3u8")])
+        items = [item("Q1", ["FIP"], websites=["https://www.radiofrance.fr/fip"])]
+        found = w.match_groups(groups, items)
+        self.assertEqual(len(found), 1)
+        [index] = found
+        self.assertIn("FIP", {r["name"] for r in groups[index]})
+        self.assertNotIn("FIP Groove", {r["name"] for r in groups[index]})
+
+    def test_same_site_and_contained_name(self):
+        groups = self.groups([row("k1", "KEXP 90.3 FM", "https://kexp.streamguys1.com/kexp160.aac", country="US",
+                                  homepage="https://www.kexp.org/")])
+        items = [item("Q761627", ["KEXP", "KCMU"], country="US", websites=["https://www.kexp.org/"]),
+                 item("Q9", ["Other Radio"], country="US", websites=["https://www.kexp.org/other"])]
+        found = w.match_groups(groups, items)
+        self.assertEqual([i["q"] for i in found.values()], ["Q761627"])
+
     def test_other_country_never_matches(self):
         groups = self.groups([row("y1", "Radio Uno", "https://a.example.org/x", country="IT")])
         self.assertEqual(w.match_groups(groups, [item("Q1", ["Radio Uno"], country="FR")]), {})
