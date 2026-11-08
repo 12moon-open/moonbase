@@ -43,7 +43,7 @@ WHERE {
   OPTIONAL { ?item wdt:P2317 ?call }
   BIND(EXISTS { ?item wdt:P31/wdt:P279* wd:Q1436229 } ||
        EXISTS { ?item wdt:P127|wdt:P137|wdt:P749 ?owner . ?owner wdt:P31/wdt:P279* wd:Q38723 } AS ?isCollege)
-  BIND(EXISTS { ?item wdt:P463|wdt:P361|wdt:P749|wdt:P127 wd:Q671510 } AS ?isNpr)
+  BIND(EXISTS { ?item wdt:P1416|wdt:P463|wdt:P361|wdt:P749|wdt:P127 wd:Q671510 } AS ?isNpr)
   OPTIONAL { ?item rdfs:label|skos:altLabel ?name }
   OPTIONAL { ?item wdt:P856 ?website }
   OPTIONAL { ?item wdt:P154 ?logo }
