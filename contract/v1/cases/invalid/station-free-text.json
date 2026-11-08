@@ -1,0 +1,1 @@
+{ "description": "No free text field", "schema": "station-proposal", "input": { "kind": "station_add", "name": "Radio Exemple", "country": "FR", "streams": [{ "url": "https://stream.example.fr/live.mp3" }], "description": "The best", "consent": "CC0-1.0" } }

@@ -161,3 +161,35 @@ class EndToEnd(unittest.TestCase):
 
     def test_local_server_is_refused_by_default(self):
         self.assertEqual(p.probe(self.base + "/live")["error"], "private_address")
+
+
+class Queue(unittest.TestCase):
+    def setUp(self):
+        from checker import queue
+        self.queue = queue
+        self.index = {"icecast.radiofrance.fr/fip-hifi.aac": "st_ov2zc5iv2saqhv4kvf4uf7p5le"}
+
+    def proposal(self, *urls):
+        return {"id": "pr_x", "name": "Radio", "streams": list(urls)}
+
+    def test_known_stream_is_a_duplicate(self):
+        decision = self.queue.decide(self.proposal("http://icecast.radiofrance.fr/fip-hifi.aac"), self.index,
+                                     lambda url: self.fail("no probe for a known stream"))
+        self.assertEqual(decision, {"status": "duplicate", "station": "st_ov2zc5iv2saqhv4kvf4uf7p5le"})
+
+    def test_playing_streams_are_published_with_their_measures(self):
+        results = {"https://a.example.org/ok": {"ok": True, "codec": "he-aac", "bitrate_kbps": 64, "hls": True},
+                   "https://a.example.org/dead": {"ok": False, "error": "connect"}}
+        decision = self.queue.decide(self.proposal(*results), {}, results.get)
+        self.assertEqual(decision, {"status": "published", "streams": [
+            {"url": "https://a.example.org/ok", "protocol": "hls", "codec": "he-aac", "bitrate_kbps": 64}]})
+
+    def test_nothing_playing_is_rejected_with_a_reason(self):
+        decision = self.queue.decide(self.proposal("https://a.example.org/x"), {}, lambda url: {"ok": False, "error": "not_audio"})
+        self.assertEqual(decision, {"status": "rejected", "reason": "not_audio"})
+        decision = self.queue.decide(self.proposal("https://a.example.org/x"), {}, lambda url: {"ok": False, "error": "timeout"})
+        self.assertEqual(decision, {"status": "rejected", "reason": "stream_unreachable"})
+
+    def test_a_local_resolver_problem_retries_later(self):
+        decision = self.queue.decide(self.proposal("https://a.example.org/x"), {}, lambda url: {"ok": False, "error": "dns_resolver"})
+        self.assertEqual(decision, {"status": "pending"})

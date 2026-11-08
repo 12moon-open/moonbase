@@ -79,6 +79,8 @@ export async function eraseContributor(db, contributorId) {
   await db.batch([
     db.prepare("UPDATE proposals SET contributor_id = NULL WHERE contributor_id = ?").bind(contributorId),
     db.prepare("UPDATE reports SET contributor_id = NULL WHERE contributor_id = ?").bind(contributorId),
+    db.prepare("UPDATE station_proposals SET contributor_id = NULL WHERE contributor_id = ?").bind(contributorId),
+    db.prepare("UPDATE station_reports SET contributor_id = NULL WHERE contributor_id = ?").bind(contributorId),
     db.prepare("DELETE FROM contributors WHERE id = ?").bind(contributorId),
   ]);
 }

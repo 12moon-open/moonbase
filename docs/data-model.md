@@ -97,7 +97,7 @@ The values above are illustrative.
 | `homepage` | no | `http` or `https` |
 | `logo_url` | no | Address of the image at its origin. Never hosted here |
 | `streams` | yes | At least one when `status` is `active` |
-| `ids` | no | External identifiers. New keys may be added, such as `musicbrainz` |
+| `ids` | no | External identifiers. New keys may be added, such as `musicbrainz`. `contributions` lists the proposals a station comes from |
 | `sources` | yes | At least one, from the allowlist |
 | `updated_at` | yes | UTC, RFC 3339 |
 

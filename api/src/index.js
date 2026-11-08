@@ -1,5 +1,10 @@
 import { verifyRequest } from "./auth.js";
 import { addMeasures, purgeMeasures, streamHealth, validateMeasures } from "./measures.js";
+import {
+  addStationProposal, addStationReport, claimStationProposals, decideStationProposal, decideStationReport,
+  exportStations, hideStationsOf, listStationProposals, listStationReports, stationProposalStatus, validateStationAdd,
+} from "./stations.js";
+import { revokeContributor } from "./verify.js";
 import { addProposal, addReport, contributor, eraseContributor, exportLinks, proposalStatus, useNonce } from "./store.js";
 import { validateProposal } from "./validate.js";
 import { verifyPending } from "./verify.js";
@@ -56,14 +61,32 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
 
   const status = path.match(/^\/v1\/proposals\/(pr_[0-9a-z]{26})$/);
   if (request.method === "GET" && status) {
-    const row = await proposalStatus(env.DB, status[1]);
+    const row = (await proposalStatus(env.DB, status[1])) || (await stationProposalStatus(env.DB, status[1]));
     return row ? reply(200, row) : reply(404, { error: "not found" });
   }
+
+  if (request.method === "GET" && path === "/v1/contributions/stations") {
+    const [updated, id] = (url.searchParams.get("after") || "0.").split(/\.(.*)/s);
+    const limit = Math.min(Math.max(Number(url.searchParams.get("limit")) || 1000, 1), 1000);
+    const stations = await exportStations(env.DB, Number(updated) || 0, id || "", limit);
+    return reply(200, { stations, next: stations.length === limit ? stations.at(-1).cursor : null }, { "cache-control": "public, max-age=60" });
+  }
+
+  if (path.startsWith("/v1/admin/")) return admin(request, env, url, path, now);
 
   if (request.method === "POST" && path === "/v1/proposals") {
     const { auth, bytes, response } = await signed(request, env, now);
     if (response) return response;
     const body = parseJson(bytes);
+    if (body && body.kind === "station_add") {
+      const checked = validateStationAdd(body);
+      if (checked.error) return reply(422, { error: checked.error });
+      const id = await contributor(env.DB, auth.contributorId, auth.publicKey, now);
+      if (!id) return reply(403, { error: "contributor blocked" });
+      const result = await addStationProposal(env.DB, id, checked.value, now);
+      if (result.limited) return reply(429, { error: "daily limit reached" }, { "retry-after": "86400" });
+      return reply(result.duplicate ? 200 : 202, { id: result.id, status: result.status === "verifying" ? "pending" : result.status });
+    }
     const invalid = validateProposal(body);
     if (invalid) return reply(422, { error: invalid });
     const id = await contributor(env.DB, auth.contributorId, auth.publicKey, now);
@@ -78,7 +101,10 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
     if (response) return response;
     const id = await contributor(env.DB, auth.contributorId, auth.publicKey, now);
     if (!id) return reply(403, { error: "contributor blocked" });
-    const result = await addReport(env.DB, id, parseJson(bytes), now);
+    const body = parseJson(bytes);
+    const result = body && body.station !== undefined
+      ? await addStationReport(env.DB, id, body, now)
+      : await addReport(env.DB, id, body, now);
     if (result.limited) return reply(429, { error: "daily limit reached" }, { "retry-after": "86400" });
     if (result.error) return reply(422, { error: result.error });
     return reply(202, { id: result.id });
@@ -112,6 +138,52 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
     return reply(200, { erased: true });
   }
 
+  return reply(404, { error: "not found" });
+}
+
+/** Constant-time comparison of the admin token. */
+async function isAdmin(request, env) {
+  const expected = env.ADMIN_TOKEN;
+  const given = (request.headers.get("authorization") || "").replace(/^Bearer /, "");
+  if (typeof expected !== "string" || expected.length < 32 || !given) return false;
+  const [a, b] = await Promise.all([given, expected].map((t) => crypto.subtle.digest("SHA-256", new TextEncoder().encode(t))));
+  const x = new Uint8Array(a), y = new Uint8Array(b);
+  let diff = 0;
+  for (let i = 0; i < x.length; i += 1) diff |= x[i] ^ y[i];
+  return diff === 0;
+}
+
+/** For the stream checker and the maintainer only. */
+async function admin(request, env, url, path, now) {
+  if (!(await isAdmin(request, env))) return reply(401, { error: "unauthorized" });
+  if (request.method === "POST" && path === "/v1/admin/station-proposals/claim") {
+    return reply(200, { proposals: await claimStationProposals(env.DB, now) });
+  }
+  if (request.method === "GET" && path === "/v1/admin/station-proposals") {
+    return reply(200, { proposals: await listStationProposals(env.DB, url.searchParams.get("status") || "published") });
+  }
+  const decision = path.match(/^\/v1\/admin\/station-proposals\/(pr_[0-9a-z]{26})$/);
+  if (request.method === "POST" && decision) {
+    const bytes = await readBody(request);
+    const result = await decideStationProposal(env.DB, decision[1], bytes && parseJson(bytes), now);
+    return result.error ? reply(422, result) : reply(200, result);
+  }
+  if (request.method === "GET" && path === "/v1/admin/station-reports") {
+    return reply(200, { reports: await listStationReports(env.DB, url.searchParams.get("status") || "open") });
+  }
+  const report = path.match(/^\/v1\/admin\/station-reports\/(rp_[0-9a-z]{26})$/);
+  if (request.method === "POST" && report) {
+    const bytes = await readBody(request);
+    const result = await decideStationReport(env.DB, report[1], (bytes && parseJson(bytes) || {}).status);
+    return result.error ? reply(422, result) : reply(200, result);
+  }
+  const block = path.match(/^\/v1\/admin\/contributors\/([A-Za-z0-9_-]{16,64})\/block$/);
+  if (request.method === "POST" && block) {
+    await env.DB.prepare("UPDATE contributors SET blocked_at = ? WHERE id = ? AND blocked_at IS NULL").bind(now, block[1]).run();
+    await hideStationsOf(env.DB, block[1], now);
+    await revokeContributor(env.DB, block[1], now);
+    return reply(200, { blocked: true });
+  }
   return reply(404, { error: "not found" });
 }
 

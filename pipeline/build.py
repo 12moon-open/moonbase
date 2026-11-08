@@ -88,6 +88,8 @@ def prepare_rows(source, checks=None):
             "subdivision": (item.get("iso_3166_2") or "").strip().upper(),
             "homepage": None if homepage and stream_key(homepage) == stream_key(stream) else homepage,
             "logo": logo_url(item.get("url_favicon")),
+            "source": "radio-browser",
+            "place_name": None,
             "languages": item.get("iso_639") or "",
             "tags": item.get("tags") or "",
             "lat": item.get("geo_lat"),
@@ -95,6 +97,45 @@ def prepare_rows(source, checks=None):
         })
     rows.sort(key=lambda r: r["uuid"])
     return rows, refused
+
+
+def contribution_rows(items):
+    """Rows from stations added by installations and checked by the stream checker.
+
+    items: the public export of the contribution API. Only published stations count;
+    a withdrawn one simply has no rows any more, and its record is retired.
+    """
+    rows = []
+    for item in items:
+        if item.get("status") != "published" or not re.fullmatch(r"pr_[0-9a-z]{26}", str(item.get("id", ""))):
+            continue
+        name = clean_name(item.get("name"))
+        country = str(item.get("country") or "")
+        if not name or not re.fullmatch(r"[A-Z]{2}", country):
+            continue
+        place = item.get("place") or {}
+        homepage = web_url(item.get("homepage"))
+        for stream in item.get("streams") or []:
+            url = web_url(stream.get("url"))
+            if not url:
+                continue
+            bitrate = stream.get("bitrate_kbps")
+            rows.append({
+                "uuid": item["id"], "source": "contribution",
+                "name": name, "name_key": name_key(name),
+                "stream": url, "stream_key": stream_key(url),
+                "country": country, "subdivision": "",
+                "homepage": homepage, "logo": logo_url(item.get("logo_url")),
+                "languages": ",".join(item.get("languages") or []),
+                "tags": ",".join(item.get("tags") or []),
+                "lat": place.get("lat"), "lon": place.get("lon"), "place_name": clean_name(place.get("name")) or None,
+                "measured": "codec" in stream or "bitrate_kbps" in stream,
+                "codec": stream.get("codec") if re.fullmatch(r"[a-z0-9-]{2,16}", str(stream.get("codec", ""))) else None,
+                "bitrate": bitrate if isinstance(bitrate, int) and 0 < bitrate <= MAX_BITRATE else None,
+                "hls": stream.get("protocol") == "hls",
+            })
+    rows.sort(key=lambda r: (r["uuid"], r["stream_key"]))
+    return rows
 
 
 def _most_common(values):
@@ -153,8 +194,12 @@ def _content(rows, previous_streams):
         "status": "active",
         "name": name,
         "streams": _streams(rows, previous_streams),
-        "ids": {"radio_browser": sorted(r["uuid"] for r in rows)},
+        "ids": {},
     }
+    for source, key in (("radio-browser", "radio_browser"), ("contribution", "contributions")):
+        uuids = sorted({r["uuid"] for r in rows if r["source"] == source})
+        if uuids:
+            record["ids"][key] = uuids
     others = sorted({r["name"] for r in rows if r["name_key"] != name_key(name)})
     if others:
         record["alt_names"] = [{"name": n} for n in others]
@@ -168,9 +213,13 @@ def _content(rows, previous_streams):
             record["subdivision"] = subdivision
     for row in rows:
         lat, lon = row["lat"], row["lon"]
-        if isinstance(lat, float) and isinstance(lon, float) and abs(lat) <= 90 and abs(lon) <= 180:
-            record["place"] = {"lat": lat, "lon": lon, "scope": "reported"}
+        if isinstance(lat, (int, float)) and isinstance(lon, (int, float)) and abs(lat) <= 90 and abs(lon) <= 180 \
+                and not isinstance(lat, bool) and (lat, lon) != (0, 0):
+            record["place"] = {"lat": float(lat), "lon": float(lon), "scope": "reported"}
             break
+    place_name = _most_common(r["place_name"] for r in rows)
+    if place_name:
+        record.setdefault("place", {"scope": "reported"})["name"] = place_name
     languages = sorted({
         code.strip().lower() for r in rows for code in r["languages"].split(",")
         if re.fullmatch(r"[a-z]{2,3}", code.strip().lower())
@@ -204,9 +253,17 @@ def load_previous(out):
     return stations, read_ndjson(out / "v1" / "redirects.ndjson")
 
 
+def _sources(rows, before, date):
+    """One entry per source of the rows, keeping the first date each was seen."""
+    seen = {s["source"]: s["retrieved_at"] for s in (before or {}).get("sources", [])}
+    return [{"source": source, "retrieved_at": seen.get(source, date)}
+            for source in sorted({r["source"] for r in rows})]
+
+
 def merge(groups, previous, redirects, as_of):
     date, stamp = as_of[:10], as_of
-    id_by_uuid = {u: s["id"] for s in previous.values() for u in s.get("ids", {}).get("radio_browser", [])}
+    id_by_uuid = {u: s["id"] for s in previous.values()
+                  for key in ("radio_browser", "contributions") for u in s.get("ids", {}).get(key, [])}
     previous_streams = {stream_key(m["url"]): m for s in previous.values() for m in s["streams"]}
     stations, seen, new_redirects = {}, set(), list(redirects)
     # Ids never reused: those in service, those of the previous build and old redirects.
@@ -223,14 +280,15 @@ def merge(groups, previous, redirects, as_of):
             new_redirects.append({"from": old, "to": station_id, "at": date})
         content = _content(rows, previous_streams)
         before = previous.get(station_id)
-        if before and all(before.get(k) == v for k, v in content.items()) and set(before) - {"id", "rev", "sources", "updated_at"} == set(content):
+        if before and all(before.get(k) == v for k, v in content.items()) and set(before) - {"id", "rev", "sources", "updated_at"} == set(content) \
+                and [x["source"] for x in before["sources"]] == sorted({r["source"] for r in rows}):
             stations[station_id] = before
         else:
             stations[station_id] = {
                 "id": station_id,
                 "rev": before["rev"] + 1 if before else 1,
                 **content,
-                "sources": before["sources"] if before else [{"source": "radio-browser", "retrieved_at": date}],
+                "sources": _sources(rows, before, date),
                 "updated_at": stamp,
             }
     moved = {r["from"]: r["to"] for r in new_redirects}
@@ -327,8 +385,9 @@ def write(stations, redirects, out, dist, as_of, build_date=None):
     return manifest
 
 
-def build(source, out, dist, as_of, checks=None, build_date=None):
+def build(source, out, dist, as_of, checks=None, build_date=None, contributions=()):
     rows, refused = prepare_rows(source, checks)
+    rows += contribution_rows(contributions)
     previous, redirects = load_previous(out)
     stations, redirects = merge(group_rows(rows), previous, redirects, as_of)
     check(stations, previous, len(source))
@@ -361,6 +420,7 @@ def main():
     parser.add_argument("--out", required=True, type=Path, help="data repository")
     parser.add_argument("--dist", required=True, type=Path, help="directory to deploy")
     parser.add_argument("--checks", type=Path, help="Radio Browser checker measures (.json.gz), optional")
+    parser.add_argument("--contributions", type=Path, help="stations added by installations (.json), optional")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
         source = json.load(handle)
@@ -370,7 +430,8 @@ def main():
             checks = read_checks(json.load(handle))
     try:
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today)
+        contributions = json.loads(args.contributions.read_text(encoding="utf-8")) if args.contributions else ()
+        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

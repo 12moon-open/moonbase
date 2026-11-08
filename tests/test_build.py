@@ -200,6 +200,34 @@ class Build(unittest.TestCase):
         self.assertEqual(after["streams"], before["streams"])
         self.assertEqual(after["rev"], before["rev"])
 
+    def contribution(self, status="published", stream="https://stream.example.fr/live.mp3", pid="pr_" + "a" * 26):
+        return {"id": pid, "status": status, "name": "Radio Exemple", "country": "FR",
+                "place": {"name": "Bordeaux", "lat": 44.8378, "lon": -0.5792}, "tags": ["jazz"],
+                "streams": [{"url": stream, "protocol": "http", "codec": "mp3", "bitrate_kbps": 128}]}
+
+    def test_published_contribution_becomes_a_station(self):
+        b.build(FIP + filler(), self.out, self.dist, AS_OF, None, None, [self.contribution()])
+        [station] = self.named("Radio Exemple")
+        self.assertEqual([x["source"] for x in station["sources"]], ["contribution"])
+        self.assertEqual(station["ids"], {"contributions": ["pr_" + "a" * 26]})
+        self.assertEqual(station["place"], {"name": "Bordeaux", "lat": 44.8378, "lon": -0.5792, "scope": "reported"})
+        self.assertEqual(station["streams"][0]["codec"], "mp3")
+        self.assertEqual(station["tags"], ["jazz"])
+
+    def test_contribution_of_a_known_stream_joins_the_station(self):
+        known = self.contribution(stream="https://icecast.radiofrance.fr/fip-hifi.aac")
+        known["name"] = "FIP"
+        b.build(FIP + filler(), self.out, self.dist, AS_OF, None, None, [known])
+        [fip] = self.named("FIP")
+        self.assertEqual([x["source"] for x in fip["sources"]], ["contribution", "radio-browser"])
+        self.assertIn("contributions", fip["ids"])
+
+    def test_withdrawn_contribution_is_retired(self):
+        b.build(FIP + filler(), self.out, self.dist, AS_OF, None, None, [self.contribution()])
+        b.build(FIP + filler(), self.out, self.dist, LATER, None, None, [self.contribution(status="withdrawn")])
+        [station] = self.named("Radio Exemple")
+        self.assertEqual(station["status"], "retired")
+
     def version(self):
         return json.loads((self.dist / "v1" / "manifest.json").read_text())["dataset_version"]
 
@@ -232,10 +260,31 @@ class Build(unittest.TestCase):
         self.run_build(FIP + filler())
         path = next((self.out / "v1" / "stations").glob("FR.ndjson"))
         records = [json.loads(l) for l in path.read_text().splitlines()]
-        records[0]["sources"] = [{"source": "elsewhere", "retrieved_at": "2026-11-06"}]
+        groove = next(r for r in records if r["name"] == "FIP Groove")
+        groove["sources"] = [{"source": "elsewhere", "retrieved_at": "2026-11-06"}]
         path.write_text("".join(json.dumps(r) + "\n" for r in records))
+        # FIP Groove leaves the source: its record is kept as retired, with its sources.
         with self.assertRaises(b.Refused):
-            self.run_build(FIP + filler(), LATER)
+            self.run_build(FIP[:3] + filler(), LATER)
+
+
+class FetchContributions(unittest.TestCase):
+    def test_reads_every_page_and_keeps_the_latest_state(self):
+        from pipeline.fetch_contributions import fetch_all
+        pages = {
+            "": {"stations": [{"id": "pr_b", "status": "published"}, {"id": "pr_a", "status": "published"}], "next": "5.pr_a"},
+            "5.pr_a": {"stations": [{"id": "pr_b", "status": "withdrawn"}], "next": None},
+        }
+        seen = []
+
+        def get(url):
+            seen.append(url)
+            after = url.split("after=")[1].replace("%2E", ".") if "after=" in url else ""
+            return pages[after]
+
+        items = fetch_all("https://api.example.org", get)
+        self.assertEqual(items, [{"id": "pr_a", "status": "published"}, {"id": "pr_b", "status": "withdrawn"}])
+        self.assertEqual(len(seen), 2)
 
 
 class Fetch(unittest.TestCase):

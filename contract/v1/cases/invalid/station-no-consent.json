@@ -1,0 +1,1 @@
+{ "description": "Consent to CC0 is required", "schema": "station-proposal", "input": { "kind": "station_add", "name": "Radio Exemple", "country": "FR", "streams": [{ "url": "https://stream.example.fr/live.mp3" }] } }

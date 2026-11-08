@@ -1,0 +1,11 @@
+{
+  "description": "A station added from an installation",
+  "schema": "station-proposal",
+  "input": {
+    "kind": "station_add", "name": "Radio Exemple", "country": "FR",
+    "streams": [{ "url": "https://stream.example.fr/live.mp3" }],
+    "homepage": "https://www.example.fr/", "logo_url": "https://www.example.fr/logo.png",
+    "place": { "name": "Bordeaux", "lat": 44.8378, "lon": -0.5792 },
+    "languages": ["fr"], "tags": ["jazz"], "consent": "CC0-1.0"
+  }
+}

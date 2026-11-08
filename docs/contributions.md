@@ -1,10 +1,10 @@
 # Contributions
 
-Status: written and tested, **not deployed**. The planned address is `api.12moon.app`.
+Status: written and tested, **not deployed yet**. The planned address is `api.12moon.app`.
 
-## Links only
+## Links
 
-An anonymous installation can only propose a **link between identifiers**. It cannot add or edit metadata: no titles, no names, no free text, no URLs. Anything that belongs in MusicBrainz goes to MusicBrainz, through its own editors.
+For music, an anonymous installation can only propose a **link between identifiers**. It cannot add or edit music metadata. Anything that belongs in MusicBrainz goes to MusicBrainz, through its own editors. Stations, below, are the one exception: they are this project's own data.
 
 The first and only kind of link today is `release_match`: "an album whose track durations are these is this MusicBrainz release". It lets other installations recognise the same album without asking anyone.
 
@@ -38,15 +38,42 @@ Signed text, one field per line: `v1`, method, path, Unix timestamp, nonce, hex 
 
 | Method and path | Use |
 |---|---|
-| `POST /v1/proposals` | Signed. Propose a link. `202` queued, `200` already proposed |
+| `POST /v1/proposals` | Signed. Propose a link or a station. `202` queued, `200` already proposed |
 | `GET /v1/proposals/{id}` | Status: `pending`, `accepted`, `rejected`, `revoked` |
-| `POST /v1/reports` | Signed. Report a published link: `wrong_match`, `duplicate`, `other` |
+| `POST /v1/reports` | Signed. Report a published link (`wrong_match`, `duplicate`, `other`) or a station |
 | `DELETE /v1/contributors/me` | Signed. Erase this installation |
 | `GET /v1/links/release-matches?after=` | Public export of published and retracted links |
 | `POST /v1/measures` | Signed. One week of stream measures. `202` accepted, `409` week already reported |
 | `GET /v1/measures/streams?after=` | Public stream scores |
+| `GET /v1/contributions/stations?after=` | Public export of added stations |
+| `/v1/admin/…` | Stream checker and maintainer only, with a secret token |
 
 Limits: 200 proposals and 20 reports per installation per day, 16 KiB per request.
+
+## Stations
+
+An installation can add a station that the data does not have yet. It is published only after each of its streams has been checked.
+
+```json
+{ "kind": "station_add", "name": "Radio Exemple", "country": "FR",
+  "streams": [{ "url": "https://stream.example.fr/live.mp3" }],
+  "homepage": "https://www.example.fr/", "logo_url": "https://www.example.fr/logo.png",
+  "place": { "name": "Bordeaux", "lat": 44.8378, "lon": -0.5792 },
+  "languages": ["fr"], "tags": ["jazz"], "consent": "CC0-1.0" }
+```
+
+See [`station-proposal.schema.json`](../contract/v1/schemas/station-proposal.schema.json).
+
+- **Consent.** `consent: "CC0-1.0"` states that the person accepted to place these facts in the public domain. The app shows the text before the first proposal.
+- **Little free text.** Only the name and the place name, without addresses, e-mails or phone numbers. Tags come from a closed list, [`tags.json`](../contract/v1/tags.json). Coordinates are those of the station or its town, never of the device.
+- **Addresses.** Public hosts only, no credentials, tracking parameters removed.
+- **Checked before publication.** The stream checker plays a few seconds of each stream. A stream already published makes the proposal a `duplicate` of that station. Otherwise the station is `published` with the streams that play, measured codec and bitrate included, or `rejected` with a reason: `stream_unreachable`, `not_audio`, `private_address`.
+- **Published by the daily build**, under the source `contribution`, in `ids.contributions`. The usual grouping rules apply.
+- **Limits.** 10 stations per installation per day, 5 streams per station.
+- **Reports.** `POST /v1/reports` with `{ "station": "st_…", "reason": "…" }`. Reasons: `dead_stream`, `wrong_info`, `inappropriate`, `not_a_station`, `duplicate`, `other`.
+- **Withdrawal.** Blocking a contributor withdraws every station it added. The public export lists them as `withdrawn`, and the next build retires them.
+
+`GET /v1/contributions/stations?after=` is the public export read by the build: published and withdrawn stations, never who proposed them.
 
 ## Stream measures
 

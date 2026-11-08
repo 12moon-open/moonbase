@@ -1,0 +1,1 @@
+{ "description": "Coordinates go together", "schema": "station-proposal", "input": { "kind": "station_add", "name": "Radio Exemple", "country": "FR", "streams": [{ "url": "https://stream.example.fr/live.mp3" }], "place": { "lat": 44.8 }, "consent": "CC0-1.0" } }
