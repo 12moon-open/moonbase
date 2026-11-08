@@ -228,6 +228,17 @@ class Build(unittest.TestCase):
         [station] = self.named("Radio Exemple")
         self.assertEqual(station["status"], "retired")
 
+    def test_confirmed_pair_is_merged_with_a_redirect(self):
+        rows = FIP + [row("z1", "Radio Zed", "https://a.example.org/alpha"), row("z2", "Radio Zed", "https://b.example.net/beta")] + filler()
+        self.run_build(rows)
+        ids = sorted(s["id"] for s in self.named("Radio Zed"))
+        self.assertEqual(len(ids), 2)
+        b.build(rows, self.out, self.dist, LATER, None, None, (), [ids])
+        active = [s for s in self.named("Radio Zed") if s["status"] == "active"]
+        self.assertEqual(len(active), 1)
+        self.assertEqual(len(active[0]["streams"]), 2)
+        self.assertEqual(len(b.load_previous(self.out)[1]), 1)
+
     def version(self):
         return json.loads((self.dist / "v1" / "manifest.json").read_text())["dataset_version"]
 

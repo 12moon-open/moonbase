@@ -1,0 +1,4 @@
+{
+  "description": "Pairs of station ids confirmed as one station by the audio fingerprint check, then reviewed by the maintainer. The daily build merges them and leaves a redirect.",
+  "same": []
+}

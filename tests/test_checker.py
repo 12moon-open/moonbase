@@ -193,3 +193,49 @@ class Queue(unittest.TestCase):
     def test_a_local_resolver_problem_retries_later(self):
         decision = self.queue.decide(self.proposal("https://a.example.org/x"), {}, lambda url: {"ok": False, "error": "dns_resolver"})
         self.assertEqual(decision, {"status": "pending"})
+
+
+class Fingerprint(unittest.TestCase):
+    def setUp(self):
+        import random
+        from checker import fingerprint as f
+        self.f = f
+        rng = random.Random(7)
+        self.sound = [rng.getrandbits(32) for _ in range(900)]
+        self.other = [rng.getrandbits(32) for _ in range(900)]
+
+    def test_same_sound_with_a_delay_matches(self):
+        a = self.sound[100:600]
+        b = self.sound[300:800]  # About 25 s later.
+        self.assertGreater(self.f.similarity(a, b), 0.99)
+
+    def test_different_sound_does_not_match(self):
+        self.assertLess(self.f.similarity(self.sound[:500], self.other[:500]), self.f.SAME_SOUND)
+
+    def test_noise_on_the_same_sound_still_matches(self):
+        import random
+        rng = random.Random(3)
+        noisy = [x ^ (1 << rng.randrange(32)) ^ (1 << rng.randrange(32)) for x in self.sound[:500]]
+        self.assertGreater(self.f.similarity(self.sound[:500], noisy), 0.9)
+
+    def test_verdicts_need_three_rounds_at_different_hours(self):
+        from datetime import datetime, timezone
+        r = lambda at, same: {"at": at, "same": same}
+        self.assertEqual(self.f.verdict([r("2026-11-08T02:00+00:00", True)] * 2), "pending")
+        self.assertEqual(self.f.verdict([r("x", True)] * 3), "same")
+        self.assertEqual(self.f.verdict([r("x", True), r("x", False), r("x", True)]), "shared")
+        self.assertEqual(self.f.verdict([r("x", False)] * 3), "different")
+        rounds = [r("2026-11-08T02:00+00:00", True)]
+        self.assertFalse(self.f.due(rounds, datetime(2026, 11, 8, 20, tzinfo=timezone.utc)))  # same day
+        self.assertFalse(self.f.due(rounds, datetime(2026, 11, 9, 3, tzinfo=timezone.utc)))  # same hours
+        self.assertTrue(self.f.due(rounds, datetime(2026, 11, 9, 14, tzinfo=timezone.utc)))
+
+    def test_compare_uses_both_captures(self):
+        pair = (("st_a", "https://a.example.org/x"), ("st_b", "https://b.example.org/y"))
+        prints = {b"A": self.sound[:500], b"B": self.sound[50:550], b"C": self.other[:500], b"": []}
+        audio = {"https://a.example.org/x": b"A", "https://b.example.org/y": b"B"}
+        self.assertTrue(self.f.compare(pair, audio.get, prints.get))
+        audio["https://b.example.org/y"] = b"C"
+        self.assertFalse(self.f.compare(pair, audio.get, prints.get))
+        audio["https://b.example.org/y"] = b""
+        self.assertIsNone(self.f.compare(pair, audio.get, prints.get))

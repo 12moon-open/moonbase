@@ -38,10 +38,14 @@ FIELDS = ("codec", "profile", "sample_rate", "channels", "bitrate_kbps", "contai
 
 
 def load_streams(data):
+    """Active streams from v1/stations, as .ndjson (the data repository) or .ndjson.gz (the served files)."""
     streams = []
-    for path in sorted((data / "v1" / "stations").glob("*.ndjson")):
-        shard = path.stem
-        for line in path.open(encoding="utf-8"):
+    folder = data / "v1" / "stations"
+    paths = sorted(folder.glob("*.ndjson")) or sorted(folder.glob("*.ndjson.gz"))
+    for path in paths:
+        shard = path.name.split(".")[0]
+        opener = gzip.open if path.suffix == ".gz" else open
+        for line in opener(path, "rt", encoding="utf-8"):
             station = json.loads(line)
             if station["status"] != "active":
                 continue

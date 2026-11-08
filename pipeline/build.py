@@ -6,7 +6,7 @@ import hashlib
 import json
 import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -260,6 +260,38 @@ def _sources(rows, before, date):
             for source in sorted({r["source"] for r in rows})]
 
 
+def join_same(groups, previous, pairs):
+    """Joins the groups of two stations the maintainer confirmed as the same (audio fingerprint).
+
+    pairs: [[st_a, st_b], ...]. A pair whose ids are unknown or retired does nothing.
+    """
+    owner = {}
+    id_of_uuid = {u: s["id"] for s in previous.values()
+                  for key in ("radio_browser", "contributions") for u in s.get("ids", {}).get(key, [])}
+    for index, rows in enumerate(groups):
+        for row in rows:
+            station = id_of_uuid.get(row["uuid"])
+            if station:
+                owner.setdefault(station, index)
+    parent = list(range(len(groups)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    for a, b in pairs:
+        if a in owner and b in owner:
+            x, y = find(owner[a]), find(owner[b])
+            if x != y:
+                parent[max(x, y)] = min(x, y)
+    joined = defaultdict(list)
+    for index, rows in enumerate(groups):
+        joined[find(index)].extend(rows)
+    return list(joined.values())
+
+
 def merge(groups, previous, redirects, as_of):
     date, stamp = as_of[:10], as_of
     id_by_uuid = {u: s["id"] for s in previous.values()
@@ -385,11 +417,11 @@ def write(stations, redirects, out, dist, as_of, build_date=None):
     return manifest
 
 
-def build(source, out, dist, as_of, checks=None, build_date=None, contributions=()):
+def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=()):
     rows, refused = prepare_rows(source, checks)
     rows += contribution_rows(contributions)
     previous, redirects = load_previous(out)
-    stations, redirects = merge(group_rows(rows), previous, redirects, as_of)
+    stations, redirects = merge(join_same(group_rows(rows), previous, same), previous, redirects, as_of)
     check(stations, previous, len(source))
     manifest = write(stations, redirects, out, dist, as_of, build_date)
     return {
@@ -421,6 +453,7 @@ def main():
     parser.add_argument("--dist", required=True, type=Path, help="directory to deploy")
     parser.add_argument("--checks", type=Path, help="Radio Browser checker measures (.json.gz), optional")
     parser.add_argument("--contributions", type=Path, help="stations added by installations (.json), optional")
+    parser.add_argument("--same-stations", type=Path, help="pairs of station ids confirmed as one station (.json)")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
         source = json.load(handle)
@@ -431,7 +464,8 @@ def main():
     try:
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         contributions = json.loads(args.contributions.read_text(encoding="utf-8")) if args.contributions else ()
-        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions)
+        same = json.loads(args.same_stations.read_text(encoding="utf-8"))["same"] if args.same_stations else ()
+        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))
