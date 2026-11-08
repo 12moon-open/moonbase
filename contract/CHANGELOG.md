@@ -6,7 +6,7 @@ Additions only. A 1.0 client keeps working: it ignores the new dataset.
 
 - Now-playing adapters: `now-playing-adapter`, `now-playing-template` and `now-playing-proposal` schemas, format `12moon.now_playing/1`. Strict: an unknown field invalidates an adapter.
 - Shared executor cases in `cases/now-playing/`: an adapter, a recorded response, a time, and the expected result. Every executor (the API's, the clients') must give the same results.
-- First service template, `now-playing/templates/creek.current-1.json`, with status `needs_permission`: it is not published until the service agrees.
+- First service template, `now-playing/templates/creek.current-1.json`: the public data behind Creek's playlist widget (`terms.basis: public_page`).
 - A future manifest dataset `now_playing` with `now-playing/adapters.ndjson.gz`, `now-playing/templates.ndjson.gz` and `now-playing/blocked-hosts.ndjson.gz`.
 
 ## 1.0.0 (unreleased)

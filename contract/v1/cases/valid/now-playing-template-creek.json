@@ -4,7 +4,12 @@
   "input": {
     "format": "12moon.now_playing_template/1",
     "id": "creek.current/1",
-    "status": "needs_permission",
+    "status": "active",
+    "terms": {
+      "robots_txt": "https://studio.creek.org/robots.txt",
+      "checked_at": "2026-11-08",
+      "basis": "public_page"
+    },
     "params": {
       "studio": {
         "pattern": "^[a-z0-9-]{1,40}$"

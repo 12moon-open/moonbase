@@ -24,4 +24,4 @@ Regular expressions are at most 200 characters, with no lookaround and no back-r
 
 Adapters are proposed with `kind: "now_playing_adapter"` (signed, CC0, counters only in `checks`). 12moon checks the hosts, `robots.txt` and runs the adapter twice before publishing it in the `now_playing` dataset. A daily run marks a failing adapter `broken`, then `revoked` after 30 days. A station's request, a disallowing `robots.txt` or the maintainer revoke it at once, and its host joins the blocked list.
 
-A service template is published only once the service's terms allow it, or the service agreed. Until then its status is `needs_permission`.
+A service template is published once the maintainer has reviewed the service's terms and robots.txt; until then its status is `needs_permission`. Its `terms.basis` says on what ground: `public_api` for a documented API, `public_page` for data the station already shows publicly through the service, `station_permission` or `provider_permission` for a written agreement. Only the title playing now is read, at most once a minute per listening server, and nothing is stored or republished.
