@@ -37,6 +37,11 @@ Schemas: [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.sche
 - **Cache.** Respect `Cache-Control: max-age`, but never wait longer than `poll.interval_s`: some services announce a cache of a month on what changes every few minutes.
 - **Reservations.** Some sites state in their robots.txt a reservation of text and data mining (EU directive 2019/790, art. 4). Reading the title playing now to show it to a listener is not mining, so such a reservation does not stop an adapter; a robots.txt `Disallow` does.
 
+## Since 1.4
+
+- **Nested items.** `extract.subitems` turns each item kept after `match` into the elements of a list inside it: a group's file lists every webradio, and each one its playlist.
+- **First not ended.** `pick: "first_not_ended"` takes the first item whose `ended_at` (plus the grace) is not past, so a song change does not show `ended` while the next song is already listed.
+
 ## Rules that do not change
 
 - **robots.txt applies to what 12moon writes itself** (`terms.basis` `public_api` or `public_page`), documented API or not.

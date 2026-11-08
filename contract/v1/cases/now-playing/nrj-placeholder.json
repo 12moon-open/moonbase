@@ -1,0 +1,20 @@
+{
+  "description": "NRJ Group: the placeholder song names the station",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_eeeeeeeeeeeeeeeeeeeeeeeeee",
+    "template": "nrj.livemeta/1",
+    "params": {
+      "site": "www.nostalgie.fr",
+      "id": "197"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "[{\"id\": 197, \"name\": \"NOSTALGIE\", \"playlist\": [{\"song\": {\"id\": 99999999999999, \"title\": \"Nostalgie, example claim\", \"artist\": \"Nostalgie\", \"img_url\": \"\"}, \"end_timestamp\": 1794127581}]}]"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "ignored"
+  }
+}

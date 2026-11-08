@@ -1,0 +1,20 @@
+{
+  "description": "NRJ Group: every song of the list has ended",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_dddddddddddddddddddddddddd",
+    "template": "nrj.livemeta/1",
+    "params": {
+      "site": "www.nrj.fr",
+      "id": "1268"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "[{\"id\": \"1268\", \"name\": \"NRJ ELECTRO\", \"playlist\": [{\"song\": {\"id\": 2, \"title\": \"Example Song\", \"artist\": \"Example Artist\", \"img_url\": \"\"}, \"end_timestamp\": 1794127400}, {\"song\": {\"id\": 3, \"title\": \"Next Song\", \"artist\": \"Next Artist\", \"img_url\": \"\"}, \"end_timestamp\": 1794127800}]}]"
+  },
+  "now": "2026-11-08T09:00:00Z",
+  "expected": {
+    "status": "ended"
+  }
+}

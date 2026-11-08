@@ -438,6 +438,10 @@ export function run(adapter, response, nowText, stationName = "") {
       });
     }
   }
+  if (ex.subitems && mode === "json") {
+    // 1.4: the items kept become the elements of their list (a station's playlist).
+    items = items.flatMap((item) => jsonSelect(item, ex.subitems)).filter((i) => i && typeof i === "object");
+  }
   const read = (item) => {
     const out = {};
     for (const [name, spec] of Object.entries(ex.fields)) {
@@ -449,7 +453,11 @@ export function run(adapter, response, nowText, stationName = "") {
   const rows = items.map(read).filter((r) => r.artist && r.title);
   if (!rows.length) throw new AdapterError("no_item");
   let row;
-  if (ex.pick === "first") row = rows[0];
+  const grace = (adapter.freshness.grace_after_end_s || 0) * 1000;
+  if (ex.pick === "first_not_ended") {
+    row = rows.find((r) => typeof r.ended_at !== "number" || now <= r.ended_at + grace);
+    if (!row) return { status: "ended" };
+  } else if (ex.pick === "first") row = rows[0];
   else if (ex.pick === "last") row = rows.at(-1);
   else {
     const dated = rows.filter((r) => typeof r.started_at === "number");

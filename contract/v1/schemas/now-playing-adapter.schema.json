@@ -509,8 +509,10 @@
           "enum": [
             "first",
             "last",
-            "latest_started"
-          ]
+            "latest_started",
+            "first_not_ended"
+          ],
+          "description": "1.4 adds first_not_ended: the first item whose ended_at, plus grace_after_end_s, is not past."
         },
         "match": {
           "$ref": "#/$defs/match"
@@ -518,6 +520,12 @@
         "wrap_single": {
           "description": "1.2. When the list at items ([*]) is a single object instead of an array, read it as the only item.",
           "type": "boolean"
+        },
+        "subitems": {
+          "description": "1.4. JSONPath read in each item kept after match: its elements become the items (a station's playlist).",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
         }
       }
     },

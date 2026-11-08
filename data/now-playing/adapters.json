@@ -1,0 +1,1093 @@
+{
+ "description": "Now-playing adapters waiting for the now_playing dataset. Published after review; stations never named their maker.",
+ "adapters": [
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_2xnkgyebcvfu3lcgqehwbda7tu",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "35"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_3itamnoloawyafxo4mddf7vfg4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2158"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_3levhogonna2jqsfoul2kju5rd",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2071"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_3pipqs7nefttq437kogiuojndt",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1996"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_3t42fltzwuazaezopyrouqnsbz",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "824"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_46rrwmlfcuy3mhbbbol7gzhx2v",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1283"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4au2res3lgim2sof7kdwy2phcb",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1911"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4mhbvvatdo3ut2podjf75tqvrz",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2324"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4muhkkd53mogymbxipzpsxu5yk",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1162"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_57wc3jmgvywkbifsgl4552yahw",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "34"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_63fharhiqaw33rfmolqfwsq4au",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2323"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_6ow6vod6g3yd5bkapht5jeg2xj",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1282"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_73vlwtxhutjtxoyqdlgqhkkua3",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "217"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_7bpd3sjb254xhnn6p53ec7gdck",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "342"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_7dlhpbhut4z6d2kmtfmolp3hrh",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "32"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_7p7hitc5ubzxsylcdnzzmxzyik",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1640"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_alse4mry32k2ueupsdbqjrhq24",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1565"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_amdlywps6joegs6llzfgwxq3nv",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1599"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_asrwr2hmykzymhxlwnjaafdnzv",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1489"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_avwszhzm2ih3gk7b5l67siu6jc",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2284"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_bjscozzmycjzksog3dtouaxvxz",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2022"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_bqcoy54go7t5zhwb3oh3ywwckh",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "298"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_bs2fzghxcenvp5bvd7tzrukrd4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2291"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_cq3abpb4sc67cm6n4a36uukk2k",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2304"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_cx7f7joyrt3dg7en7secspjhrq",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1464"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_dbgmia2lsgq45bobxzxpcjynro",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "9"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_dz7fbenohvwsf4jryhxycuthht",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2187"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_fp5o7y46vnpfpbmrk4ahud5eg6",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1954"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_gdbuk4mynxnptyjv56rill6ckf",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "33"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ggkjgctbny6h5qf2npdlpkkmq3",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1971"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_gkepnkwgdcaie3wycfl3w2dryr",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "298"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_hb7mtjg3jglud6uflipsarfdzk",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "713"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_hsdfp73kvviytj6nm4amj3xbom",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "197"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_hveiv3usfzvik6ihzclkoe2v5v",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1771"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_hyasiolicbfrfnie33mjeeg6c4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "217"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_icusoqvnbtzuelnr34z34gylsh",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "15"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_j7mo42ggvyfrba6726zri4ivch",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1623"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_jgmzpptto3dquenp3sjzq7c2u5",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1607"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_jo5m3273eligr7ybz7abirlcza",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1230"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_jvlh4m7vd5zwcjmedadl5pdfau",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "821"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_klxxaobdwbe3kfdky2jnn34jru",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2303"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_kuea47qgnnp7vi2mxw6b7rn2d2",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2006"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_mwq24hqxtdsdqb3uwbuk7hz77x",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1081"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_nrcwu3vzmudvzg7cs4yhifdmm5",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2170"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_omcrrq76sffusip5i64yl37nic",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "33"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_owssquvayi475xxtw4koj4akdr",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1925"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_q54otdx4a37pj5kkf3ecazwekn",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2045"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_roptia36cfan76lcoig5q6i47h",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1397"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_rsca5anv5jclwfackhsiz2flp7",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "156"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_sgxf2maaptsies77ssqavbcdwn",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2179"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_sj2bxato7hze223y5xwqz4k3zx",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "886"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ti6uliotdc7kewriv3egqlwr2a",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "197"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_tkwmiasf7rxfoeijwdasd66yv7",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "216"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_u5cbdyaknlahmpmwke45htwti7",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1662"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_vbaxhta5z3n5vvpr3xeugsrv56",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "197"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_vcr3fcd45wkwixinq6h33qmsno",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1687"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_xlmydg5x5ao2tug27y3ax7dl2z",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2400"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_xseqjzvgmvljyyowz22kajroru",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "1393"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_xw6afzolapsm7htagsxcinvlkn",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "840"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_xwt5hq6ox74pypnl4gpy5n7iqo",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "106"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_y6fjnv2vfz5onslf46dbnxvfpl",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "197"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ycomwpyewmjzr4awx6yqoe572m",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "825"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_yzimz4e3jjpusld7ftcn4i3lb2",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "14"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_yzlxymqfbuw4xhd5fr2fczt3li",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "10"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_zgrgbi4oeuomz44s7dai4p3k3g",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2058"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_zig3ygyuzwzrgc3qk5urqqb6hd",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nostalgie.fr",
+    "id": "2270"
+   },
+   "terms": {
+    "robots_txt": "https://www.nostalgie.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_2iv52actp5ylylqtcuvbxoufui",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1268"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_m7dcizxmeksnffswx3ly67dj6z",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "158"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  }
+ ]
+}

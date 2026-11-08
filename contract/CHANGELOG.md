@@ -1,5 +1,13 @@
 # Contract changelog
 
+## 1.4.0 (2026-11-08)
+
+Additions only, for now-playing adapters.
+
+- `extract.subitems`: a JSONPath read in each item kept after `match`; its elements become the items (a station's playlist inside a list of stations).
+- `pick: "first_not_ended"`: the first item whose `ended_at` plus `grace_after_end_s` is not past; when every one has ended, `ended`.
+- Template `nrj.livemeta/1` (NRJ and Nostalgie, `terms.basis: user_created`, `terms.robots: disallowed`), a connector made by a user and reviewed by the maintainer, with 4 more shared cases.
+
 ## 1.3.1 (2026-11-08)
 
 - `terms.basis: "user_created"` for a connector made by a user and shared, and `terms.robots` (`allowed`, `disallowed`, `absent`) recording what robots.txt said. For a user-created connector, robots.txt is read and recorded but does not stop it; the other safeguards stay.

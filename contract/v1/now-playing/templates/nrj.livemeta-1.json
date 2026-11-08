@@ -1,0 +1,64 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "nrj.livemeta/1",
+  "status": "active",
+  "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+  },
+  "params": {
+    "site": {
+      "pattern": "^www\\.(?:nrj|nostalgie)\\.fr$"
+    },
+    "id": {
+      "pattern": "^[0-9]{1,6}$"
+    }
+  },
+  "request": {
+    "url": "https://{site}/onair.json",
+    "hosts": [
+      "{site}"
+    ],
+    "expect": "json"
+  },
+  "extract": {
+    "items": "$[*]",
+    "match": {
+      "path": "$.id",
+      "equals": "{id}"
+    },
+    "subitems": "$.playlist[*]",
+    "pick": "first_not_ended",
+    "fields": {
+      "artist": {
+        "path": "$.song.artist"
+      },
+      "title": {
+        "path": "$.song.title"
+      },
+      "ended_at": {
+        "path": "$.end_timestamp",
+        "time": "unix_s"
+      }
+    }
+  },
+  "ignore": {
+    "patterns": [
+      "^(?:nrj|nostalgie|ch[ée]rie fm|rire (?:&|et) chansons)(?: [^-]{0,40})? - "
+    ]
+  },
+  "freshness": {
+    "max_age_s": 900,
+    "grace_after_end_s": 0
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 60
+  },
+  "limits": {
+    "max_bytes": 1048576,
+    "timeout_ms": 8000
+  }
+}

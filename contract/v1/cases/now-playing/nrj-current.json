@@ -1,0 +1,23 @@
+{
+  "description": "NRJ Group: the station is chosen by its id, its current song read",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_dddddddddddddddddddddddddd",
+    "template": "nrj.livemeta/1",
+    "params": {
+      "site": "www.nrj.fr",
+      "id": "1268"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "[{\"id\": \"158\", \"name\": \"NRJ\", \"url_128k_mp3\": \"https://streaming.nrjaudio.fm/aaaaaaaaaaaa\", \"playlist\": [{\"song\": {\"id\": 1, \"title\": \"Other Song\", \"artist\": \"Other Artist\", \"img_url\": \"https://players.nrjaudio.fm/live-metadata/player/img/600x/x.jpg\"}, \"end_timestamp\": 1794127600}]}, {\"id\": \"1268\", \"name\": \"NRJ ELECTRO\", \"url_128k_mp3\": \"https://streaming.nrjaudio.fm/bbbbbbbbbbbb\", \"playlist\": [{\"song\": {\"id\": 2, \"title\": \"Example Song\", \"artist\": \"Example Artist\", \"img_url\": \"https://players.nrjaudio.fm/live-metadata/player/img/600x/y.jpg\"}, \"end_timestamp\": 1794127581.0}, {\"song\": {\"id\": 3, \"title\": \"Next Song\", \"artist\": \"Next Artist\", \"img_url\": \"\"}, \"end_timestamp\": 1794127800}]}]"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "ended_at": "2026-11-08T08:46:21Z"
+  }
+}
