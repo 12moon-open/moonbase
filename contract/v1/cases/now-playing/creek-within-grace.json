@@ -1,0 +1,28 @@
+{
+  "description": "Creek template: just after the end, within the grace period, still current",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "template": "creek.current/1",
+    "params": {
+      "studio": "kxmp",
+      "studio_id": "42"
+    },
+    "ignore": {
+      "equals_station_name": true
+    }
+  },
+  "station_name": "KXMP 88.1",
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"timestamp\": \"2026-11-08T08:39:38Z\", \"show\": {\"title\": \"Morning Mix\"}, \"tracks\": [{\"start\": \"2026-11-08T08:36:00Z\", \"end\": \"2026-11-08T08:40:46Z\", \"song\": {\"artist\": \"Example Band\", \"title\": \"Older Song\", \"album\": null, \"isrc\": null}}]}"
+  },
+  "now": "2026-11-08T08:41:30Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Band",
+    "title": "Older Song",
+    "started_at": "2026-11-08T08:36:00Z",
+    "ended_at": "2026-11-08T08:40:46Z"
+  }
+}

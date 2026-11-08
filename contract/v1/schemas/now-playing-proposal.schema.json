@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/now-playing-proposal.schema.json",
+  "title": "Now-playing adapter proposal",
+  "description": "An adapter proposed by an installation. adapter must also be valid against now-playing-adapter.schema.json, without id, rev, status, terms or source. checks holds counters only, never a title.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "station",
+    "adapter",
+    "checks",
+    "consent"
+  ],
+  "properties": {
+    "kind": {
+      "const": "now_playing_adapter"
+    },
+    "station": {
+      "type": "string",
+      "pattern": "^st_[0-9a-z]{26}$"
+    },
+    "adapter": {
+      "type": "object"
+    },
+    "supersedes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^np_[0-9a-z]{26}$"
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runs",
+        "changes",
+        "icy"
+      ],
+      "properties": {
+        "runs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "changes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "icy": {
+          "enum": [
+            "match",
+            "mismatch",
+            "not_applicable"
+          ]
+        }
+      }
+    },
+    "consent": {
+      "const": "CC0-1.0"
+    }
+  }
+}

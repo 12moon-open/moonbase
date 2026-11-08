@@ -1,0 +1,16 @@
+{
+  "description": "A proposal never carries a title",
+  "schema": "now-playing-proposal",
+  "input": {
+    "kind": "now_playing_adapter",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "adapter": {},
+    "checks": {
+      "runs": 3,
+      "changes": 2,
+      "icy": "match",
+      "last_title": "Example Song"
+    },
+    "consent": "CC0-1.0"
+  }
+}

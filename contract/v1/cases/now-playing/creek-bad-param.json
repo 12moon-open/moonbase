@@ -1,0 +1,24 @@
+{
+  "description": "A template param outside its pattern makes the adapter invalid",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "template": "creek.current/1",
+    "params": {
+      "studio": "kxmp.evil.example",
+      "studio_id": "42"
+    },
+    "ignore": {
+      "equals_station_name": true
+    }
+  },
+  "station_name": "",
+  "response": {
+    "content_type": "application/json",
+    "body": "{}"
+  },
+  "now": "2026-11-08T08:42:50Z",
+  "expected": {
+    "error": "invalid_adapter"
+  }
+}

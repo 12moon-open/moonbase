@@ -1,0 +1,68 @@
+{
+  "description": "One 'Artist - Title' field split in two, with HTML entities",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "request": {
+      "url": "https://radio.example.org/api/nowplaying/1",
+      "hosts": [
+        "radio.example.org"
+      ],
+      "expect": "json"
+    },
+    "extract": {
+      "items": "$.now_playing",
+      "pick": "first",
+      "fields": {
+        "artist": {
+          "path": "$.text",
+          "split": {
+            "sep": " - ",
+            "part": 0
+          },
+          "html_unescape": true
+        },
+        "title": {
+          "path": "$.text",
+          "split": {
+            "sep": " - ",
+            "part": 1
+          },
+          "html_unescape": true
+        },
+        "started_at": {
+          "path": "$.played_at",
+          "time": "unix_s"
+        }
+      }
+    },
+    "freshness": {
+      "max_age_s": 900
+    },
+    "poll": {
+      "interval_s": 60,
+      "min_interval_s": 30
+    },
+    "ignore": {
+      "patterns": [
+        "^Station ID"
+      ]
+    },
+    "limits": {
+      "max_bytes": 65536,
+      "timeout_ms": 8000
+    }
+  },
+  "station_name": "",
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"now_playing\": {\"text\": \"Example Duo - Rock &amp; Roll\", \"played_at\": 1794127000}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Duo",
+    "title": "Rock & Roll",
+    "started_at": "2026-11-08T08:36:40Z"
+  }
+}

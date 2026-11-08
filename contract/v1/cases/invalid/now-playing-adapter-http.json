@@ -1,0 +1,49 @@
+{
+  "description": "HTTPS only",
+  "schema": "now-playing-adapter",
+  "input": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "request": {
+      "url": "http://www.kxmp.example.org/plays.php",
+      "hosts": [
+        "www.kxmp.example.org"
+      ],
+      "expect": "html"
+    },
+    "extract": {
+      "items": "div.playlistitem",
+      "pick": "first",
+      "fields": {
+        "artist": {
+          "css": "span.artist",
+          "trim": true
+        },
+        "title": {
+          "css": "span.track",
+          "trim": true
+        },
+        "started_at": {
+          "css": "span.time",
+          "regex": "@\\s*(\\d{1,2}:\\d{2})",
+          "time": "local_hm",
+          "timezone": "America/New_York"
+        }
+      }
+    },
+    "freshness": {
+      "max_age_s": 600
+    },
+    "poll": {
+      "interval_s": 60,
+      "min_interval_s": 30
+    },
+    "ignore": {
+      "equals_station_name": true
+    },
+    "limits": {
+      "max_bytes": 65536,
+      "timeout_ms": 8000
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "description": "JSONPath filters are not allowed",
+  "schema": "now-playing-adapter",
+  "input": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "request": {
+      "url": "https://www.kxmp.example.org/plays.php?feed=last&limit=3",
+      "hosts": [
+        "www.kxmp.example.org"
+      ],
+      "expect": "json"
+    },
+    "extract": {
+      "items": "div.playlistitem",
+      "pick": "first",
+      "fields": {
+        "artist": {
+          "path": "$..artist"
+        },
+        "title": {
+          "path": "$.title"
+        }
+      }
+    },
+    "freshness": {
+      "max_age_s": 600
+    },
+    "poll": {
+      "interval_s": 60,
+      "min_interval_s": 30
+    },
+    "ignore": {
+      "equals_station_name": true
+    },
+    "limits": {
+      "max_bytes": 65536,
+      "timeout_ms": 8000
+    }
+  }
+}

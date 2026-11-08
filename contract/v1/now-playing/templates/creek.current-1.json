@@ -1,0 +1,63 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "creek.current/1",
+  "status": "needs_permission",
+  "params": {
+    "studio": {
+      "pattern": "^[a-z0-9-]{1,40}$"
+    },
+    "studio_id": {
+      "pattern": "^[0-9]{1,6}$"
+    }
+  },
+  "request": {
+    "url": "https://{studio}.studio.creek.org/api/current?x=1&studioId={studio_id}",
+    "hosts": [
+      "{studio}.studio.creek.org"
+    ],
+    "expect": "json"
+  },
+  "extract": {
+    "items": "$.tracks[*]",
+    "observed_at": {
+      "path": "$.timestamp",
+      "time": "iso8601"
+    },
+    "fields": {
+      "artist": {
+        "path": "$.song.artist"
+      },
+      "title": {
+        "path": "$.song.title"
+      },
+      "album": {
+        "path": "$.song.album"
+      },
+      "isrc": {
+        "path": "$.song.isrc",
+        "check": "isrc"
+      },
+      "started_at": {
+        "path": "$.start",
+        "time": "iso8601"
+      },
+      "ended_at": {
+        "path": "$.end",
+        "time": "iso8601"
+      }
+    },
+    "pick": "latest_started"
+  },
+  "freshness": {
+    "max_age_s": 900,
+    "grace_after_end_s": 90
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

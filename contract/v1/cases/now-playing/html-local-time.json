@@ -1,0 +1,60 @@
+{
+  "description": "HTML fragment: local time in New York, attached to the local day",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "request": {
+      "url": "https://www.kxmp.example.org/plays.php?feed=last&limit=3",
+      "hosts": [
+        "www.kxmp.example.org"
+      ],
+      "expect": "html"
+    },
+    "extract": {
+      "items": "div.playlistitem",
+      "pick": "first",
+      "fields": {
+        "artist": {
+          "css": "span.artist",
+          "trim": true
+        },
+        "title": {
+          "css": "span.track",
+          "trim": true
+        },
+        "started_at": {
+          "css": "span.time",
+          "regex": "@\\s*(\\d{1,2}:\\d{2})",
+          "time": "local_hm",
+          "timezone": "America/New_York"
+        }
+      }
+    },
+    "freshness": {
+      "max_age_s": 600
+    },
+    "poll": {
+      "interval_s": 60,
+      "min_interval_s": 30
+    },
+    "ignore": {
+      "equals_station_name": true
+    },
+    "limits": {
+      "max_bytes": 65536,
+      "timeout_ms": 8000
+    }
+  },
+  "station_name": "KXMP 88.1",
+  "response": {
+    "content_type": "text/html; charset=UTF-8",
+    "body": "<html><body><div id=\"plays\"><div class=\"playlistitem\"><span class=\"artist\">Example Artist</span> <span class=\"track\">Example &amp; Song</span> <span class=\"time\">@3:41</span></div><div class=\"playlistitem\"><span class=\"artist\">Example Band</span> <span class=\"track\">Older Song</span> <span class=\"time\">@3:36</span></div></div><script>var x = '<div class=\"playlistitem\">';</script></body></html>"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example & Song",
+    "started_at": "2026-11-08T08:41:00Z"
+  }
+}

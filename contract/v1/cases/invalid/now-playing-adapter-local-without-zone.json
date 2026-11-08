@@ -1,0 +1,47 @@
+{
+  "description": "A local time needs its time zone",
+  "schema": "now-playing-adapter",
+  "input": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "request": {
+      "url": "https://www.kxmp.example.org/plays.php?feed=last&limit=3",
+      "hosts": [
+        "www.kxmp.example.org"
+      ],
+      "expect": "html"
+    },
+    "extract": {
+      "items": "div.playlistitem",
+      "pick": "first",
+      "fields": {
+        "artist": {
+          "css": "span.artist",
+          "trim": true
+        },
+        "title": {
+          "css": "span.track",
+          "trim": true
+        },
+        "started_at": {
+          "css": "span.time",
+          "time": "local_hm"
+        }
+      }
+    },
+    "freshness": {
+      "max_age_s": 600
+    },
+    "poll": {
+      "interval_s": 60,
+      "min_interval_s": 30
+    },
+    "ignore": {
+      "equals_station_name": true
+    },
+    "limits": {
+      "max_bytes": 65536,
+      "timeout_ms": 8000
+    }
+  }
+}

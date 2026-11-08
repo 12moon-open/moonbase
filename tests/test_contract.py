@@ -41,3 +41,19 @@ class Schemas(unittest.TestCase):
         for name, case in cases("invalid"):
             with self.subTest(name):
                 self.assertFalse(validator(case["schema"]).is_valid(case["input"]))
+
+
+@unittest.skipIf(jsonschema is None, "jsonschema is not installed")
+class NowPlayingCases(unittest.TestCase):
+    def test_case_adapters_follow_the_schema(self):
+        check = validator("now-playing-adapter")
+        for name, case in cases("now-playing"):
+            with self.subTest(name):
+                check.validate(case["adapter"])
+                self.assertTrue("expected" in case and "response" in case and "now" in case)
+
+    def test_templates_follow_the_schema(self):
+        check = validator("now-playing-template")
+        for path in sorted((ROOT / "now-playing" / "templates").glob("*.json")):
+            with self.subTest(path.name):
+                check.validate(json.loads(path.read_text()))

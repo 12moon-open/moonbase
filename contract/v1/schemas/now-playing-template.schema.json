@@ -1,0 +1,374 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/now-playing-template.schema.json",
+  "title": "Now-playing template",
+  "description": "A service's request and extraction, written once by the maintainer. An adapter using it brings only its params, each checked by its pattern. {name} in url and hosts is replaced by the URL-encoded param.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "id",
+    "params",
+    "request",
+    "extract",
+    "freshness",
+    "poll",
+    "limits"
+  ],
+  "properties": {
+    "format": {
+      "const": "12moon.now_playing_template/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]{2,40}\\.[a-z0-9_]{2,40}/[0-9]{1,3}$"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "needs_permission",
+        "revoked"
+      ]
+    },
+    "params": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 10,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pattern"
+        ],
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "pattern": "^\\^.{1,80}\\$$"
+          }
+        }
+      }
+    },
+    "request": {
+      "$ref": "#/$defs/request"
+    },
+    "extract": {
+      "$ref": "#/$defs/extract"
+    },
+    "freshness": {
+      "$ref": "#/$defs/freshness"
+    },
+    "poll": {
+      "$ref": "#/$defs/poll"
+    },
+    "limits": {
+      "$ref": "#/$defs/limits"
+    },
+    "ignore": {
+      "$ref": "#/$defs/ignore"
+    },
+    "terms": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "robots_txt": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "basis": {
+          "enum": [
+            "public_api",
+            "public_page",
+            "station_permission",
+            "provider_permission"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "regex": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "No lookaround, no back-reference: the same meaning in .NET NonBacktracking and JavaScript. At most one capture group is used.",
+      "pattern": "^(?!.*\\(\\?(?:[=!]|<[=!]))(?!.*\\\\[1-9k]).*$"
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "hosts",
+        "expect"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "^https://[a-z0-9{}.-]+(?::443)?(?:/[^\\s#]*)?$"
+        },
+        "hosts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9{}.-]{3,253}$"
+          }
+        },
+        "expect": {
+          "enum": [
+            "json",
+            "html",
+            "xml"
+          ]
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^\\$(?:\\.[A-Za-z_][A-Za-z0-9_-]*|\\['[^'\\]]{1,60}'\\]|\\[-?[0-9]{1,3}\\]|\\[\\*\\])*$"
+        },
+        "css": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "regex": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "No lookaround, no back-reference: the same meaning in .NET NonBacktracking and JavaScript. At most one capture group is used.",
+          "pattern": "^(?!.*\\(\\?(?:[=!]|<[=!]))(?!.*\\\\[1-9k]).*$"
+        },
+        "split": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sep",
+            "part"
+          ],
+          "properties": {
+            "sep": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10
+            },
+            "part": {
+              "enum": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        "trim": {
+          "type": "boolean"
+        },
+        "html_unescape": {
+          "type": "boolean"
+        },
+        "time": {
+          "enum": [
+            "iso8601",
+            "unix_s",
+            "unix_ms",
+            "local_hm",
+            "local_hms"
+          ]
+        },
+        "timezone": {
+          "type": "string",
+          "pattern": "^[A-Za-z_]+(?:/[A-Za-z0-9_+-]+){0,2}$"
+        },
+        "check": {
+          "enum": [
+            "isrc"
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "path"
+          ],
+          "not": {
+            "required": [
+              "css"
+            ]
+          }
+        },
+        {
+          "required": [
+            "css"
+          ],
+          "not": {
+            "required": [
+              "path"
+            ]
+          }
+        }
+      ],
+      "if": {
+        "properties": {
+          "time": {
+            "enum": [
+              "local_hm",
+              "local_hms"
+            ]
+          }
+        },
+        "required": [
+          "time"
+        ]
+      },
+      "then": {
+        "required": [
+          "timezone"
+        ]
+      }
+    },
+    "extract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "fields",
+        "pick"
+      ],
+      "properties": {
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "JSONPath for json, CSS for html and xml"
+        },
+        "observed_at": {
+          "$ref": "#/$defs/field"
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "artist",
+            "title"
+          ],
+          "properties": {
+            "artist": {
+              "$ref": "#/$defs/field"
+            },
+            "title": {
+              "$ref": "#/$defs/field"
+            },
+            "album": {
+              "$ref": "#/$defs/field"
+            },
+            "started_at": {
+              "$ref": "#/$defs/field"
+            },
+            "ended_at": {
+              "$ref": "#/$defs/field"
+            },
+            "isrc": {
+              "$ref": "#/$defs/field"
+            },
+            "show": {
+              "$ref": "#/$defs/field"
+            }
+          }
+        },
+        "pick": {
+          "enum": [
+            "first",
+            "last",
+            "latest_started"
+          ]
+        }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_age_s"
+      ],
+      "properties": {
+        "max_age_s": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 3600
+        },
+        "grace_after_end_s": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 300
+        }
+      }
+    },
+    "poll": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interval_s",
+        "min_interval_s"
+      ],
+      "properties": {
+        "interval_s": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 600
+        },
+        "min_interval_s": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 600
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_bytes",
+        "timeout_ms"
+      ],
+      "properties": {
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 65536,
+          "maximum": 1048576
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 8000
+        }
+      }
+    },
+    "ignore": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "equals_station_name": {
+          "type": "boolean"
+        },
+        "patterns": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/regex"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "description": "Creek template: the track playing now, the latest started one",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "template": "creek.current/1",
+    "params": {
+      "studio": "kxmp",
+      "studio_id": "42"
+    },
+    "ignore": {
+      "equals_station_name": true
+    }
+  },
+  "station_name": "KXMP 88.1",
+  "response": {
+    "content_type": "application/json; charset=utf-8",
+    "body": "{\"timestamp\": \"2026-11-08T08:43:36Z\", \"show\": {\"title\": \"Morning Mix\"}, \"tracks\": [{\"start\": \"2026-11-08T08:36:00Z\", \"end\": \"2026-11-08T08:40:46Z\", \"song\": {\"artist\": \"Example Band\", \"title\": \"Older Song\", \"album\": \"Old Album\", \"isrc\": \"USX9P0000001\"}}, {\"start\": \"2026-11-08T08:41:40Z\", \"end\": \"2026-11-08T08:46:21Z\", \"song\": {\"artist\": \"Example Artist\", \"title\": \"Example Song\", \"album\": \"Example Album\", \"isrc\": \"US-X9P-03-00709\"}}]}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "album": "Example Album",
+    "isrc": "USX9P0300709",
+    "started_at": "2026-11-08T08:41:40Z",
+    "ended_at": "2026-11-08T08:46:21Z"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "description": "Adapter using a service template",
+  "schema": "now-playing-adapter",
+  "input": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "template": "creek.current/1",
+    "params": {
+      "studio": "kxmp",
+      "studio_id": "42"
+    }
+  }
+}

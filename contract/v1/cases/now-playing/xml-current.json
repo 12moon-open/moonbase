@@ -1,0 +1,53 @@
+{
+  "description": "XML: element paths, first item",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_aaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "request": {
+      "url": "https://np.example.org/public/nowplaying?mount=KXMP",
+      "hosts": [
+        "np.example.org"
+      ],
+      "expect": "xml"
+    },
+    "extract": {
+      "items": "nowplaying-info",
+      "pick": "first",
+      "fields": {
+        "artist": {
+          "css": "property[name=track_artist_name]"
+        },
+        "title": {
+          "css": "property[name=cue_title]"
+        },
+        "started_at": {
+          "css": "property[name=cue_time_start]",
+          "time": "unix_ms"
+        }
+      }
+    },
+    "freshness": {
+      "max_age_s": 900
+    },
+    "poll": {
+      "interval_s": 60,
+      "min_interval_s": 30
+    },
+    "limits": {
+      "max_bytes": 65536,
+      "timeout_ms": 8000
+    }
+  },
+  "station_name": "",
+  "response": {
+    "content_type": "text/xml",
+    "body": "<?xml version=\"1.0\"?><nowplaying-info-list><nowplaying-info type=\"track\"><property name=\"cue_time_start\"><![CDATA[1794127300000]]></property><property name=\"cue_title\"><![CDATA[Example Song]]></property><property name=\"track_artist_name\"><![CDATA[Example Artist]]></property></nowplaying-info></nowplaying-info-list>"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "started_at": "2026-11-08T08:41:40Z"
+  }
+}
