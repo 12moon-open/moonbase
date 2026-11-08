@@ -102,7 +102,8 @@ async function loadData() {
     const queue = [...entries];
     const worker = async () => {
       for (let entry = queue.shift(); entry; entry = queue.shift()) {
-        for (const r of await readGzip(DATA + entry.path)) stations.set(r.id, { record: r, shard: entry.shard, find: findText(r) });
+        for (const r of await readGzip(DATA + entry.path)) stations.set(r.id, { record: r, shard: entry.shard, find: findText(r),
+          name: " " + [r.name, ...(r.alt_names || []).map((n) => n.name || n)].map(nameKey).join(" ") });
         label.textContent = `Loading stations ${++done}/${entries.length}…`;
       }
     };
@@ -150,9 +151,14 @@ function runSearch(event) {
   const words = id ? [id] : /[./:_]/.test(q) ? [q.toLowerCase().replace(/^https?:\/\//, "")] : nameKey(q).split(" ").filter(Boolean);
   if (!words.length && !country) return;
   const key = nameKey(q);
+  // 0: every word starts a word of the name, 1: every word is in the name, 2: in an address or an id.
+  const tier = (s) => (words.every((w) => s.name.includes(" " + w)) ? 0 : words.every((w) => s.name.includes(w)) ? 1
+    : words.every((w) => s.find.includes(w)) ? 2 : 3);
   const found = [...stations.values()]
-    .filter((s) => (!country || s.record.country === country) && words.every((w) => s.find.includes(w)))
-    .sort((a, b) => (b.record.status === "active") - (a.record.status === "active")
+    .filter((s) => !country || s.record.country === country)
+    .map((s) => ({ ...s, tier: tier(s) }))
+    .filter((s) => s.tier < 3)
+    .sort((a, b) => a.tier - b.tier || (b.record.status === "active") - (a.record.status === "active")
       || (nameKey(b.record.name) === key) - (nameKey(a.record.name) === key)
       || nameKey(b.record.name).startsWith(key) - nameKey(a.record.name).startsWith(key)
       || a.record.name.length - b.record.name.length)
