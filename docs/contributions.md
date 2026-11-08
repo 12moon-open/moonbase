@@ -1,6 +1,6 @@
 # Contributions
 
-Status: written and tested, **not deployed yet**. The planned address is `api.12moon.app`.
+Status: **live** at `https://api.12moon.app` since 2026-11-08.
 
 ## Links
 
@@ -105,4 +105,4 @@ See [`stream-measures.schema.json`](../contract/v1/schemas/stream-measures.schem
 
 ## Not done yet
 
-Deployment, the administration page, publication of the links in `moondust`, and the client in the Moon plugin.
+An administration page (the maintainer uses the admin routes for now), publication of the album links in `moondust`, and the terms of use shown by clients.
