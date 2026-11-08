@@ -94,7 +94,17 @@
             "public_api",
             "public_page",
             "station_permission",
-            "provider_permission"
+            "provider_permission",
+            "user_created"
+          ],
+          "description": "1.3.1 adds user_created: a connector made by a user and shared. robots.txt is read and recorded in robots, but does not stop it."
+        },
+        "robots": {
+          "description": "1.3.1. What robots.txt said about the request path when last checked.",
+          "enum": [
+            "allowed",
+            "disallowed",
+            "absent"
           ]
         }
       }

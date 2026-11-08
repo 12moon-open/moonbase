@@ -1,5 +1,9 @@
 # Contract changelog
 
+## 1.3.1 (2026-11-08)
+
+- `terms.basis: "user_created"` for a connector made by a user and shared, and `terms.robots` (`allowed`, `disallowed`, `absent`) recording what robots.txt said. For a user-created connector, robots.txt is read and recorded but does not stop it; the other safeguards stay.
+
 ## 1.3.0 (2026-11-08)
 
 Additions only, for now-playing adapters, from a reading of 28 stations' players. A 1.2 client refuses an adapter or template that uses them and keeps the others.

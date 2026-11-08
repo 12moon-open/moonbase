@@ -39,7 +39,15 @@ Schemas: [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.sche
 
 ## Rules that do not change
 
-- **robots.txt always applies**, documented API or not. AzuraCast, Sveriges Radio and Bauer forbid their API to robots: no adapter reads them.
+- **robots.txt applies to what 12moon writes itself** (`terms.basis` `public_api` or `public_page`), documented API or not.
+- **Connectors made by users** (`terms.basis: "user_created"`, since 1.3.1) are what a listener's own player would do: read the title playing now while listening. For them, robots.txt is read and recorded in `terms.robots`, but does not stop the connector. Everything else stays:
+  - one read per station and per minute at most, only while someone listens, shared by all the devices of a server;
+  - `Retry-After` and `Cache-Control` respected (capped as above), back-off and suspension after repeated failures;
+  - no title stored or republished;
+  - `GET` only: no `POST`, no login, no cookie, no consent wall accepted on the user's behalf;
+  - an identifiable User-Agent, never disguised: a service that refuses it (403) is not read;
+  - a station's or a service's request to stop turns the connector `revoked` and blocks its host at once.
+- **Review.** A user-created connector whose request robots.txt disallows is published only after the maintainer's review (`needs_review`). The others follow the usual checks.
 - **A webradio is not its parent station.** The page of titles played by a group's main station says nothing about its theme webradios. An adapter is checked against the stream's ICY title when it has one. 12moon puts in `needs_review` an adapter whose request is the same as another station's.
 - **No endless response.** One request, one answer: a server-sent events stream (Zeno) is out of scope.
 
