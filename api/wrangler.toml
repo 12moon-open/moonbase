@@ -1,8 +1,9 @@
-# Not deployed yet. Fill database_id when the D1 database is created.
+# Deployed on api.12moon.app. The account id and the API token come from the environment.
 name = "12moon-api"
 main = "src/index.js"
 compatibility_date = "2026-10-01"
 workers_dev = false
+routes = [{ pattern = "api.12moon.app", custom_domain = true }]
 
 [vars]
 READ_ONLY = "false"
@@ -10,7 +11,7 @@ READ_ONLY = "false"
 [[d1_databases]]
 binding = "DB"
 database_name = "12moon"
-database_id = "REPLACE_ME"
+database_id = "8403497f-0978-4db1-90d0-4f24f9ed5c94"
 migrations_dir = "migrations"
 
 [triggers]
