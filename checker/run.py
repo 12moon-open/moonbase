@@ -9,7 +9,8 @@ country like the stations, plus a summary.
 
 A stream is declared dead only after failing on DEAD_DAYS distinct days in a row,
 and comes back at its first success. Geo-blocking cannot be told apart from a
-failure from one place: the state says "failing", never why it might be.
+failure from one place: the state says "failing", never why it might be. A domain
+blocked by the local resolver (an answer of 0.0.0.0) is not counted at all.
 """
 import argparse
 import gzip
@@ -29,6 +30,8 @@ WORKERS = 64
 PER_HOST = 2
 KEEP_RUNS = 14
 DEAD_DAYS = 3
+# Errors caused by the checking machine itself, never counted against a stream.
+LOCAL_ERRORS = {"blocked_locally"}
 FIELDS = ("codec", "profile", "sample_rate", "channels", "bitrate_kbps", "container",
           "hls_variants_kbps", "now_playing", "video")
 
@@ -75,6 +78,8 @@ def update(history, streams, results, today):
         sid = stream["id"]
         past = history.get(sid, {"runs": []})
         result = results.get(sid)
+        if result is not None and result.get("error") in LOCAL_ERRORS:
+            result = None  # Says nothing about the stream: keep its previous state.
         if result is not None:
             run = {"day": today, "ok": result["ok"]}
             if result["ok"]:
@@ -128,7 +133,7 @@ def health(sid, past):
     return record
 
 
-def write(records, streams, out, today):
+def write(records, results, streams, out, today):
     shards = defaultdict(list)
     for stream in streams:
         shards[stream["shard"]].append(records[stream["id"]])
@@ -141,10 +146,12 @@ def write(records, streams, out, today):
             handle.write(text.encode())
     states = Counter(r["state"] for r in records.values())
     errors = Counter(r.get("error") for r in records.values() if r.get("error"))
+    blocked = sum(1 for r in results.values() if r.get("error") in LOCAL_ERRORS)
     summary = {"checked_at": today, "streams": len(records), "states": dict(states),
                "errors": dict(errors.most_common()),
                "codecs": dict(Counter(r.get("codec") for r in records.values() if r["state"] == "ok").most_common()),
-               "now_playing": sum(r.get("now_playing") == "icy" for r in records.values())}
+               "now_playing": sum(r.get("now_playing") == "icy" for r in records.values()),
+               "blocked_locally": blocked}
     (target / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
 
@@ -167,7 +174,7 @@ def main():
     records = update(history, streams, results, today)
     with gzip.GzipFile(args.history, "wb", mtime=0) as handle:
         handle.write(json.dumps(history, sort_keys=True, separators=(",", ":")).encode())
-    print(json.dumps(write(records, streams, args.out, today), indent=2))
+    print(json.dumps(write(records, results, streams, args.out, today), indent=2))
 
 
 if __name__ == "__main__":

@@ -63,6 +63,13 @@ class Health(unittest.TestCase):
         self.assertEqual((dead["state"], dead["last_ok_at"], dead["codec"]), ("dead", "2026-11-01", "mp3"))
         self.assertEqual(self.step(history, "2026-11-05", True)["state"], "ok")
 
+    def test_locally_blocked_domain_is_not_a_failure(self):
+        history = {}
+        self.step(history, "2026-11-01", True)
+        for day in ("2026-11-02", "2026-11-03", "2026-11-04"):
+            record = self.step(history, day, False, error="blocked_locally")
+        self.assertEqual((record["state"], record["checked_at"]), ("ok", "2026-11-01"))
+
     def test_unchecked_stream_keeps_its_state_and_gone_stream_is_forgotten(self):
         history = {"sm_gone": {"runs": []}}
         self.step(history, "2026-11-01", True)

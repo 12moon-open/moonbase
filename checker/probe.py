@@ -43,6 +43,9 @@ def _public_addresses(host, port):
     addresses = []
     for family, _, _, _, sockaddr in infos:
         ip = ipaddress.ip_address(sockaddr[0])
+        if ip.is_unspecified:
+            # 0.0.0.0 or ::, the answer of a filtering resolver: blocked here, not dead.
+            raise Failure("blocked_locally")
         if not ip.is_global:
             raise Failure("private_address")
         addresses.append((family, sockaddr))
