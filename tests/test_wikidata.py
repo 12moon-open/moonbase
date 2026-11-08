@@ -82,6 +82,8 @@ class Matching(unittest.TestCase):
         self.assertEqual([i["q"] for i in found.values()], ["Q1"])  # KISS is a common word here
         record = w.enrich({"tags": ["rock"]}, items[0])
         self.assertEqual(record["tags"], ["college radio", "rock"])
+        items[0]["npr"] = True
+        self.assertEqual(w.enrich({}, items[0])["tags"], ["college radio", "npr"])
 
     def test_other_country_never_matches(self):
         groups = self.groups([row("y1", "Radio Uno", "https://a.example.org/x", country="IT")])

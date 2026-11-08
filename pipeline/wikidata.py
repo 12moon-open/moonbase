@@ -20,6 +20,7 @@ from .normalize import name_key, registrable_domain, web_url
 CALL_SIGN = re.compile(r"\b([KW][A-Z]{2,3}|C[FHIJKY][A-Z]{2}|X[EH][A-Z]{2,3})(?:-(?:FM|AM|LP|LPFM|HD\d))?\b")
 CALL_COUNTRIES = {"US", "CA", "MX"}
 COLLEGE_TAG = "college radio"
+NPR_TAG = "npr"
 LOGO_WIDTH = 500
 LOGO_TYPES = (".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp")
 
@@ -163,6 +164,7 @@ def enrich(record, item):
     logo = commons_thumbnail(item["logo"]) if item.get("logo") else None
     if logo:
         record["logo_url"] = logo
-    if item.get("college"):
-        record["tags"] = sorted(set(record.get("tags", [])) | {COLLEGE_TAG})
+    extra = ({COLLEGE_TAG} if item.get("college") else set()) | ({NPR_TAG} if item.get("npr") else set())
+    if extra:
+        record["tags"] = sorted(set(record.get("tags", [])) | extra)
     return record

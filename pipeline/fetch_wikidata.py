@@ -5,7 +5,8 @@ Usage: python -m pipeline.fetch_wikidata OUTPUT.json.gz
 For each item that is a radio station (Q14350 or a subclass) with a country: its
 labels and aliases, official websites, logo file on Commons, Wikipedia article
 titles by language, call sign, and whether it is a college radio (an instance of
-campus radio, Q1436229, or owned or operated by a higher education institution). The list of items per country, then their details in batches, one query after the other, with an
+campus radio, Q1436229, or owned or operated by a higher education institution), and whether it is
+a member of NPR (Q671510). The list of items per country, then their details in batches, one query after the other, with an
 identifiable User-Agent, as the Wikidata Query Service asks.
 """
 import gzip
@@ -36,11 +37,13 @@ SELECT ?item
   (GROUP_CONCAT(DISTINCT CONCAT(?lang, "\u001e", ?title); separator="\u001f") AS ?articles)
   (SAMPLE(?call) AS ?callsign)
   (MAX(?isCollege) AS ?college)
+  (MAX(?isNpr) AS ?npr)
 WHERE {
   VALUES ?item { %s }
   OPTIONAL { ?item wdt:P2317 ?call }
   BIND(EXISTS { ?item wdt:P31/wdt:P279* wd:Q1436229 } ||
        EXISTS { ?item wdt:P127|wdt:P137|wdt:P749 ?owner . ?owner wdt:P31/wdt:P279* wd:Q38723 } AS ?isCollege)
+  BIND(EXISTS { ?item wdt:P463|wdt:P361|wdt:P749|wdt:P127 wd:Q671510 } AS ?isNpr)
   OPTIONAL { ?item rdfs:label|skos:altLabel ?name }
   OPTIONAL { ?item wdt:P856 ?website }
   OPTIONAL { ?item wdt:P154 ?logo }
@@ -96,6 +99,8 @@ def parse(rows, code):
             item["call_sign"] = call
         if row.get("college", {}).get("value") in ("true", "1"):
             item["college"] = True
+        if row.get("npr", {}).get("value") in ("true", "1"):
+            item["npr"] = True
         items.append(item)
     return items
 
