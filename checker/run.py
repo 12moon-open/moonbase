@@ -164,12 +164,19 @@ def write(records, results, streams, out, today):
     return summary
 
 
+def failing(streams, history):
+    """Streams whose last recorded check failed: checked every day until they recover or die."""
+    return [s for s in streams if history.get(s["id"], {}).get("runs") and not history[s["id"]]["runs"][-1]["ok"]]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--data", required=True, type=Path)
     parser.add_argument("--history", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--limit", type=int, help="check only a random sample of this size")
+    parser.add_argument("--only-failing", action="store_true",
+                        help="check only the streams whose last check failed (the daily pass)")
     parser.add_argument("--workers", type=int, default=WORKERS)
     parser.add_argument("--resolver", choices=("doh", "system"), default="doh",
                         help="doh (default): public resolvers over HTTPS; system: this machine's")
@@ -181,6 +188,8 @@ def main():
     if args.history.exists():
         history = json.loads(gzip.decompress(args.history.read_bytes()))
     sample = random.sample(streams, args.limit) if args.limit else streams
+    if args.only_failing:
+        sample = failing(streams, history)
     results = check_all(sample, args.workers)
     records = update(history, streams, results, today)
     with gzip.GzipFile(args.history, "wb", mtime=0) as handle:

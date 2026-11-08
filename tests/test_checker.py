@@ -123,6 +123,17 @@ class Health(unittest.TestCase):
             record = self.step(history, day, False, error="blocked_locally")
         self.assertEqual((record["state"], record["checked_at"]), ("ok", "2026-11-01"))
 
+    def test_daily_pass_takes_failing_streams_and_dead_comes_on_the_third_day(self):
+        streams = [{"id": "sm_a", "url": "https://a.example.org/x", "shard": "FR"},
+                   {"id": "sm_b", "url": "https://b.example.org/y", "shard": "FR"}]
+        history = {}
+        r.update(history, streams, {"sm_a": {"ok": False, "error": "connect"}, "sm_b": {"ok": True}}, "2026-11-08")
+        self.assertEqual([s["id"] for s in r.failing(streams, history)], ["sm_a"])
+        for day in ("2026-11-09", "2026-11-10"):
+            record = r.update(history, streams, {"sm_a": {"ok": False, "error": "connect"}}, day)["sm_a"]
+        self.assertEqual(record["state"], "dead")
+        self.assertEqual(r.update(history, streams, {}, "2026-11-10")["sm_b"]["state"], "ok")
+
     def test_unchecked_stream_keeps_its_state_and_gone_stream_is_forgotten(self):
         history = {"sm_gone": {"runs": []}}
         self.step(history, "2026-11-01", True)
