@@ -58,6 +58,22 @@ Schemas: [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.sche
 
 Regular expressions are at most 200 characters, with no lookaround and no back-reference, so that .NET (`NonBacktracking`) and JavaScript agree.
 
+## The `now_playing` dataset
+
+Since 1.5. The manifest lists it next to the stations, in three shards, each checked by its sha256 like the stations:
+
+| Shard | File | One line is |
+|---|---|---|
+| `adapters` | `now-playing/adapters.ndjson.gz` | a [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.schema.json), with `id`, `rev`, `status`, `updated_at` |
+| `templates` | `now-playing/templates.ndjson.gz` | a [`now-playing-template`](../contract/v1/schemas/now-playing-template.schema.json) |
+| `blocked-hosts` | `now-playing/blocked-hosts.ndjson.gz` | a [`now-playing-blocked-host`](../contract/v1/schemas/now-playing-blocked-host.schema.json) |
+
+An adapter that is not `active`, or whose template is not `active`, is not executed. A blocked host is never reached by a now-playing request or a redirect: `subdomains: true` blocks every name ending in `.host` too. A client adds these hosts to its own list; it never removes one of its own because it is missing here.
+
+```json
+{"host":"example.org","subdomains":true,"reason":"station_request","since":"2026-11-08"}
+```
+
 ## Publication
 
 Adapters are proposed with `kind: "now_playing_adapter"` (signed, CC0, counters only in `checks`). 12moon checks the hosts, `robots.txt` and runs the adapter twice before publishing it in the `now_playing` dataset. A daily run marks a failing adapter `broken`, then `revoked` after 30 days. A station's request, a disallowing `robots.txt` or the maintainer revoke it at once, and its host joins the blocked list.

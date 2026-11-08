@@ -1,5 +1,14 @@
 # Contract changelog
 
+## 1.5.0 (2026-11-08)
+
+Additions only.
+
+- The manifest's `now_playing` dataset is published, with three shards: `adapters` (`now-playing/adapters.ndjson.gz`, one adapter per line), `templates` (`now-playing/templates.ndjson.gz`, one service template per line) and `blocked-hosts` (`now-playing/blocked-hosts.ndjson.gz`). A client reads it as the stations: the sha256 of each file, then an atomic switch.
+- Schema `now-playing-blocked-host`: `host`, `subdomains`, `reason` (`station_request`, `service_request`, `robots_disallow`, `refuses_user_agent`, `maintainer`), `since`. No now-playing request, nor a redirect, may reach a listed host, whatever the adapter or template. A client adds these hosts to its own list and never drops one of its own because it is missing here.
+- Published adapters always carry `id`, `rev`, `status` and `updated_at`. An adapter whose station was merged points to the station it was merged into; one whose station is gone is left out.
+- The manifest says `contract: "1.5.0"`.
+
 ## 1.4.0 (2026-11-08)
 
 Additions only, for now-playing adapters.

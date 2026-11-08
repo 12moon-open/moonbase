@@ -1,0 +1,4 @@
+{
+ "description": "Hosts no now-playing request may reach, published in the now_playing dataset. A host joins at a station's or a service's request, when robots.txt disallows an adapter that 12moon writes itself, or by the maintainer's decision.",
+ "hosts": []
+}

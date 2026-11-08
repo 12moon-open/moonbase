@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://data.12moon.app/v1/schemas/now-playing-blocked-host.schema.json",
+  "title": "Now-playing blocked host",
+  "description": "One line of now-playing/blocked-hosts.ndjson.gz: a host that no now-playing request may reach, whatever adapter or template asks for it, including through a redirect. A client adds these to its own list; it never removes a host of its own because it is missing here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "host",
+    "subdomains",
+    "reason",
+    "since"
+  ],
+  "properties": {
+    "host": {
+      "type": "string",
+      "maxLength": 253,
+      "description": "Lowercase host name, no port, no trailing dot, never an IP literal.",
+      "pattern": "^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\\.[a-z]([a-z0-9-]{0,61}[a-z0-9])?$"
+    },
+    "subdomains": {
+      "type": "boolean",
+      "description": "true: the host and every name ending in .host are blocked. false: this exact host only."
+    },
+    "reason": {
+      "enum": [
+        "station_request",
+        "service_request",
+        "robots_disallow",
+        "refuses_user_agent",
+        "maintainer"
+      ],
+      "description": "station_request or service_request: asked to stop. robots_disallow: robots.txt disallows a request 12moon writes itself (basis public_api or public_page). refuses_user_agent: answers 403 to an identifiable User-Agent. maintainer: any other decision."
+    },
+    "since": {
+      "type": "string",
+      "format": "date"
+    }
+  }
+}

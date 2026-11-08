@@ -11,12 +11,13 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from . import now_playing as now_playing_data
 from .group import group_rows, shared_domains
 from .normalize import clean_name, logo_url, name_key, stream_key, stream_protocol, web_url
 from .tags import clean_tags
 from .wikidata import enrich, match_groups
 
-CONTRACT = "1.0.0"
+CONTRACT = "1.5.0"
 ALLOWED_SOURCES = {"radio-browser", "wikidata", "contribution", "editor", "radioarg"}
 MIN_ROWS = 10_000
 MIN_RATIO = 0.8  # Refuse to publish when active stations drop below this ratio.
@@ -469,7 +470,11 @@ def _next_version(out, entries, date):
     return version
 
 
-def write(stations, redirects, out, dist, as_of, build_date=None):
+def _ndjson(records):
+    return "".join(_dumps(r) + "\n" for r in records)
+
+
+def write(stations, redirects, out, dist, as_of, build_date=None, now_playing=None):
     source_dir = out / "v1" / "stations"
     source_dir.mkdir(parents=True, exist_ok=True)
     for old in source_dir.glob("*.ndjson"):
@@ -486,7 +491,16 @@ def write(stations, redirects, out, dist, as_of, build_date=None):
     text = "".join(_dumps(r) + "\n" for r in redirects)
     (out / "v1" / "redirects.ndjson").write_text(text, encoding="utf-8")
     redirect_entry = {"shard": "all", **_write_shard(text, "redirects.ndjson", dist), "count": len(redirects)}
-    version = _next_version(out, entries + [redirect_entry], build_date or as_of[:10])
+    playing = []
+    if now_playing is not None:
+        np_dir = out / "v1" / "now-playing"
+        np_dir.mkdir(parents=True, exist_ok=True)
+        for shard, records in zip(("adapters", "templates", "blocked-hosts"), now_playing):
+            text = _ndjson(records)
+            (np_dir / f"{shard}.ndjson").write_text(text, encoding="utf-8")
+            playing.append({"shard": shard, **_write_shard(text, f"now-playing/{shard}.ndjson", dist),
+                            "count": len(records)})
+    version = _next_version(out, entries + [redirect_entry] + playing, build_date or as_of[:10])
     manifest = {
         "contract": CONTRACT,
         "dataset_version": version,
@@ -494,12 +508,15 @@ def write(stations, redirects, out, dist, as_of, build_date=None):
         "license": "CC0-1.0",
         "datasets": {"stations": entries, "redirects": [redirect_entry]},
     }
+    if playing:
+        manifest["datasets"]["now_playing"] = playing
     (dist / "v1" / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     return manifest
 
 
 def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=(), editor=None,
-          radioarg=()):
+          radioarg=(), now_playing=None):
+    """now_playing: (adapters, templates, blocked hosts) as read by now_playing.load(), or None to leave it out."""
     editor = editor or {}
     rows, refused = prepare_rows(source, checks, editor.get("aggregator_homepages", ()))
     rows += contribution_rows(contributions, editor.get("aggregator_homepages", ()))
@@ -510,7 +527,13 @@ def build(source, out, dist, as_of, checks=None, build_date=None, contributions=
     matches = {id(groups[index]): item for index, item in found.items()}
     stations, redirects = merge(groups, previous, redirects, as_of, matches, editor.get("stations", {}))
     check(stations, previous, len(source))
-    manifest = write(stations, redirects, out, dist, as_of, build_date)
+    playing, playing_report = None, None
+    if now_playing is not None:
+        try:
+            *playing, playing_report = now_playing_data.prepare(*now_playing, stations, redirects)
+        except now_playing_data.Invalid as error:
+            raise Refused(f"now_playing: {error}") from error
+    manifest = write(stations, redirects, out, dist, as_of, build_date, playing)
     return {
         "source_rows": len(source),
         "refused": dict(refused),
@@ -523,6 +546,7 @@ def build(source, out, dist, as_of, checks=None, build_date=None, contributions=
         "dataset_version": manifest["dataset_version"],
         "shards": len(manifest["datasets"]["stations"]),
         "bytes": sum(e["bytes"] for e in manifest["datasets"]["stations"]),
+        "now_playing": playing_report,
     }
 
 
@@ -544,6 +568,8 @@ def main():
     parser.add_argument("--same-stations", type=Path, help="pairs of station ids confirmed as one station (.json)")
     parser.add_argument("--wikidata", type=Path, help="radio stations from Wikidata (.json.gz), optional")
     parser.add_argument("--editor", type=Path, help="corrections checked by the maintainer (.json), optional")
+    parser.add_argument("--now-playing", action="store_true",
+                        help="publish the now_playing dataset from data/now-playing and the contract templates")
     parser.add_argument("--radioarg", type=Path, help="stations listed by radioarg.net, streams checked (.json.gz), optional")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
@@ -560,7 +586,7 @@ def main():
         editor = json.loads(args.editor.read_text(encoding="utf-8")) if args.editor else None
         radioarg = json.loads(gzip.decompress(args.radioarg.read_bytes())) if args.radioarg else ()
         report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata, editor,
-                       radioarg)
+                       radioarg, now_playing_data.load() if args.now_playing else None)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

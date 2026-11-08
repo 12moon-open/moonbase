@@ -1,4 +1,5 @@
 """Check a built dataset against the contract. Usage: validate_dataset.py DATA_DIR DIST_DIR"""
+import gzip
 import hashlib
 import json
 import sys
@@ -23,6 +24,12 @@ def main():
                 errors += not station.is_valid(json.loads(line))
     manifest = json.loads((dist / "v1" / "manifest.json").read_text())
     validator("manifest").validate(manifest)
+    shards = {"adapters": "now-playing-adapter", "templates": "now-playing-template",
+              "blocked-hosts": "now-playing-blocked-host"}
+    for entry in manifest["datasets"].get("now_playing", []):
+        check = validator(shards[entry["shard"]])
+        lines = gzip.decompress((dist / "v1" / entry["path"]).read_bytes()).decode("utf-8").splitlines()
+        errors += sum(not check.is_valid(json.loads(line)) for line in lines) + (len(lines) != entry["count"])
     for entries in manifest["datasets"].values():
         for entry in entries:
             digest = hashlib.sha256((dist / "v1" / entry["path"]).read_bytes()).hexdigest()
