@@ -35,7 +35,9 @@ MAX_CAPTURE_BYTES = 3 * 1024 * 1024
 ITEMS_PER_SECOND = 1 / 0.1238  # Chromaprint gives one 32-bit item every 0.1238 s.
 MAX_OFFSET_SECONDS = 40
 MIN_OVERLAP_SECONDS = 20
-SAME_SOUND = 0.65  # Share of identical bits above which two captures are the same sound.
+# Share of identical bits above which two captures are the same sound. Measured on 2026-11-08:
+# FIP in AAC and in MP3 0.946; FIP and FIP Groove 0.531; FIP and France Inter 0.552.
+SAME_SOUND = 0.75
 ROUNDS = 3
 MIN_HOURS_APART = 4
 
@@ -117,7 +119,9 @@ def candidates(data):
                 station = json.loads(line)
                 key = name_key(station["name"])
                 if station["status"] == "active" and key and station["streams"]:
-                    by_name[key].append((station["id"], station["streams"][0]["url"]))
+                    # A direct stream when there is one: HLS segments lag too far behind to compare.
+                    direct = [m for m in station["streams"] if m.get("protocol") != "hls"]
+                    by_name[key].append((station["id"], (direct or station["streams"])[0]["url"]))
     pairs = []
     for members in by_name.values():
         if 2 <= len(members) <= 6:  # A name shared by many records is a generic label.
