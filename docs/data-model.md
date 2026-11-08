@@ -155,5 +155,6 @@ Clients follow redirects until they reach a live id. Chains are collapsed at bui
 | `wikidata` | CC0 |
 | `contribution` | CC0, accepted by the contributor |
 | `editor` | CC0 |
+| `radioarg` | Facts only (name, country, town, stream, the station's own site), each stream checked to play. See [sources/radioarg](sources/radioarg.md) |
 
 A test rejects any other value. Adding a source requires a documented licence check.

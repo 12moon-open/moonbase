@@ -1,5 +1,9 @@
 # Contract changelog
 
+## 1.2.1 (2026-11-08)
+
+- Station `sources` may list `radioarg`, and `ids` may carry `radioarg` (`ra:<page>`).
+
 ## 1.2.0 (2026-11-08)
 
 Additions only, for now-playing adapters. A 1.1 client refuses an adapter that uses them, as its strict reading requires, and keeps the others.

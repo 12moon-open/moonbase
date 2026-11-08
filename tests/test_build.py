@@ -259,6 +259,21 @@ class Build(unittest.TestCase):
         self.assertEqual([x["source"] for x in st["FIP"]["sources"]], ["editor", "radio-browser"])
         self.assertEqual(st["TV Channel"]["status"], "retired")
 
+    def test_radioarg_rows_join_or_add_stations(self):
+        items = [{"page": "fip-arg", "name": "FIP", "country": "FR", "stream": "https://icecast.radiofrance.fr/fip-hifi.aac",
+                  "homepage": "https://radioarg.net/fip", "checked": {"codec": "aac", "bitrate_kbps": 192}},
+                 {"page": "del-sur-971", "name": "Radio Del Sur 97.1 FM", "country": "AR", "town": "Comodoro Rivadavia",
+                  "stream": "https://cdn.example.org:9552/stream", "homepage": "https://radiodelsur.example.ar/",
+                  "checked": {"codec": "mp3", "bitrate_kbps": 128}},
+                 {"page": "no-country", "name": "Somewhere", "stream": "https://x.example.org/s"}]
+        b.build(FIP + filler(), self.out, self.dist, AS_OF, None, None, (), (), (), None, items)
+        st = {s["name"]: s for s in self.stations().values()}
+        self.assertIn("radioarg", [x["source"] for x in st["FIP"]["sources"]])
+        self.assertNotIn("radioarg.net", st["FIP"].get("homepage", ""))
+        sur = st["Radio Del Sur 97.1 FM"]
+        self.assertEqual((sur["country"], sur["place"]["name"], sur["ids"]["radioarg"]), ("AR", "Comodoro Rivadavia", ["ra:del-sur-971"]))
+        self.assertNotIn("Somewhere", st)
+
     def version(self):
         return json.loads((self.dist / "v1" / "manifest.json").read_text())["dataset_version"]
 

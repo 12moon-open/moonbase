@@ -17,7 +17,7 @@ from .tags import clean_tags
 from .wikidata import enrich, match_groups
 
 CONTRACT = "1.0.0"
-ALLOWED_SOURCES = {"radio-browser", "wikidata", "contribution", "editor"}
+ALLOWED_SOURCES = {"radio-browser", "wikidata", "contribution", "editor", "radioarg"}
 MIN_ROWS = 10_000
 MIN_RATIO = 0.8  # Refuse to publish when active stations drop below this ratio.
 NO_COUNTRY = "XX"
@@ -150,6 +150,40 @@ def contribution_rows(items, aggregators=()):
     return rows
 
 
+def radioarg_rows(items, aggregators=()):
+    """Rows from the stations radioarg.net lists, kept only when their stream played.
+
+    Facts only: name, country, town, stream, the station's own website. Never radioarg.net.
+    """
+    rows = []
+    for item in items:
+        page = str(item.get("page", ""))
+        name = clean_name(item.get("name"))
+        country = str(item.get("country") or "")
+        url = web_url(item.get("stream"))
+        if not re.fullmatch(r"[a-z0-9-]{1,120}", page) or not name or not url or not re.fullmatch(r"[A-Z]{2}", country):
+            continue
+        homepage = web_url(item.get("homepage"))
+        if _aggregator(homepage, tuple(aggregators) + ("radioarg.net",)):
+            homepage = None
+        checked = item.get("checked") or {}
+        bitrate = checked.get("bitrate_kbps")
+        rows.append({
+            "uuid": f"ra:{page}", "source": "radioarg",
+            "name": name, "name_key": name_key(name),
+            "stream": url, "stream_key": stream_key(url),
+            "country": country, "subdivision": "",
+            "homepage": homepage, "logo": None, "languages": "", "tags": "",
+            "lat": None, "lon": None, "place_name": clean_name(item.get("town")) or None,
+            "measured": bool(checked),
+            "codec": checked.get("codec") if re.fullmatch(r"[a-z0-9-]{2,16}", str(checked.get("codec", ""))) else None,
+            "bitrate": bitrate if isinstance(bitrate, int) and 0 < bitrate <= MAX_BITRATE else None,
+            "hls": bool(checked.get("hls")),
+        })
+    rows.sort(key=lambda r: r["uuid"])
+    return rows
+
+
 def _most_common(values):
     counts = Counter(v for v in values if v)
     if not counts:
@@ -208,7 +242,7 @@ def _content(rows, previous_streams):
         "streams": _streams(rows, previous_streams),
         "ids": {},
     }
-    for source, key in (("radio-browser", "radio_browser"), ("contribution", "contributions")):
+    for source, key in (("radio-browser", "radio_browser"), ("contribution", "contributions"), ("radioarg", "radioarg")):
         uuids = sorted({r["uuid"] for r in rows if r["source"] == source})
         if uuids:
             record["ids"][key] = uuids
@@ -307,7 +341,7 @@ def join_same(groups, previous, pairs):
     """
     owner = {}
     id_of_uuid = {u: s["id"] for s in previous.values()
-                  for key in ("radio_browser", "contributions") for u in s.get("ids", {}).get(key, [])}
+                  for key in ("radio_browser", "contributions", "radioarg") for u in s.get("ids", {}).get(key, [])}
     for index, rows in enumerate(groups):
         for row in rows:
             station = id_of_uuid.get(row["uuid"])
@@ -464,10 +498,12 @@ def write(stations, redirects, out, dist, as_of, build_date=None):
     return manifest
 
 
-def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=(), editor=None):
+def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=(), editor=None,
+          radioarg=()):
     editor = editor or {}
     rows, refused = prepare_rows(source, checks, editor.get("aggregator_homepages", ()))
     rows += contribution_rows(contributions, editor.get("aggregator_homepages", ()))
+    rows += radioarg_rows(radioarg, editor.get("aggregator_homepages", ()))
     previous, redirects = load_previous(out)
     groups = join_same(group_rows(rows), previous, same)
     found = match_groups(groups, wikidata, shared_domains(rows)) if wikidata else {}
@@ -508,6 +544,7 @@ def main():
     parser.add_argument("--same-stations", type=Path, help="pairs of station ids confirmed as one station (.json)")
     parser.add_argument("--wikidata", type=Path, help="radio stations from Wikidata (.json.gz), optional")
     parser.add_argument("--editor", type=Path, help="corrections checked by the maintainer (.json), optional")
+    parser.add_argument("--radioarg", type=Path, help="stations listed by radioarg.net, streams checked (.json.gz), optional")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
         source = json.load(handle)
@@ -521,7 +558,9 @@ def main():
         same = json.loads(args.same_stations.read_text(encoding="utf-8"))["same"] if args.same_stations else ()
         wikidata = json.loads(gzip.decompress(args.wikidata.read_bytes())) if args.wikidata else ()
         editor = json.loads(args.editor.read_text(encoding="utf-8")) if args.editor else None
-        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata, editor)
+        radioarg = json.loads(gzip.decompress(args.radioarg.read_bytes())) if args.radioarg else ()
+        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata, editor,
+                       radioarg)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

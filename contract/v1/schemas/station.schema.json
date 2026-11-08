@@ -156,6 +156,13 @@
           "items": {
             "type": "string"
           }
+        },
+        "radioarg": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^ra:[a-z0-9-]{1,120}$"
+          }
         }
       }
     },
@@ -174,7 +181,8 @@
               "radio-browser",
               "wikidata",
               "contribution",
-              "editor"
+              "editor",
+              "radioarg"
             ]
           },
           "retrieved_at": {
