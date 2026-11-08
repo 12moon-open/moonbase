@@ -39,7 +39,7 @@ const json = async (response) => ({ status: response.status, body: await respons
 
 beforeEach(async () => {
   env = { DB: makeDb(), READ_ONLY: "false", ADMIN_TOKEN: ADMIN, CHECKER_TOKEN: "c".repeat(40) };
-  globalThis.fetch = dataset([station(A, "Radio Alpha", { homepage: "https://alpha.example.fr/" }), station(B, "Radio Béta")],
+  globalThis.fetch = dataset([station(A, "Radio Alpha", { homepage: "https://alpha.example.fr/" }), station(B, "Radio Béta", { alt_names: [{ name: "Beta FM", lang: "fr" }] })],
     [{ from: OLD, to: A, at: "2026-11-08" }]);
   await refreshCatalog(env.DB);
 });
@@ -71,6 +71,7 @@ test("an agent searches, edits, and waits for review only to remove", async () =
   const t = agent.token;
   const found = await json(await call("GET", "/v1/edit/search?q=beta", undefined, t));
   assert.deepEqual(found.body.stations.map((s) => s.id), [B]);
+  assert.equal((await json(await call("GET", "/v1/edit/search?q=beta+fm", undefined, t))).body.stations[0].id, B);
   assert.equal((await json(await call("GET", "/v1/edit/search?q=alpha.example.fr", undefined, t))).body.stations[0].id, A);
   assert.equal((await json(await call("GET", `/v1/edit/search?q=${OLD}`, undefined, t))).body.stations[0].id, A);
   const set = await json(await call("POST", "/v1/edit/changes", { station: OLD, set: { homepage: "https://alpha.fr/", tags: ["jazz"] }, note: "from the site" }, t));

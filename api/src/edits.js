@@ -249,11 +249,12 @@ async function findByUrl(db, url) {
 // --- Search ---
 
 export function nameKey(text) {
-  return (text || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  return (typeof text === "string" ? text : "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 }
 
 function findText(record) {
-  const parts = [nameKey(record.name), ...(record.alt_names || []).map(nameKey), record.id];
+  const alt = (record.alt_names || []).map((n) => (typeof n === "string" ? n : n && n.name));
+  const parts = [nameKey(record.name), ...alt.map(nameKey), record.id];
   if (record.homepage) parts.push(record.homepage.toLowerCase().replace(/^https?:\/\//, ""));
   for (const s of record.streams || []) parts.push(s.id, s.url.toLowerCase().replace(/^https?:\/\//, ""));
   return parts.join(" | ");
