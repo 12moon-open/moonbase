@@ -390,14 +390,18 @@ def probe(url, ffprobe="ffprobe", allow_private=False):
                 final, response, body = _fetch(target, MAX_BODY, READ_WINDOW, allow_private, hops)
             else:
                 kind, items = parse_m3u(text, final)
-                if kind == "master":
+                for _ in range(2):  # A master playlist may point to another master playlist.
+                    if kind != "master":
+                        break
                     result["hls"] = True
-                    result["hls_variants_kbps"] = sorted({round(b / 1000) for b, _, _ in items if b})
+                    result.setdefault("hls_variants_kbps", sorted({round(b / 1000) for b, _, _ in items if b}))
                     if not items:
                         raise Failure("empty_playlist")
                     _, _, variant = min(items, key=lambda v: v[0] or 10**9)
                     final, _, body = _fetch(variant, MAX_PLAYLIST, None, allow_private, hops)
                     kind, items = parse_m3u(body.decode("utf-8", "replace"), final)
+                if kind == "master":
+                    raise Failure("bad_playlist")
                 if kind == "media":
                     result["hls"] = True
                     if not items:
@@ -434,6 +438,8 @@ def probe(url, ffprobe="ffprobe", allow_private=False):
         result["error"] = failure.code
     except (OSError, ValueError, UnicodeError):
         result["error"] = "bad_response"
+    except Exception:  # Never let one strange stream stop a whole pass.
+        result["error"] = "probe_error"
     finally:
         _local.deadline = None
     result["redirects"] = len(hops)

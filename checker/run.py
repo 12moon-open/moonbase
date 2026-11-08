@@ -32,7 +32,7 @@ PER_HOST = 2
 KEEP_RUNS = 14
 DEAD_DAYS = 3
 # Errors caused by the checking machine itself, never counted against a stream.
-LOCAL_ERRORS = {"blocked_locally", "dns_resolver"}
+LOCAL_ERRORS = {"blocked_locally", "dns_resolver", "probe_error"}
 FIELDS = ("codec", "profile", "sample_rate", "channels", "bitrate_kbps", "container",
           "hls_variants_kbps", "now_playing", "video")
 
@@ -64,7 +64,10 @@ def check_all(streams, workers=WORKERS, prober=probe):
         with guard:
             lock = locks[host]
         with lock:
-            return stream, prober(stream["url"])
+            try:
+                return stream, prober(stream["url"])
+            except Exception:  # A bug on one stream is a failure of that stream, not of the pass.
+                return stream, {"ok": False, "error": "probe_error"}
 
     order = list(streams)
     random.shuffle(order)

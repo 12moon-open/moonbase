@@ -36,6 +36,24 @@ class Parsers(unittest.TestCase):
         self.assertFalse(p.icy_title_present(empty, 8))
         self.assertIsNone(p.icy_title_present(b"a" * 4, 8))
 
+    def test_nested_master_playlist_is_followed_without_crash(self):
+        master = "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=64000\nnext.m3u8\n"
+        kind, items = p.parse_m3u(master, "https://a.example.org/x/index.m3u8")
+        self.assertEqual(kind, "master")
+        self.assertEqual(items[0][2], "https://a.example.org/x/next.m3u8")
+
+    def test_one_failing_stream_does_not_stop_the_pass(self):
+        streams = [{"id": "sm_a", "url": "https://a.example.org/x", "shard": "FR"},
+                   {"id": "sm_b", "url": "https://b.example.org/y", "shard": "FR"}]
+
+        def prober(url):
+            if "a.example" in url:
+                raise AttributeError("bug")
+            return {"ok": True}
+        results = r.check_all(streams, workers=2, prober=prober)
+        self.assertEqual(results["sm_a"], {"ok": False, "error": "probe_error"})
+        self.assertTrue(results["sm_b"]["ok"])
+
     def test_codec_names(self):
         self.assertEqual(p.codec_name({"codec": "aac", "profile": "HE-AAC"}), "he-aac")
         self.assertEqual(p.codec_name({"codec": "aac", "profile": "HE-AACv2"}), "he-aac-v2")
