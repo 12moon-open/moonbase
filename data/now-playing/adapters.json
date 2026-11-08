@@ -1075,11 +1075,2059 @@
   },
   {
    "format": "12moon.now_playing/1",
+   "station": "st_32u4mosf6n32olfwgkggbrq3mc",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2081"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_32v3v75nxaycsi6gsll7vahoud",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "26"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_3hkdkjz7a3fr2nzulmtpsaxpin",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "4"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_3mfexj5pxhztgsmycooc3jxoor",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1269"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_3w7ypex3wc6qfkdyahf6kc7qls",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "87"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4aobhptvcgofexfxix7o7352z7",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1087"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4dzyo5hnq2mubucaa3xk7hhnz4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2145"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4e4cnjvqajd6ngm2oaaoiym3rs",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "975"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4fftqllno4xaqkwibpjuvy3tug",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1294"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_4x2xy2ndyonw2e5lz342r35tey",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "699"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_5et5lfcybkqfqowdhawqoco5nh",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2246"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_5jkjs4eqyuu5axp3zgvpb7qjz4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "250"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_5ntsljar2besqbsvyzvzjg7nz4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2311"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_5olzi62ufxawbbrtnipu2bmgey",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1109"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_5xvcxbllq5y7j7wdknma5gpvs7",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2235"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_5y52twzzd4ydlljh4r6yx2pq46",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "6"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_63typ2ahphjie37bfhahiotbcg",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "49"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_6a5z3tzeohrtst4zq5nop3jcfy",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "331"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_6dpxtdj45dgmvlkvqrbtvzsmog",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1779"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_6j7rbprk3cornmir7tvmfirjxc",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2318"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_6xwxvsdqndnwt5lcj5o24bt3f3",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "960"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_74ns2ceif75jiwzzryd4rx7cpa",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1495"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_7725gfdkhfnlhcccoalpksghzh",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1441"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_7fbq5x5wjajenpyo34sbjo2tyt",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "350"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_7qe42gw7ifamde3dpbpgn4cpch",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "526"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_a2np2uxxqjr75v7ne2zssdvkaq",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "249"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ajasjokhtpx52ouryfgfhi4mhd",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2128"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ake7kchgk6vwd7ns3rhhozpp6v",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1675"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_b3bom7j5zjsotuhkdkr6sa6kyi",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1754"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_b6rdck6nnemhtblvwka2hu3f5q",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "163"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_bgg7smw7fdncnpqlxtwxw74kwd",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2027"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_bmq6llbn2mf43t5sezjhdsxsyg",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1272"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_brygl4z7nhjqtlwcy4ln273m2m",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "51"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_bvj4aue24ultfldcc6f34drhgj",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2292"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_bznz2nissyf2t3ifvjhipjytix",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2155"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_c7prhdxtmaowk73el6xxoj5x3v",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1665"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_cozzyuy3jk2ohgjtfhur5q4gch",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "136"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_crgpcwpgcdqtmhxxpdmvffr7y5",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1990"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_cxelrylmvgmnb76xfibx5uasnu",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "891"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_dayoksukhlw4bickjcuynfnivg",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "307"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_djozqn56t5w35fldn4xx5g4jrk",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2074"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_doezipm6fq4oys6ewrkxiuhwry",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_dqjl25w7v2w4q4eg6aux55okdj",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "814"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_dvknfon342wiegad3oq4h6uvhe",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1749"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_e4nh42lo5twpsrsnkfxba3lokw",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1568"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_faideb5oewfgt3g3ib6scsqk5v",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2213"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_fc4ie4twjr5ihsg3c2trhnjzov",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "58"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_fm4te5tc5elaawavhj3imdrlb6",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "221"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_fneqnj57vscapqyxluwnedv3oy",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1838"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_fohs4mqkdwxotca5mstw3wsq5j",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "171"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_g2jsgmtxvbny5lwn2zeech426l",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2154"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_gnuwx3b3tbzxgg2nr56tnxlgrt",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1900"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_hcbldraqpnjrngekzsl7frcss2",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "826"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_hcl3j6u66w2gnsqbg7iqfknl6g",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1778"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_himhy6ydjw7x6r2tabsjkgtqrh",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "60"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_i6c4ee3mmldlapdrj6tq5xrwsu",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "962"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ibk46zc7pem73xxiigmgbnpc2e",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "5"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ig6x5r7sk77pprhlhxd7m4ozqa",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1852"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_j2rvxfztmroljhlc72o4dtebsk",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "61"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_jaul475mvjb7pfo3rvk4uz7f2f",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1700"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_jskrgdbzcduhnbnckhnaet2ccf",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "224"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_kemufsy3h3fzr5jcnu763fmt5w",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1191"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_kfty5qyaztktksw2yjgys2u6v6",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "27"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_kfwiciu72nzrmdouh3djyq6pnw",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2122"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_khh5nmhrqtva63zui34enkd6mo",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "730"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_kknqpymyjebapo3expc5eyrgin",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2312"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_kllbbxxnyerausjsakd4jufmbd",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1989"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_kun6brr2jvhke5mpb52tnjapuk",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2244"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_l5qx2xb6sqx5x7td6ubrljrlpa",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2186"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_lc35pbofqobxmdqd5342ehlg4y",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1298"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_lniqsckvj3cb7rocnima4hk3ru",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "170"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
    "station": "st_m7dcizxmeksnffswx3ly67dj6z",
    "template": "nrj.livemeta/1",
    "params": {
     "site": "www.nrj.fr",
     "id": "158"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_mdjdvxkofwfu6r6ppwcejaqjej",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "168"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_mdoi4wr7vnt65hijkrpjq3ua5i",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1546"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_mmzsyuqu3oeaciqndpz4w5ilxg",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "68"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_mnoxbqq4vusfidqscb6xp6y7j6",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "225"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_mqnpojdwvkay4bwyxblejrb2ou",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1974"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_mwek3m3kcbxabvlvn4ipfqcmux",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1705"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_myicsg2hxjhv2dm5acbiu2q22q",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1680"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_n54jt4cvq3freyjosqvdhywx4z",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2095"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_nl4c7jqhmmfwh3dm3irju3wixm",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2090"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ocrp6guyw3puzkvjpzcy6zhow2",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "558"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_oeja7xuimelin5jk45ykwi442z",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "67"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_old4igfieau4ndigyz2ez7kth3",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1267"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ox2yft5r235hfibmahzhdfiguo",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1957"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_pby5vxr256hsxnmblzkb47zrdx",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "109"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_pdxptlfq7njkdsamrv65vzsk3z",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1604"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_pe3iotxp5ronaijgs3fkecvmlb",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1699"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_pfpn4rb4zywqohwlivxzjjzqkv",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "247"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_pq33wft7lixzzkxiy4p273qicn",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "188"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_q4h2nsweow6sft3m5j7rqeop2b",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1882"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_qcdi5b4iytrc4uw46m7x4lgwyt",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1280"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_qlma46jeviryinxinhgte6y7et",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2280"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_r272ayjkghjee5zsnzln3dcnyg",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1729"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_r5mgabzehquso7une5insj4yuk",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "139"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_rdf3lomrhw3et7bfvdszhv7tyx",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2091"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_riby5usf35ese6qwizkptoedj2",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "24"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_rjfkc7dltmmeiw3miiqcklawc3",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1986"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_rrc4cffufkrsszhz76ybeb3o6f",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2281"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_rv3bbtf4mf4ppwooh6u7koafqz",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1550"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_rxdotoxg4vvjxi3jpgycv5qtwu",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "755"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_s2wksypsxzjb6cqluy7w3xx4m7",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1960"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ssm7px7puu4y5uorgpvciovyj2",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1655"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_syncze66fj6xypqu7g2shpek2j",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "227"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_tioekkdmujyectf5vmdcembwz4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2009"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_tix2bobppbbza5qb5lhnfw5iyt",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1083"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_tnoc7y6uihqpqasdaxzxiahs22",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "278"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_u35yacbqpfqjsruo3cfo6abvid",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2139"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_uecjeimhsvqe5svf4y7bhknemv",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2053"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_uxuplwky7kvowy3mxdmsae7kwv",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "849"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_uzbbdkuz2kqknannqcsml4tei4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1322"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_v3yu67zshxja3eqgq2cb7swmrn",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "248"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_vexcvbdl7g6hkqatanfcnjz2rg",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1895"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_vhgak42wuhh6ys64nhnum7rpyd",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "112"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_whc6eakqv2ob432qodtbxihjfo",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2218"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_wif2of5xaw4bdmjyhfm2rmnsps",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "848"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_x5yf6y7nvafqmpn5dc3ikwq7wi",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1552"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_xspnqza6wy5lhsdosz5xo4yeiv",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "69"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_xvfpqojc6ickir2gry5itjsqr4",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "66"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_xwo2j3qalkwu5os4hb4p3h3tps",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "53"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_y4kykrxaq5zmeqti2qhhkt7i55",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "2146"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_y4ujv2jqiwgs2ex7prsjhedq7d",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "349"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_ynyfckhnmut2vrsrht2444hdyh",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1583"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_yoa3o3b36zt5kocfcca6iwcnzd",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1772"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_yurmm6jec2baue2zrfr3eauphx",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1362"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_yvjmyfeqov52cxbdyttp6z53ku",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "296"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_z7prf74ruzpe3vyqbhcphvy5xi",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "92"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_zgzeup2byetkgw3ds4shu6e7gk",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "534"
+   },
+   "terms": {
+    "robots_txt": "https://www.nrj.fr/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "disallowed"
+   },
+   "source": "contribution"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "station": "st_zqbew4xokht6jjch3ktgxezrmc",
+   "template": "nrj.livemeta/1",
+   "params": {
+    "site": "www.nrj.fr",
+    "id": "1539"
    },
    "terms": {
     "robots_txt": "https://www.nrj.fr/robots.txt",
