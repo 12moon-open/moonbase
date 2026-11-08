@@ -54,6 +54,17 @@ class Parsers(unittest.TestCase):
         self.assertEqual(results["sm_a"], {"ok": False, "error": "probe_error"})
         self.assertTrue(results["sm_b"]["ok"])
 
+    def test_adts_core_reveals_implicit_he_aac(self):
+        def frame(index, channels, length=20):
+            h = bytes([0xFF, 0xF1, (1 << 6) | (index << 2) | (channels >> 2), ((channels & 3) << 6) | (length >> 11),
+                       (length >> 3) & 0xFF, ((length & 7) << 5) | 0x1F, 0xFC])
+            return h + bytes(length - 7)
+        stream = b"junk" + frame(7, 2) * 4  # 22050 Hz core, stereo
+        self.assertEqual(p.adts_core(stream), (22050, 2))
+        self.assertIsNone(p.adts_core(b"\xff\xf1" + bytes(40)))
+        info = {"codec": "aac", "profile": "LC", "sample_rate": 44100, "channels": 2, "core_rate": 22050, "core_channels": 1}
+        self.assertEqual(p.codec_name(info), "he-aac-v2")
+
     def test_codec_names(self):
         self.assertEqual(p.codec_name({"codec": "aac", "profile": "HE-AAC"}), "he-aac")
         self.assertEqual(p.codec_name({"codec": "aac", "profile": "HE-AACv2"}), "he-aac-v2")

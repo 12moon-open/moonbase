@@ -357,9 +357,45 @@ def describe(audio, ffprobe="ffprobe"):
     return out
 
 
+ADTS_RATES = (96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000, 7350)
+
+
+def adts_core(audio, frames=3):
+    """(sample rate, channels) announced by ADTS headers, when FRAMES headers follow each other.
+
+    An HE-AAC stream with implicit signalling announces half the decoded sample rate (the
+    core before SBR), and HE-AAC v2 announces one channel (before parametric stereo).
+    """
+    i, limit = 0, len(audio) - 7
+    while i < limit:
+        i = audio.find(b"\xff", i)
+        if i < 0 or i >= limit:
+            return None
+        found, j, core = 0, i, None
+        while found < frames and j + 7 <= len(audio):
+            h = audio[j:j + 7]
+            if h[0] != 0xFF or (h[1] & 0xF6) != 0xF0:
+                break
+            index = (h[2] >> 2) & 0x0F
+            channels = ((h[2] & 1) << 2) | (h[3] >> 6)
+            length = ((h[3] & 3) << 11) | (h[4] << 3) | (h[5] >> 5)
+            if index >= len(ADTS_RATES) or length < 7 or (core and core != (ADTS_RATES[index], channels)):
+                break
+            core = (ADTS_RATES[index], channels)
+            found += 1
+            j += length
+        if found >= frames:
+            return core
+        i += 1
+    return None
+
+
 def codec_name(info):
     """The base's codec vocabulary: mp3, aac, he-aac, he-aac-v2, flac, opus, vorbis."""
     codec, profile = info.get("codec"), (info.get("profile") or "").upper()
+    if codec == "aac" and info.get("core_rate") and info.get("sample_rate") == 2 * info["core_rate"]:
+        # Implicit SBR, which some ffprobe builds report as LC.
+        return "he-aac-v2" if info.get("core_channels") == 1 and info.get("channels") == 2 else "he-aac"
     if codec == "aac":
         if "HE-AACV2" in profile.replace(" ", ""):
             return "he-aac-v2"
@@ -421,12 +457,17 @@ def probe(url, ffprobe="ffprobe", allow_private=False):
             result["now_playing"] = "icy" if title else "icy_empty"
         if headers.get("icy-br", "").split(",")[0].isdigit():
             result["declared_kbps"] = int(headers["icy-br"].split(",")[0])
-        info = describe(strip_icy(body, metaint), ffprobe)
+        audio = strip_icy(body, metaint)
+        info = describe(audio, ffprobe)
+        if info.get("codec") == "aac":
+            core = adts_core(audio)
+            if core:
+                info["core_rate"], info["core_channels"] = core
         if info.get("video") and "codec" not in info:
             raise Failure("video_only")
         if "codec" not in info:
             raise Failure("not_audio", ctype)
-        result.update({k: v for k, v in info.items() if k != "video" and v is not None})
+        result.update({k: v for k, v in info.items() if k not in ("video", "core_rate", "core_channels") and v is not None})
         if info.get("video"):
             result["video"] = True
         result["codec"] = codec_name(info) or info.get("codec")
