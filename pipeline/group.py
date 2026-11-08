@@ -46,6 +46,15 @@ def _compatible(a, b):
     return not a or not b or a.startswith(b) or b.startswith(a)
 
 
+def shared_domains(rows):
+    """Domains used by more than SHARED_DOMAIN_NAMES names: shared hosting, not a station's own."""
+    names_by_domain = defaultdict(set)
+    for row in rows:
+        for domain in _signals(row):
+            names_by_domain[domain].add(row["name_key"])
+    return {d for d, names in names_by_domain.items() if len(names) > SHARED_DOMAIN_NAMES}
+
+
 def group_rows(rows):
     """Return lists of rows. Each row has stream, stream_key, name_key, country."""
     sets = _Sets(len(rows))
@@ -53,11 +62,7 @@ def group_rows(rows):
     for i, row in enumerate(rows):
         sets.union(i, by_stream.setdefault(row["stream_key"], i))
 
-    names_by_domain = defaultdict(set)
-    for row in rows:
-        for domain in _signals(row):
-            names_by_domain[domain].add(row["name_key"])
-    shared = {d for d, names in names_by_domain.items() if len(names) > SHARED_DOMAIN_NAMES}
+    shared = shared_domains(rows)
 
     countries_by_name = defaultdict(set)
     for row in rows:

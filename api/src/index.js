@@ -4,6 +4,7 @@ import {
   addStationProposal, addStationReport, claimStationProposals, decideStationProposal, decideStationReport,
   exportStations, hideStationsOf, listStationProposals, listStationReports, stationProposalStatus, validateStationAdd,
 } from "./stations.js";
+import { TERMS_HTML } from "./terms.js";
 import { revokeContributor } from "./verify.js";
 import { addProposal, addReport, contributor, eraseContributor, exportLinks, proposalStatus, useNonce } from "./store.js";
 import { validateProposal } from "./validate.js";
@@ -51,6 +52,16 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
   if (writing && env.READ_ONLY === "true") return reply(503, { error: "read only" }, { "retry-after": "3600" });
 
   if (request.method === "GET" && path === "/v1/health") return reply(200, { ok: true });
+
+  if ((request.method === "GET" || request.method === "HEAD") && path === "/terms") {
+    return new Response(TERMS_HTML, { headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "public, max-age=3600",
+      "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; frame-ancestors 'none'",
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "no-referrer",
+    } });
+  }
 
   if (request.method === "GET" && path === "/v1/links/release-matches") {
     const [updated, id] = (url.searchParams.get("after") || "0.").split(/\.(.*)/s);

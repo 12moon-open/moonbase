@@ -10,9 +10,10 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .group import group_rows
+from .group import group_rows, shared_domains
 from .normalize import clean_name, logo_url, name_key, stream_key, stream_protocol, web_url
 from .tags import clean_tags
+from .wikidata import enrich, match_groups
 
 CONTRACT = "1.0.0"
 ALLOWED_SOURCES = {"radio-browser", "wikidata", "contribution", "editor"}
@@ -253,11 +254,14 @@ def load_previous(out):
     return stations, read_ndjson(out / "v1" / "redirects.ndjson")
 
 
-def _sources(rows, before, date):
-    """One entry per source of the rows, keeping the first date each was seen."""
+def _source_names(rows, item):
+    return sorted({r["source"] for r in rows} | ({"wikidata"} if item else set()))
+
+
+def _sources(rows, before, date, item=None):
+    """One entry per source of the record, keeping the first date each was seen."""
     seen = {s["source"]: s["retrieved_at"] for s in (before or {}).get("sources", [])}
-    return [{"source": source, "retrieved_at": seen.get(source, date)}
-            for source in sorted({r["source"] for r in rows})]
+    return [{"source": source, "retrieved_at": seen.get(source, date)} for source in _source_names(rows, item)]
 
 
 def join_same(groups, previous, pairs):
@@ -292,7 +296,9 @@ def join_same(groups, previous, pairs):
     return list(joined.values())
 
 
-def merge(groups, previous, redirects, as_of):
+def merge(groups, previous, redirects, as_of, matches=None):
+    """matches: {id(rows): Wikidata item}, from wikidata.match_groups."""
+    matches = matches or {}
     date, stamp = as_of[:10], as_of
     id_by_uuid = {u: s["id"] for s in previous.values()
                   for key in ("radio_browser", "contributions") for u in s.get("ids", {}).get(key, [])}
@@ -311,16 +317,19 @@ def merge(groups, previous, redirects, as_of):
             seen.add(old)
             new_redirects.append({"from": old, "to": station_id, "at": date})
         content = _content(rows, previous_streams)
+        item = matches.get(id(rows))
+        if item:
+            enrich(content, item)
         before = previous.get(station_id)
         if before and all(before.get(k) == v for k, v in content.items()) and set(before) - {"id", "rev", "sources", "updated_at"} == set(content) \
-                and [x["source"] for x in before["sources"]] == sorted({r["source"] for r in rows}):
+                and [x["source"] for x in before["sources"]] == _source_names(rows, item):
             stations[station_id] = before
         else:
             stations[station_id] = {
                 "id": station_id,
                 "rev": before["rev"] + 1 if before else 1,
                 **content,
-                "sources": _sources(rows, before, date),
+                "sources": _sources(rows, before, date, item),
                 "updated_at": stamp,
             }
     moved = {r["from"]: r["to"] for r in new_redirects}
@@ -417,11 +426,14 @@ def write(stations, redirects, out, dist, as_of, build_date=None):
     return manifest
 
 
-def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=()):
+def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=()):
     rows, refused = prepare_rows(source, checks)
     rows += contribution_rows(contributions)
     previous, redirects = load_previous(out)
-    stations, redirects = merge(join_same(group_rows(rows), previous, same), previous, redirects, as_of)
+    groups = join_same(group_rows(rows), previous, same)
+    found = match_groups(groups, wikidata, shared_domains(rows)) if wikidata else {}
+    matches = {id(groups[index]): item for index, item in found.items()}
+    stations, redirects = merge(groups, previous, redirects, as_of, matches)
     check(stations, previous, len(source))
     manifest = write(stations, redirects, out, dist, as_of, build_date)
     return {
@@ -431,6 +443,7 @@ def build(source, out, dist, as_of, checks=None, build_date=None, contributions=
         "active": sum(s["status"] == "active" for s in stations.values()),
         "streams": sum(len(s["streams"]) for s in stations.values()),
         "measured_streams": sum("codec" in m for s in stations.values() for m in s["streams"]),
+        "wikidata": sum("wikidata" in s.get("ids", {}) for s in stations.values() if s["status"] == "active"),
         "redirects": len(redirects),
         "dataset_version": manifest["dataset_version"],
         "shards": len(manifest["datasets"]["stations"]),
@@ -454,6 +467,7 @@ def main():
     parser.add_argument("--checks", type=Path, help="Radio Browser checker measures (.json.gz), optional")
     parser.add_argument("--contributions", type=Path, help="stations added by installations (.json), optional")
     parser.add_argument("--same-stations", type=Path, help="pairs of station ids confirmed as one station (.json)")
+    parser.add_argument("--wikidata", type=Path, help="radio stations from Wikidata (.json.gz), optional")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
         source = json.load(handle)
@@ -465,7 +479,8 @@ def main():
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         contributions = json.loads(args.contributions.read_text(encoding="utf-8")) if args.contributions else ()
         same = json.loads(args.same_stations.read_text(encoding="utf-8"))["same"] if args.same_stations else ()
-        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same)
+        wikidata = json.loads(gzip.decompress(args.wikidata.read_bytes())) if args.wikidata else ()
+        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

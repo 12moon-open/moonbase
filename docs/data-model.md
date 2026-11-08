@@ -95,8 +95,9 @@ The values above are illustrative.
 | `languages` | no | BCP 47 |
 | `tags` | no | Lowercase, normalised |
 | `homepage` | no | `http` or `https` |
-| `logo_url` | no | Address of the image at its origin. Never hosted here |
+| `logo_url` | no | Address of the image at its origin, never hosted here. For a station matched with Wikidata, a PNG thumbnail of its logo on Wikimedia Commons, whose page states the licence |
 | `streams` | yes | At least one when `status` is `active` |
+| `wikipedia` | no | Article titles by language, from Wikidata: `{"fr": "FIP"}` gives `https://fr.wikipedia.org/wiki/FIP` |
 | `ids` | no | External identifiers. New keys may be added, such as `musicbrainz`. `contributions` lists the proposals a station comes from |
 | `sources` | yes | At least one, from the allowlist |
 | `updated_at` | yes | UTC, RFC 3339 |
@@ -123,6 +124,10 @@ The values above are illustrative.
 ```
 
 `state` is `ok`, `failing` or `unknown`. A failure means "unreachable from the checker". It may be a geographic restriction.
+
+## Wikidata
+
+A station is matched with a Wikidata item only when the match is sure: same country and same name, and either a shared domain between the item's official website and the station's addresses, or a name unique on both sides with no contradicting website. A matched station gets `ids.wikidata`, `wikipedia`, the item's logo, and its website when it had none. Its `sources` then list `wikidata`.
 
 ## Grouping
 
