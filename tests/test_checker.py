@@ -47,6 +47,30 @@ class Parsers(unittest.TestCase):
             self.assertEqual(p.probe(url)["error"], "private_address", url)
 
 
+class Resolver(unittest.TestCase):
+    def setUp(self):
+        self.saved = (p.RESOLVER, p._doh)
+        p.RESOLVER = "doh"
+
+    def tearDown(self):
+        p.RESOLVER, p._doh = self.saved
+
+    def answer(self, ips):
+        p._doh = lambda host: ips
+
+    def test_public_resolver_answers_are_still_checked(self):
+        self.answer(["10.1.2.3"])
+        self.assertEqual(p.probe("https://a.example.org/x")["error"], "private_address")
+        self.answer(["0.0.0.0"])
+        self.assertEqual(p.probe("https://a.example.org/x")["error"], "blocked_locally")
+        self.answer(["203.0.113.5", "::ffff:127.0.0.1"])
+        self.assertEqual(p.probe("https://a.example.org/x")["error"], "private_address")
+
+    def test_ip_literals_skip_the_resolver(self):
+        self.answer(["203.0.113.5"])
+        self.assertEqual(p.probe("http://127.0.0.1/x")["error"], "private_address")
+
+
 class Health(unittest.TestCase):
     def step(self, history, day, ok, error="connect"):
         streams = [{"id": "sm_a", "url": "https://a.example.org/x", "shard": "FR"}]

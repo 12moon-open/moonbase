@@ -13,8 +13,10 @@ import re
 import socket
 import ssl
 import subprocess
+import threading
 import time
-from urllib.parse import urljoin, urlsplit
+import urllib.request
+from urllib.parse import quote, urljoin, urlsplit
 
 USER_AGENT = "12moon-checker/1.0 (+https://github.com/12moon-open/moonbase)"
 CONNECT_TIMEOUT = 8
@@ -35,20 +37,83 @@ class Failure(Exception):
         self.code, self.detail = code, detail
 
 
-def _public_addresses(host, port):
+# Where host names are resolved: "system" uses the machine's resolver, "doh" asks
+# public resolvers over HTTPS, so a home filter does not hide stations from the checker.
+RESOLVER = "system"
+DOH_SERVERS = (
+    "https://1.1.1.1/dns-query?name={name}&type={type}",  # Cloudflare
+    "https://8.8.8.8/resolve?name={name}&type={type}",  # Google, if Cloudflare fails
+)
+_cache, _cache_lock = {}, threading.Lock()
+
+
+def _doh(host):
+    """Addresses of a host from public DNS-over-HTTPS resolvers. Raises Failure."""
+    with _cache_lock:
+        if host in _cache:
+            cached = _cache[host]
+            if isinstance(cached, Failure):
+                raise cached
+            return cached
+    result = None
+    for record_type, number in (("A", 1), ("AAAA", 28)):
+        for server in DOH_SERVERS:
+            url = server.format(name=quote(host, safe=""), type=record_type)
+            request = urllib.request.Request(url, headers={"Accept": "application/dns-json", "User-Agent": USER_AGENT})
+            try:
+                with urllib.request.urlopen(request, timeout=5) as response:
+                    answer = json.loads(response.read(256 * 1024))
+            except (OSError, ValueError):
+                continue
+            if answer.get("Status") == 3:
+                result = Failure("dns", "nxdomain")
+                break
+            if answer.get("Status") != 0:
+                continue
+            ips = [a["data"] for a in answer.get("Answer", []) if a.get("type") == number]
+            result = ips or result
+            break
+        else:
+            result = result or Failure("dns_resolver")  # Every resolver failed: a local problem.
+        if isinstance(result, list):
+            break
+        if isinstance(result, Failure) and result.detail == "nxdomain":
+            break
+    if result is None:
+        result = Failure("dns", "no address")
+    with _cache_lock:
+        _cache[host] = result
+    if isinstance(result, Failure):
+        raise result
+    return result
+
+
+def _lookup(host, port):
+    try:
+        ipaddress.ip_address(host.strip("[]"))
+        literal = True
+    except ValueError:
+        literal = False
+    if RESOLVER == "doh" and not literal:
+        return [ip for ip in _doh(host.lower().rstrip("."))]
     try:
         infos = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
     except socket.gaierror as error:
         raise Failure("dns", str(error)) from None
+    return [sockaddr[0] for _, _, _, _, sockaddr in infos]
+
+
+def _public_addresses(host, port):
     addresses = []
-    for family, _, _, _, sockaddr in infos:
-        ip = ipaddress.ip_address(sockaddr[0])
+    for text in _lookup(host, port):
+        ip = ipaddress.ip_address(text.split("%")[0])
         if ip.is_unspecified:
             # 0.0.0.0 or ::, the answer of a filtering resolver: blocked here, not dead.
             raise Failure("blocked_locally")
         if not ip.is_global:
             raise Failure("private_address")
-        addresses.append((family, sockaddr))
+        family = socket.AF_INET6 if ip.version == 6 else socket.AF_INET
+        addresses.append((family, (str(ip), port) if ip.version == 4 else (str(ip), port, 0, 0)))
     if not addresses:
         raise Failure("dns")
     return addresses
@@ -335,5 +400,8 @@ def probe(url, ffprobe="ffprobe", allow_private=False):
 
 if __name__ == "__main__":
     import sys
+    if sys.argv[1:2] == ["--doh"]:
+        RESOLVER = "doh"
+        sys.argv.pop(1)
     for arg in sys.argv[1:]:
         print(json.dumps({"url": arg, **probe(arg)}, ensure_ascii=False))

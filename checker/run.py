@@ -24,6 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from . import probe as probe_module
 from .probe import probe
 
 WORKERS = 64
@@ -31,7 +32,7 @@ PER_HOST = 2
 KEEP_RUNS = 14
 DEAD_DAYS = 3
 # Errors caused by the checking machine itself, never counted against a stream.
-LOCAL_ERRORS = {"blocked_locally"}
+LOCAL_ERRORS = {"blocked_locally", "dns_resolver"}
 FIELDS = ("codec", "profile", "sample_rate", "channels", "bitrate_kbps", "container",
           "hls_variants_kbps", "now_playing", "video")
 
@@ -163,7 +164,10 @@ def main():
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--limit", type=int, help="check only a random sample of this size")
     parser.add_argument("--workers", type=int, default=WORKERS)
+    parser.add_argument("--resolver", choices=("doh", "system"), default="doh",
+                        help="doh (default): public resolvers over HTTPS; system: this machine's")
     args = parser.parse_args()
+    probe_module.RESOLVER = args.resolver
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     streams = load_streams(args.data)
     history = {}
