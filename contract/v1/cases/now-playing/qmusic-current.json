@@ -1,0 +1,22 @@
+{
+  "description": "DPG Qmusic: last played track, ISO time with offset",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "dpg.qmusic/1",
+    "params": {
+      "station": "qmusic_nl"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"played_tracks\": [{\"title\": \"Example Song\", \"artist\": {\"name\": \"Example Artist\"}, \"played_at\": \"2026-11-08T09:41:40+01:00\", \"duration\": 281}]}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "started_at": "2026-11-08T08:41:40Z"
+  }
+}

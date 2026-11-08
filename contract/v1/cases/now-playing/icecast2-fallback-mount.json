@@ -1,0 +1,32 @@
+{
+  "description": "The preferred mount is absent: the next one is used",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "icecast.status/2",
+    "params": {
+      "scheme": "https",
+      "host": "s.example.org",
+      "port": "8443",
+      "path": "/proxy/kxmp/status-json.xsl",
+      "mount": "/live"
+    },
+    "match": {
+      "path": "$.listenurl",
+      "ends_with_any": [
+        "/live",
+        "/autodj"
+      ]
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"icestats\": {\"source\": {\"listenurl\": \"http://s.example.org:8000/autodj\", \"title\": \"Auto Artist - Auto Song\"}}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Auto Artist",
+    "title": "Auto Song"
+  }
+}

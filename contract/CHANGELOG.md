@@ -1,5 +1,18 @@
 # Contract changelog
 
+## 1.3.0 (2026-11-08)
+
+Additions only, for now-playing adapters, from a reading of 28 stations' players. A 1.2 client refuses an adapter or template that uses them and keeps the others.
+
+- Template param `kind: "path"`: inserted as it is after its pattern check (no `..`), for status pages at a custom path.
+- With a template, an adapter may replace some `fields` and the `match`.
+- Fields: `or_paths` (paths tried in order), `list: "first"` (first element of a list), `root` (read from the document root, such as a show name).
+- `match.ends_with_any`: ends in order of preference (`/live`, then `/autodj`).
+- Time `local_datetime` (`yyyy-MM-dd HH:mm:ss`, with `timezone`).
+- `request.no_item_status`: HTTP statuses meaning nothing is playing (iHeart answers 410).
+- Templates `icecast.status/2` (custom path; `icecast.status/1` is unchanged for 1.2 clients), `npr.cadence/1`, `iheart.livemeta/1` (`needs_permission`: terms to be read), `dpg.qmusic/1`, `eurozet.rds/1`, `tuba.onstation/1`, with 10 more shared cases.
+- Fetching rule: a `Cache-Control: max-age` longer than `poll.interval_s` is capped to it.
+
 ## 1.2.1 (2026-11-08)
 
 - Station `sources` may list `radioarg`, and `ids` may carry `radioarg` (`ra:<page>`).

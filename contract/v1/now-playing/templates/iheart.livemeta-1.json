@@ -1,0 +1,60 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "iheart.livemeta/1",
+  "status": "needs_permission",
+  "terms": {
+    "robots_txt": "https://us.api.iheart.com/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "public_page"
+  },
+  "params": {
+    "id": {
+      "pattern": "^[0-9]{1,8}$"
+    }
+  },
+  "request": {
+    "url": "https://us.api.iheart.com/api/v3/live-meta/stream/{id}/currentTrackMeta",
+    "hosts": [
+      "us.api.iheart.com"
+    ],
+    "expect": "json",
+    "no_item_status": [
+      410
+    ]
+  },
+  "extract": {
+    "items": "$",
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.artist"
+      },
+      "title": {
+        "path": "$.title"
+      },
+      "album": {
+        "path": "$.album"
+      },
+      "started_at": {
+        "path": "$.startTime",
+        "time": "unix_ms"
+      },
+      "ended_at": {
+        "path": "$.endTime",
+        "time": "unix_ms"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 900,
+    "grace_after_end_s": 60
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

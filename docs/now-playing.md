@@ -26,6 +26,17 @@ Schemas: [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.sche
 - **Times.** `datetime_offset`: `2026-11-08 10:54:45 +0100`.
 - **Audio.** Any `audio/*`, `video/*` or `application/ogg` answer is cut before its body is read (`audio_response`). Some pages redirect robots to the stream itself.
 
+## Since 1.3
+
+- **Path params.** A template param with `kind: "path"` is inserted as it is, after its pattern check, instead of URL-encoded. Patterns refuse `..`.
+- **Adapter overrides.** With a template, an adapter may bring `fields` (each replaces the template's field of the same name) and `match`.
+- **Fields.** `or_paths` are tried in order when `path` gives nothing; `list: "first"` reads the first element of a list; `root: true` reads from the document root rather than the item.
+- **Preferred mounts.** `match.ends_with_any` keeps the items matching the earliest end found.
+- **Times.** `local_datetime`: `2026-11-08 09:41:40` in the adapter's `timezone`.
+- **Nothing playing.** A status in `request.no_item_status` (204, 404 or 410) is `no_item`, not a failure. Any other status than 200 is `http_error`.
+- **Cache.** Respect `Cache-Control: max-age`, but never wait longer than `poll.interval_s`: some services announce a cache of a month on what changes every few minutes.
+- **Reservations.** Some sites state in their robots.txt a reservation of text and data mining (EU directive 2019/790, art. 4). Reading the title playing now to show it to a listener is not mining, so such a reservation does not stop an adapter; a robots.txt `Disallow` does.
+
 ## Rules that do not change
 
 - **robots.txt always applies**, documented API or not. AzuraCast, Sveriges Radio and Bauer forbid their API to robots: no adapter reads them.

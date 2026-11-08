@@ -1,0 +1,22 @@
+{
+  "description": "Agora tuba: the first element with an artist and a title (a jingle has none)",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "tuba.onstation/1",
+    "params": {
+      "id": "42"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "[{\"artist_name\": \"\", \"song_title\": \"Station jingle\"}, {\"artist_name\": \"Example Artist\", \"song_title\": \"Example Song\", \"album_title\": \"Example Album\"}]"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "album": "Example Album"
+  }
+}

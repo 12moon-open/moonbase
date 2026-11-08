@@ -1,0 +1,20 @@
+{
+  "description": "iHeart answers 410 when nothing is playing: no_item, not a failure",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "iheart.livemeta/1",
+    "params": {
+      "id": "1234"
+    }
+  },
+  "response": {
+    "status": 410,
+    "content_type": "application/json",
+    "body": "{\"error\":\"No meta data\"}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "error": "no_item"
+  }
+}

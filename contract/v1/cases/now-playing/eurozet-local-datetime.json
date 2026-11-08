@@ -1,0 +1,22 @@
+{
+  "description": "Eurozet: JSONP, local date and time in Warsaw",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "eurozet.rds/1",
+    "params": {
+      "name": "ZET"
+    }
+  },
+  "response": {
+    "content_type": "application/javascript",
+    "body": "rdsData({\"now\": {\"artist\": \"Example Artist\", \"title\": \"Example Song\", \"startDate\": \"2026-11-08 09:41:40\"}});"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "started_at": "2026-11-08T08:41:40Z"
+  }
+}

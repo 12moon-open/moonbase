@@ -1,0 +1,48 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "tuba.onstation/1",
+  "status": "active",
+  "terms": {
+    "robots_txt": "https://fm.tuba.pl/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "public_page"
+  },
+  "params": {
+    "id": {
+      "pattern": "^[0-9]{1,8}$"
+    }
+  },
+  "request": {
+    "url": "https://fm.tuba.pl/api3/onStation?limit=3&format=json&id={id}",
+    "hosts": [
+      "fm.tuba.pl"
+    ],
+    "expect": "json"
+  },
+  "extract": {
+    "items": "$[*]",
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.artist_name"
+      },
+      "title": {
+        "path": "$.song_title"
+      },
+      "album": {
+        "path": "$.album_title"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 600
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

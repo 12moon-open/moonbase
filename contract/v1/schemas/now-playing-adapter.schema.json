@@ -108,6 +108,38 @@
     "updated_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "fields": {
+      "description": "1.3. With a template only: fields replacing the template's, one by one.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artist": {
+          "$ref": "#/$defs/field"
+        },
+        "title": {
+          "$ref": "#/$defs/field"
+        },
+        "album": {
+          "$ref": "#/$defs/field"
+        },
+        "started_at": {
+          "$ref": "#/$defs/field"
+        },
+        "ended_at": {
+          "$ref": "#/$defs/field"
+        },
+        "isrc": {
+          "$ref": "#/$defs/field"
+        },
+        "show": {
+          "$ref": "#/$defs/field"
+        }
+      }
+    },
+    "match": {
+      "description": "1.3. With a template only: replaces the template's match.",
+      "$ref": "#/$defs/match"
     }
   },
   "oneOf": [
@@ -164,6 +196,16 @@
           {
             "required": [
               "params"
+            ]
+          },
+          {
+            "required": [
+              "fields"
+            ]
+          },
+          {
+            "required": [
+              "match"
             ]
           }
         ]
@@ -256,6 +298,18 @@
               "binary/octet-stream"
             ]
           }
+        },
+        "no_item_status": {
+          "description": "1.3. HTTP statuses that mean nothing is playing, not a failure.",
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "enum": [
+              204,
+              404,
+              410
+            ]
+          }
         }
       }
     },
@@ -314,9 +368,10 @@
             "unix_ms",
             "local_hm",
             "local_hms",
-            "datetime_offset"
+            "datetime_offset",
+            "local_datetime"
           ],
-          "description": "1.2 adds datetime_offset: 2026-11-08 10:54:45 +0100."
+          "description": "1.2 adds datetime_offset; 1.3 adds local_datetime (yyyy-MM-dd HH:mm:ss, with timezone)."
         },
         "timezone": {
           "type": "string",
@@ -326,6 +381,27 @@
           "enum": [
             "isrc"
           ]
+        },
+        "or_paths": {
+          "description": "1.3. Paths tried in order when path gives nothing.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "maxLength": 200,
+            "pattern": "^\\$(?:\\.[A-Za-z_][A-Za-z0-9_-]*|\\['[^'\\]]{1,60}'\\]|\\[-?[0-9]{1,3}\\]|\\[\\*\\])*$"
+          }
+        },
+        "list": {
+          "description": "1.3. first: when the value is a list, read its first element.",
+          "enum": [
+            "first"
+          ]
+        },
+        "root": {
+          "description": "1.3. Read the path from the document root, not from the item (a show name next to the track).",
+          "type": "boolean"
         }
       },
       "oneOf": [
@@ -355,7 +431,8 @@
           "time": {
             "enum": [
               "local_hm",
-              "local_hms"
+              "local_hms",
+              "local_datetime"
             ]
           }
         },
@@ -426,41 +503,7 @@
           ]
         },
         "match": {
-          "description": "1.2. Keep only items whose value at path equals, or ends with, this text. {name} takes a template param.",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "path"
-          ],
-          "properties": {
-            "path": {
-              "type": "string",
-              "maxLength": 200,
-              "pattern": "^\\$(?:\\.[A-Za-z_][A-Za-z0-9_-]*|\\['[^'\\]]{1,60}'\\]|\\[-?[0-9]{1,3}\\]|\\[\\*\\])*$"
-            },
-            "equals": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 200
-            },
-            "ends_with": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 200
-            }
-          },
-          "oneOf": [
-            {
-              "required": [
-                "equals"
-              ]
-            },
-            {
-              "required": [
-                "ends_with"
-              ]
-            }
-          ]
+          "$ref": "#/$defs/match"
         },
         "wrap_single": {
           "description": "1.2. When the list at items ([*]) is a single object instead of an array, read it as the only item.",
@@ -542,6 +585,59 @@
           }
         }
       }
+    },
+    "match": {
+      "description": "1.2. Keep only items whose value at path equals, or ends with, this text. {name} takes a template param.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^\\$(?:\\.[A-Za-z_][A-Za-z0-9_-]*|\\['[^'\\]]{1,60}'\\]|\\[-?[0-9]{1,3}\\]|\\[\\*\\])*$"
+        },
+        "equals": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "ends_with": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "ends_with_any": {
+          "description": "1.3. Ends, in order of preference: the items matching the earliest one are kept.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "equals"
+          ]
+        },
+        {
+          "required": [
+            "ends_with"
+          ]
+        },
+        {
+          "required": [
+            "ends_with_any"
+          ]
+        }
+      ]
     }
   }
 }

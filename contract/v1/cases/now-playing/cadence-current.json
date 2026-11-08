@@ -1,0 +1,25 @@
+{
+  "description": "NPR Cadence: artist from a list, or the ensemble; show read outside the item",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "npr.cadence/1",
+    "params": {
+      "channel": "0a1b2c3d-1111-2222-3333-444455556666"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"onNow\": {\"programName\": \"Example Classics\"}, \"currentlyPlayingSong\": {\"title\": \"Example Symphony No. 1\", \"artist\": [], \"ensemble\": [\"Example Orchestra\"], \"composer\": \"Example Composer\", \"album\": \"Example Recording\", \"start\": {\"utc\": \"2026-11-08T08:41:40Z\"}, \"end\": {\"utc\": \"2026-11-08T09:20:00Z\"}}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Orchestra",
+    "title": "Example Symphony No. 1",
+    "album": "Example Recording",
+    "show": "Example Classics",
+    "started_at": "2026-11-08T08:41:40Z",
+    "ended_at": "2026-11-08T09:20:00Z"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "description": "iHeart: times in milliseconds",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "iheart.livemeta/1",
+    "params": {
+      "id": "1234"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"artist\": \"Example Artist\", \"title\": \"Example Song\", \"album\": \"Example Album\", \"startTime\": 1794127300000, \"endTime\": 1794127581000}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "status": "current",
+    "artist": "Example Artist",
+    "title": "Example Song",
+    "album": "Example Album",
+    "started_at": "2026-11-08T08:41:40Z",
+    "ended_at": "2026-11-08T08:46:21Z"
+  }
+}

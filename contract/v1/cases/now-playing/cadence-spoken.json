@@ -1,0 +1,19 @@
+{
+  "description": "NPR Cadence during a spoken programme: nothing playing",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_cccccccccccccccccccccccccc",
+    "template": "npr.cadence/1",
+    "params": {
+      "channel": "0a1b2c3d-1111-2222-3333-444455556666"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"onNow\": {\"programName\": \"Morning News\"}}"
+  },
+  "now": "2026-11-08T08:44:35Z",
+  "expected": {
+    "error": "no_item"
+  }
+}

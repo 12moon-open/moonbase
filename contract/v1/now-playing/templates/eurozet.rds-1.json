@@ -1,0 +1,56 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "eurozet.rds/1",
+  "status": "active",
+  "terms": {
+    "robots_txt": "https://rds.eurozet.pl/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "public_page"
+  },
+  "params": {
+    "name": {
+      "pattern": "^[A-Za-z0-9_-]{1,40}$"
+    }
+  },
+  "request": {
+    "url": "https://rds.eurozet.pl/reader/var/{name}.json",
+    "hosts": [
+      "rds.eurozet.pl"
+    ],
+    "expect": "json",
+    "unwrap": "jsonp",
+    "accept_types": [
+      "application/javascript",
+      "text/javascript",
+      "text/plain"
+    ]
+  },
+  "extract": {
+    "items": "$.now",
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.artist"
+      },
+      "title": {
+        "path": "$.title"
+      },
+      "started_at": {
+        "path": "$.startDate",
+        "time": "local_datetime",
+        "timezone": "Europe/Warsaw"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 900
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 262144,
+    "timeout_ms": 8000
+  }
+}

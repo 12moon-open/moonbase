@@ -40,7 +40,9 @@ export function resolve(adapter, templates, context = {}) {
     for (const name of names) {
       if (!new RegExp(template.params[name].pattern).test(params[name])) throw new AdapterError("invalid_adapter");
     }
-    const fill = (text) => text.replace(/\{([a-z_]+)\}/g, (_, n) => encodeURIComponent(params[n]));
+    // A path param (1.3) goes in as it is, after its pattern check; any other is URL-encoded.
+    const fill = (text) => text.replace(/\{([a-z_]+)\}/g, (_, n) =>
+      template.params[n]?.kind === "path" ? params[n] : encodeURIComponent(params[n]));
     const request = { ...template.request, url: fill(template.request.url), hosts: template.request.hosts.map(fill) };
     if (typeof request.scheme === "string") request.scheme = fill(request.scheme);
     if (typeof request.port === "string") request.port = Number(fill(request.port));
@@ -50,9 +52,12 @@ export function resolve(adapter, templates, context = {}) {
       const raw = (text) => text.replace(/\{([a-z_]+)\}/g, (_, n) => params[n]);
       extract.match = Object.fromEntries(Object.entries(extract.match).map(([k, v]) => [k, k === "path" ? v : raw(v)]));
     }
+    // 1.3: an adapter may replace fields of its template, and its match.
+    if (adapter.fields) extract.fields = { ...extract.fields, ...adapter.fields };
+    if (adapter.match) extract.match = adapter.match;
     full = {
       ...template,
-      ...Object.fromEntries(Object.entries(adapter).filter(([k]) => !["template", "params"].includes(k))),
+      ...Object.fromEntries(Object.entries(adapter).filter(([k]) => !["template", "params", "fields", "match"].includes(k))),
       request, extract,
       ignore: adapter.ignore || template.ignore,
     };
@@ -284,6 +289,18 @@ function toTime(value, kind, timeZone, now) {
     return Number.isFinite(n) ? (kind === "unix_s" ? n * 1000 : n) : null;
   }
   const text = String(value).trim();
+  if (kind === "local_datetime") {
+    const m = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})$/.exec(text);
+    if (!m) return null;
+    let tz;
+    try {
+      tz = new Intl.DateTimeFormat("en-US", { timeZone }).resolvedOptions().timeZone;
+    } catch {
+      throw new AdapterError("invalid_adapter");
+    }
+    const guess = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+    return guess - offsetMinutes(tz, guess - offsetMinutes(tz, guess) * 60000) * 60000;
+  }
   if (kind === "datetime_offset") {
     const m = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) ([+-]\d{2}):?(\d{2})$/.exec(text);
     if (!m) return null;
@@ -308,8 +325,14 @@ function clean(text) {
 function fieldValue(spec, item, mode, now) {
   let raw;
   if (spec.path) {
-    const found = jsonSelect(item, spec.path)[0];
-    if (found === undefined || found === null || typeof found === "object") return null;
+    let found;
+    for (const path of [spec.path, ...(spec.or_paths || [])]) {
+      found = jsonSelect(item, path)[0];
+      if (Array.isArray(found) && spec.list === "first") found = found[0];
+      if (found !== undefined && found !== null && found !== "" && typeof found !== "object") break;
+      found = undefined;
+    }
+    if (found === undefined) return null;
     raw = found;
   } else {
     const found = item.name === "#root" || item.children ? cssSelect(item, spec.css, mode === "xml")[0] : undefined;
@@ -350,6 +373,11 @@ const iso = (ms) => new Date(ms).toISOString().replace(/\.000Z$/, "Z");
  */
 export function run(adapter, response, nowText, stationName = "") {
   const now = Date.parse(nowText);
+  // 1.3: some services answer a status that means nothing is playing (iHeart: 410).
+  if (response.status && response.status !== 200) {
+    if ((adapter.request.no_item_status || []).includes(response.status)) throw new AdapterError("no_item");
+    throw new AdapterError("http_error");
+  }
   const mode = adapter.request.expect;
   const type = String(response.content_type || "").split(";")[0].trim().toLowerCase();
   // Never read a stream by mistake: an audio or video answer is cut before its body is read.
@@ -389,17 +417,31 @@ export function run(adapter, response, nowText, stationName = "") {
     items = cssSelect(root, ex.items, mode === "xml");
   }
   if (ex.match) {
-    items = items.filter((item) => {
+    const valueOf = (item) => {
       const found = mode === "json" ? jsonSelect(item, ex.match.path)[0] : undefined;
-      if (found === undefined || found === null || typeof found === "object") return false;
-      const text = String(found);
-      return ex.match.equals !== undefined ? text === ex.match.equals : text.endsWith(ex.match.ends_with);
-    });
+      return found === undefined || found === null || typeof found === "object" ? null : String(found);
+    };
+    if (ex.match.ends_with_any) {
+      // 1.3: in order of preference, keep the items matching the earliest end found.
+      const rank = (item) => {
+        const text = valueOf(item);
+        const at = text === null ? -1 : ex.match.ends_with_any.findIndex((end) => text.endsWith(end));
+        return at < 0 ? Infinity : at;
+      };
+      const best = Math.min(...items.map(rank));
+      items = best === Infinity ? [] : items.filter((item) => rank(item) === best);
+    } else {
+      items = items.filter((item) => {
+        const text = valueOf(item);
+        if (text === null) return false;
+        return ex.match.equals !== undefined ? text === ex.match.equals : text.endsWith(ex.match.ends_with);
+      });
+    }
   }
   const read = (item) => {
     const out = {};
     for (const [name, spec] of Object.entries(ex.fields)) {
-      const value = fieldValue(spec, item, mode, now);
+      const value = fieldValue(spec, spec.root ? root : item, mode, now);
       if (value !== null && value !== undefined) out[name] = value;
     }
     return out;
