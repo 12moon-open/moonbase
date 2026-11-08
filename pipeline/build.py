@@ -280,7 +280,25 @@ def _write_shard(text, relative, dist):
     return {"path": relative + ".gz", "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)}
 
 
-def write(stations, redirects, out, dist, as_of):
+def _next_version(out, entries, date):
+    """Same content, same version. New content: the build date and a counter for that day.
+
+    The previous version and a digest of its files are kept in v1/VERSION.
+    """
+    digest = hashlib.sha256("".join(e["sha256"] for e in entries).encode()).hexdigest()
+    path = out / "v1" / "VERSION"
+    previous, previous_digest = (path.read_text(encoding="ascii").split() + ["", ""])[:2] if path.exists() else ("", "")
+    if previous and previous_digest == digest:
+        return previous
+    day, _, counter = previous.partition(".")
+    version = f"{date}.{int(counter) + 1}" if day == date and counter.isdigit() else f"{date}.1"
+    if previous and version <= previous:
+        raise Refused(f"version {version} is not after {previous}")
+    path.write_text(f"{version} {digest}\n", encoding="ascii")
+    return version
+
+
+def write(stations, redirects, out, dist, as_of, build_date=None):
     source_dir = out / "v1" / "stations"
     source_dir.mkdir(parents=True, exist_ok=True)
     for old in source_dir.glob("*.ndjson"):
@@ -297,9 +315,10 @@ def write(stations, redirects, out, dist, as_of):
     text = "".join(_dumps(r) + "\n" for r in redirects)
     (out / "v1" / "redirects.ndjson").write_text(text, encoding="utf-8")
     redirect_entry = {"shard": "all", **_write_shard(text, "redirects.ndjson", dist), "count": len(redirects)}
+    version = _next_version(out, entries + [redirect_entry], build_date or as_of[:10])
     manifest = {
         "contract": CONTRACT,
-        "dataset_version": as_of[:10] + ".1",
+        "dataset_version": version,
         "generated_at": as_of,
         "license": "CC0-1.0",
         "datasets": {"stations": entries, "redirects": [redirect_entry]},
@@ -308,12 +327,12 @@ def write(stations, redirects, out, dist, as_of):
     return manifest
 
 
-def build(source, out, dist, as_of, checks=None):
+def build(source, out, dist, as_of, checks=None, build_date=None):
     rows, refused = prepare_rows(source, checks)
     previous, redirects = load_previous(out)
     stations, redirects = merge(group_rows(rows), previous, redirects, as_of)
     check(stations, previous, len(source))
-    manifest = write(stations, redirects, out, dist, as_of)
+    manifest = write(stations, redirects, out, dist, as_of, build_date)
     return {
         "source_rows": len(source),
         "refused": dict(refused),
@@ -322,6 +341,7 @@ def build(source, out, dist, as_of, checks=None):
         "streams": sum(len(s["streams"]) for s in stations.values()),
         "measured_streams": sum("codec" in m for s in stations.values() for m in s["streams"]),
         "redirects": len(redirects),
+        "dataset_version": manifest["dataset_version"],
         "shards": len(manifest["datasets"]["stations"]),
         "bytes": sum(e["bytes"] for e in manifest["datasets"]["stations"]),
     }
@@ -349,7 +369,8 @@ def main():
         with gzip.open(args.checks, "rt", encoding="utf-8") as handle:
             checks = read_checks(json.load(handle))
     try:
-        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks)
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

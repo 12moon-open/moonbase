@@ -200,6 +200,19 @@ class Build(unittest.TestCase):
         self.assertEqual(after["streams"], before["streams"])
         self.assertEqual(after["rev"], before["rev"])
 
+    def version(self):
+        return json.loads((self.dist / "v1" / "manifest.json").read_text())["dataset_version"]
+
+    def test_version_moves_only_when_the_content_changes(self):
+        b.build(FIP + filler(), self.out, self.dist, AS_OF, None, "2026-11-08")
+        self.assertEqual(self.version(), "2026-11-08.1")
+        b.build(FIP + filler(), self.out, self.dist, AS_OF, None, "2026-11-08")
+        self.assertEqual(self.version(), "2026-11-08.1")
+        b.build(FIP[:3] + filler(), self.out, self.dist, AS_OF, None, "2026-11-08")
+        self.assertEqual(self.version(), "2026-11-08.2")
+        b.build(FIP + filler(), self.out, self.dist, AS_OF, None, "2026-11-09")
+        self.assertEqual(self.version(), "2026-11-09.1")
+
     def test_private_stream_is_refused(self):
         report = self.run_build([row("d1", "Evil", "http://192.168.1.1/")] + filler())
         self.assertEqual(report["refused"], {"stream": 1})
