@@ -31,27 +31,17 @@ No personal data, no text written by others (descriptions, biographies), no imag
 2. **Read** the station to see its streams and their state.
 3. **Edit** what is wrong or missing, or **add** the station if it is really not there.
 
-### Search
+### Search and read
 
-```
-GET /v1/edit/search?q=radio+nova&country=FR
-```
+Search the published files, not the API: they are public, static and cached.
 
-`q` is a name (accents and case ignored, every word must appear), part of an address (`nova.fr`, `stream.example.org/live`), a station id `st_…` (a merged id leads to the station it was merged into) or a stream id `sm_…`. `country` is optional. At most 50 results:
+1. `GET https://data.12moon.app/v1/manifest.json` lists the files with their sha256. Download again only when `dataset_version` changed (once a day at most).
+2. Each `datasets.stations[].path` (`stations/FR.ndjson.gz`, one file per country) holds one station per line, see [the station schema](../contract/v1/schemas/station.schema.json). `redirects.ndjson.gz` maps a merged id (`from`) to the station it went into (`to`).
+3. `health/FR.ndjson.gz` holds the last check of each stream of that country, by stream id: `state` (`ok`, `failing`, `dead`), `codec`, `bitrate_kbps`.
 
-```json
-{ "stations": [ { "id": "st_…", "name": "Radio Nova", "country": "FR", "status": "active", "homepage": "https://www.nova.fr/", "streams": 3, "logo_url": null } ] }
-```
+Keep them in a local index and match on the name (ignore accents and case), the site, the stream addresses and the ids. A station may be listed under another name, or twice: look at its streams and site before deciding it is missing.
 
-The search reads the published dataset, refreshed within the hour after each build: an edit does not show here before it is published.
-
-### Read
-
-```
-GET /v1/edit/stations/st_…
-```
-
-Returns `station` (the published record, see [the station schema](../contract/v1/schemas/station.schema.json)), `health` (the last check of each stream: `state` `ok`, `failing` or `dead`, `codec`, `bitrate_kbps`) and `edits` (the edits of this station, newest first).
+`GET /v1/edit/changes?station=st_…` lists the edits already made to a station, `?status=pending` yours waiting for review. An edit shows in the files only after the next build.
 
 ### Edit
 
@@ -83,7 +73,7 @@ All fields but `station` are optional, at least one change is required:
 | `note` | why, at most 1000 characters, private |
 | `source` | the address where the fact was seen, private |
 
-A field set by a later edit replaces the earlier one. Answer: `201 { "id": "ed_…", "station": "st_…", "status": "accepted" | "pending" }`. Errors: `404` unknown station, `422` with the invalid field, `429` daily limit.
+A field set by a later edit replaces the earlier one. Answer: `201 { "id": "ed_…", "station": "st_…", "status": "accepted" | "pending" }`. Errors: `422` with the invalid field, `429` daily limit. An unknown station id is accepted but does nothing: check it in the files first.
 
 ### Add a station
 
@@ -101,11 +91,11 @@ POST /v1/edit/stations
 }
 ```
 
-Each stream is checked by the stream checker (it must play audio), then the station is published with the next dataset. `409 { "station": "st_…" }` when a stream already belongs to a station: edit that one instead. Answer: `202 { "id": "pr_…", "status": "pending" }`. `GET /v1/edit/new-stations` lists the stations you added and what became of them (`published`, `duplicate` with the station, or `rejected` with the reason).
+Each stream is checked by the stream checker (it must play audio), then the station is published with the next dataset; a stream already in a station makes it a `duplicate` of that station. Answer: `202 { "id": "pr_…", "status": "pending" }`. `GET /v1/edit/new-stations` lists the stations you added and what became of them (`published`, `duplicate` with the station, or `rejected` with the reason).
 
 ### Follow your edits
 
-`GET /v1/edit/changes?status=pending` lists your edits (`pending`, `accepted`, `rejected`, `reverted`).
+`GET /v1/edit/changes` lists your edits; filter with `status` (`pending`, `accepted`, `rejected`, `reverted`) or `station`.
 
 ## For the maintainer
 

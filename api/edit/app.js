@@ -2,7 +2,12 @@
 // The edit page. Every value from the data is put in the page as text, never as HTML.
 
 const $ = (id) => document.getElementById(id);
+const DATA = "https://data.12moon.app/v1/";
 let me = null;
+// The published dataset, read once per session: id → { record, shard, find }.
+const stations = new Map();
+const redirects = new Map();
+let dataVersion = null;
 
 function h(tag, attrs = {}, ...children) {
   const el = document.createElement(tag);
@@ -61,9 +66,67 @@ async function start() {
   $("app").hidden = false;
   $("logout").hidden = false;
   $("who").textContent = `· ${me.name} (${me.role})`;
-  $("catalog").textContent = me.catalog.stations ? `${me.catalog.stations} stations, dataset ${me.catalog.newest}` : "catalog loading…";
   for (const b of document.querySelectorAll("[data-role]")) b.hidden = b.dataset.role !== me.role;
   tab("search");
+  if (!dataVersion) loadData();
+}
+
+// --- The published dataset ---
+
+async function readGzip(url) {
+  const response = await fetch(url, { cache: "no-cache", credentials: "omit" });
+  if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+  const text = await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text();
+  return text.split("\n").filter(Boolean).map((line) => JSON.parse(line));
+}
+
+function nameKey(text) {
+  return (typeof text === "string" ? text : "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+}
+
+function findText(r) {
+  const parts = [nameKey(r.name), ...(r.alt_names || []).map((n) => nameKey(n.name || n)), r.id];
+  if (r.homepage) parts.push(r.homepage.toLowerCase().replace(/^https?:\/\//, ""));
+  for (const m of r.streams || []) parts.push(m.id, m.url.toLowerCase().replace(/^https?:\/\//, ""));
+  return parts.join(" | ");
+}
+
+async function loadData() {
+  const label = $("catalog");
+  try {
+    const manifest = await (await fetch(DATA + "manifest.json", { cache: "no-cache", credentials: "omit" })).json();
+    const entries = manifest.datasets.stations;
+    let done = 0;
+    label.textContent = `Loading stations 0/${entries.length}…`;
+    const queue = [...entries];
+    const worker = async () => {
+      for (let entry = queue.shift(); entry; entry = queue.shift()) {
+        for (const r of await readGzip(DATA + entry.path)) stations.set(r.id, { record: r, shard: entry.shard, find: findText(r) });
+        label.textContent = `Loading stations ${++done}/${entries.length}…`;
+      }
+    };
+    await Promise.all([1, 2, 3, 4, 5, 6].map(worker));
+    for (const r of await readGzip(DATA + manifest.datasets.redirects[0].path)) redirects.set(r.from, r.to);
+    dataVersion = manifest.dataset_version;
+    label.textContent = `${stations.size} stations, dataset ${dataVersion}`;
+  } catch (e) {
+    label.className = "error";
+    label.textContent = `Could not load the dataset: ${e.message}`;
+  }
+}
+
+const resolve = (id) => (stations.has(id) ? id : redirects.get(id) || id);
+const healthCache = new Map();
+function healthOf(shard) {
+  if (!healthCache.has(shard)) healthCache.set(shard, readGzip(`${DATA}health/${shard}.ndjson.gz`).catch(() => []));
+  return healthCache.get(shard);
+}
+
+/** Station ids already holding one of these stream addresses. */
+function holders(urls) {
+  const keys = urls.map((u) => u.toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "")).filter((k) => k.length >= 8);
+  return [...stations.values()].filter((s) => keys.some((k) => s.find.includes(k))).map((s) => s.record);
 }
 
 function tab(name) {
@@ -74,33 +137,49 @@ function tab(name) {
 
 // --- Search and station ---
 
-async function runSearch(event) {
+function runSearch(event) {
   event?.preventDefault();
+  const table = $("results");
+  if (!dataVersion) {
+    table.replaceChildren(h("tr", {}, h("td", { class: "muted" }, "The dataset is still loading.")));
+    return;
+  }
   const q = $("q").value.trim();
   const country = $("country").value.trim().toUpperCase();
-  const params = new URLSearchParams({ q });
-  if (country) params.set("country", country);
-  const table = $("results");
-  table.replaceChildren(h("tr", {}, h("td", { class: "muted" }, "Searching…")));
-  try {
-    const { stations } = await api("GET", `/v1/edit/search?${params}`);
-    table.replaceChildren(
-      h("tr", {}, h("th", {}, "Name"), h("th", {}, "Country"), h("th", {}, "Streams"), h("th", {}, "Status"), h("th", {}, "Site")),
-      ...stations.map((s) => h("tr", { class: "click", onclick: () => openStation(s.id) },
-        h("td", {}, s.name), h("td", {}, s.country || ""), h("td", {}, s.streams), h("td", {}, s.status), h("td", { class: "url muted" }, s.homepage || ""))),
-    );
-    if (!stations.length) table.replaceChildren(h("tr", {}, h("td", { class: "muted" }, "Nothing found.")));
-  } catch (e) {
-    table.replaceChildren(h("tr", {}, h("td", { class: "error" }, e.message)));
-  }
+  const id = q.match(/^st_[0-9a-z]{26}$/) ? resolve(q) : null;
+  const words = id ? [id] : /[./:_]/.test(q) ? [q.toLowerCase().replace(/^https?:\/\//, "")] : nameKey(q).split(" ").filter(Boolean);
+  if (!words.length && !country) return;
+  const key = nameKey(q);
+  const found = [...stations.values()]
+    .filter((s) => (!country || s.record.country === country) && words.every((w) => s.find.includes(w)))
+    .sort((a, b) => (b.record.status === "active") - (a.record.status === "active")
+      || (nameKey(b.record.name) === key) - (nameKey(a.record.name) === key)
+      || nameKey(b.record.name).startsWith(key) - nameKey(a.record.name).startsWith(key)
+      || a.record.name.length - b.record.name.length)
+    .slice(0, 100).map((s) => s.record);
+  table.replaceChildren(
+    h("tr", {}, h("th", {}, "Name"), h("th", {}, "Country"), h("th", {}, "Streams"), h("th", {}, "Status"), h("th", {}, "Site")),
+    ...found.map((s) => h("tr", { class: "click", onclick: () => openStation(s.id) },
+      h("td", {}, s.name), h("td", {}, s.country || ""), h("td", {}, (s.streams || []).length), h("td", {}, s.status), h("td", { class: "url muted" }, s.homepage || ""))),
+  );
+  if (!found.length) table.replaceChildren(h("tr", {}, h("td", { class: "muted" }, "Nothing found.")));
 }
 
 async function openStation(id) {
   const box = $("station");
   box.replaceChildren(h("p", { class: "muted" }, "Loading…"));
+  const target = resolve(id);
+  const entry = stations.get(target);
+  if (!entry) {
+    box.replaceChildren(h("p", { class: "error" }, `${id} is not in the published dataset.`));
+    return;
+  }
   let view;
   try {
-    view = await api("GET", `/v1/edit/stations/${id}`);
+    const [{ edits }, health] = await Promise.all([api("GET", `/v1/edit/changes?station=${target}`), healthOf(entry.shard)]);
+    const ids = new Set((entry.record.streams || []).map((m) => m.id));
+    view = { station: entry.record, edits, health: Object.fromEntries(health.filter((r) => ids.has(r.id)).map((r) => [r.id, r])),
+      redirected_from: target !== id ? id : undefined };
   } catch (e) {
     box.replaceChildren(h("p", { class: "error" }, e.message));
     return;
@@ -217,7 +296,7 @@ function editTable(edits, refresh) {
   };
   return h("table", {}, ...edits.map((e) => h("tr", {},
     h("td", {}, date(e.created_at), h("div", { class: "muted" }, e.editor)),
-    h("td", {}, e.station_name ? h("a", { href: "#", onclick: (ev) => { ev.preventDefault(); tab("search"); openStation(e.station); } }, e.station_name) : e.station,
+    h("td", {}, stations.has(e.station) ? h("a", { href: "#", onclick: (ev) => { ev.preventDefault(); tab("search"); openStation(e.station); } }, stations.get(e.station).record.name) : e.station,
       h("pre", {}, JSON.stringify(e.change, null, 1)), e.note ? h("div", { class: "muted" }, e.note) : "", e.source ? link(e.source) : ""),
     h("td", {}, e.status),
     h("td", {}, me.role !== "maintainer" ? "" : e.status === "pending"
@@ -280,6 +359,13 @@ async function showAdd() {
     if (Object.keys(place).length) body.place = place;
     if (list(f.languages.value).length) body.languages = list(f.languages.value);
     if (list(f.tags.value).length) body.tags = list(f.tags.value);
+    const already = holders(body.streams.map((m) => m.url));
+    if (already.length) {
+      status.className = "error";
+      status.replaceChildren("A stream already belongs to ", ...already.slice(0, 3).map((r) =>
+        h("a", { href: "#", onclick: (ev) => { ev.preventDefault(); tab("search"); openStation(r.id); } }, `${r.name} `)), ": edit it instead.");
+      return;
+    }
     try {
       const result = await api("POST", "/v1/edit/stations", body);
       status.className = "ok";
@@ -298,7 +384,7 @@ async function showAdd() {
       h("td", {}, p.status, p.reason ? ` (${p.reason})` : ""), h("td", {}, p.station || "")))) : h("p", { class: "muted" }, "None yet."));
   };
   box.replaceChildren(
-    h("p", { class: "muted" }, "Search first: a stream already in a station is refused."),
+    h("p", { class: "muted" }, "Search first. A station whose stream is already in the dataset is not added."),
     h("form", { onsubmit: send }, h("div", { class: "grid" },
       h("label", {}, "Name"), f.name, h("label", {}, "Country"), h("div", {}, f.country), h("label", {}, "Streams"), f.streams,
       h("label", {}, "Site"), f.homepage, h("label", {}, "Logo"), f.logo_url, h("label", {}, "Town"), f.city,

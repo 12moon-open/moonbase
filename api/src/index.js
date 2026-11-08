@@ -1,7 +1,6 @@
 import { verifyRequest } from "./auth.js";
 import {
-  addEdit, addStation, catalogState, createEditor, decideEdit, editorOf, exportEdits, listEditors, listEdits,
-  refreshCatalog, revokeEditor, search, stationView,
+  addEdit, addStation, createEditor, decideEdit, editorOf, exportEdits, listEditors, listEdits, revokeEditor,
 } from "./edits.js";
 import { EDIT_CSS, EDIT_HTML, EDIT_JS } from "./editpage.js";
 import { addMeasures, purgeMeasures, streamHealth, validateMeasures } from "./measures.js";
@@ -103,7 +102,7 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
     return new Response(page[0], { headers: {
       "content-type": `${page[1]}; charset=utf-8`,
       "cache-control": "no-cache",
-      "content-security-policy": "default-src 'none'; script-src 'self'; style-src 'self'; img-src https:; connect-src 'self'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'",
+      "content-security-policy": "default-src 'none'; script-src 'self'; style-src 'self'; img-src https:; connect-src 'self' https://data.12moon.app; form-action 'none'; base-uri 'none'; frame-ancestors 'none'",
       "x-content-type-options": "nosniff",
       "referrer-policy": "no-referrer",
       "cross-origin-opener-policy": "same-origin",
@@ -219,25 +218,17 @@ async function edit(request, env, url, path, now) {
     return reply(created, result);
   };
   if (request.method === "GET" && path === "/v1/edit/me") {
-    return reply(200, { name: editor.name, role: editor.role, catalog: await catalogState(env.DB) });
-  }
-  if (request.method === "GET" && path === "/v1/edit/search") {
-    const country = url.searchParams.get("country") || "";
-    if (country && !/^[A-Z]{2}$/.test(country)) return reply(400, { error: "invalid country" });
-    return reply(200, { stations: await search(env.DB, url.searchParams.get("q") || "", country, Number(url.searchParams.get("limit")) || 50) });
-  }
-  const one = path.match(/^\/v1\/edit\/stations\/(st_[0-9a-z]{26})$/);
-  if (request.method === "GET" && one) {
-    const view = await stationView(env.DB, one[1]);
-    return view ? reply(200, view) : reply(404, { error: "unknown station" });
+    return reply(200, { name: editor.name, role: editor.role });
   }
   if (request.method === "POST" && path === "/v1/edit/stations") return answer(await addStation(env.DB, editor, await body(), now), 202);
   if (request.method === "POST" && path === "/v1/edit/changes") return answer(await addEdit(env.DB, editor, await body(), now), 201);
   if (request.method === "GET" && path === "/v1/edit/changes") {
     const status = url.searchParams.get("status") || "";
     if (status && !["pending", "accepted", "rejected", "reverted"].includes(status)) return reply(400, { error: "invalid status" });
+    const station = url.searchParams.get("station") || "";
+    if (station && !/^st_[0-9a-z]{26}$/.test(station)) return reply(400, { error: "invalid station" });
     const mine = editor.role === "maintainer" ? {} : { editor: editor.id };
-    return reply(200, { edits: await listEdits(env.DB, { status, ...mine }) });
+    return reply(200, { edits: await listEdits(env.DB, { status, station, ...mine }) });
   }
   if (request.method === "GET" && path === "/v1/edit/new-stations") {
     const { results } = await env.DB.prepare(
@@ -256,7 +247,6 @@ async function edit(request, env, url, path, now) {
   if (request.method === "POST" && path === "/v1/edit/editors") return answer(await createEditor(env.DB, await body(), now), 201);
   const revoke = path.match(/^\/v1\/edit\/editors\/(ed_[0-9a-z]{26})\/revoke$/);
   if (request.method === "POST" && revoke) return answer(await revokeEditor(env.DB, revoke[1], now));
-  if (request.method === "POST" && path === "/v1/edit/catalog/refresh") return reply(200, await refreshCatalog(env.DB));
   return reply(404, { error: "not found" });
 }
 
@@ -308,6 +298,5 @@ export default {
     const now = Math.floor(Date.now() / 1000);
     ctx.waitUntil(verifyPending(env.DB, { now }));
     if (event.cron === "17 3 * * *") ctx.waitUntil(purgeMeasures(env.DB, now));
-    else ctx.waitUntil(refreshCatalog(env.DB).catch((error) => console.error("catalog", String(error))));
   },
 };
