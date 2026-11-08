@@ -72,6 +72,8 @@ def similarity(a, b, items_per_second=ITEMS_PER_SECOND):
 
 def capture(url, allow_private=False, depth=0):
     """CAPTURE_SECONDS of audio bytes from a stream, or b"" when it cannot be read."""
+    if depth == 0:
+        probe_module._local.deadline = time.monotonic() + CAPTURE_SECONDS + 30
     try:
         final, response, body = probe_module._fetch(url, MAX_CAPTURE_BYTES, CAPTURE_SECONDS, allow_private)
         if body[:7] == b"#EXTM3U" or body[:10].lower().startswith(b"[playlist]"):
@@ -80,6 +82,9 @@ def capture(url, allow_private=False, depth=0):
         return probe_module.strip_icy(body, metaint)
     except probe_module.Failure:
         return b""
+    finally:
+        if depth == 0:
+            probe_module._local.deadline = None
 
 
 def _capture_playlist(base, body, allow_private, depth):

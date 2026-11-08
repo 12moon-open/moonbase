@@ -7,10 +7,11 @@ import { makeDb } from "./d1.js";
 import { NOW, newClient, signed } from "./helpers.js";
 
 const TOKEN = "t".repeat(40);
+const CHECKER = "c".repeat(40);
 let env;
 let client;
 beforeEach(async () => {
-  env = { DB: makeDb(), READ_ONLY: "false", ADMIN_TOKEN: TOKEN };
+  env = { DB: makeDb(), READ_ONLY: "false", ADMIN_TOKEN: TOKEN, CHECKER_TOKEN: CHECKER };
   client = await newClient();
 });
 
@@ -131,4 +132,14 @@ test("erasing a contributor keeps its published stations without it", async () =
   await call(await signed(client, "DELETE", "/v1/contributors/me"));
   const row = env.DB.raw.prepare("SELECT contributor_id, status FROM station_proposals").get();
   assert.deepEqual({ ...row }, { contributor_id: null, status: "published" });
+});
+
+test("the checker token can only claim and decide, never block or hide", async () => {
+  const { id } = await (await propose()).json();
+  assert.equal((await adminCall("POST", "/v1/admin/station-proposals/claim", undefined, CHECKER)).status, 200);
+  assert.equal((await adminCall("POST", `/v1/admin/station-proposals/${id}`, { status: "hidden" }, CHECKER)).status, 403);
+  assert.equal((await adminCall("POST", `/v1/admin/station-proposals/${id}`, { status: "rejected", reason: "not_audio" }, CHECKER)).status, 200);
+  assert.equal((await adminCall("GET", "/v1/admin/station-proposals?status=published", undefined, CHECKER)).status, 403);
+  assert.equal((await adminCall("GET", "/v1/admin/station-reports", undefined, CHECKER)).status, 403);
+  assert.equal((await adminCall("POST", "/v1/admin/contributors/abcdefghijklmnopqrstuv/block", undefined, CHECKER)).status, 403);
 });

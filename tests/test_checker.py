@@ -117,6 +117,13 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "audio/x-scpls")
             self.end_headers()
             self.wfile.write(body)
+        elif self.path == "/slow":
+            import time
+            self.wfile.write(b"HTTP/1.0 200 OK\r\n")
+            for _ in range(30):
+                self.wfile.write(b"X")
+                self.wfile.flush()
+                time.sleep(0.5)
         elif self.path == "/live":
             self.send_response(200)
             self.send_header("Content-Type", "audio/mpeg")
@@ -158,6 +165,18 @@ class EndToEnd(unittest.TestCase):
     def test_http_error(self):
         result = p.probe(self.base + "/nothing", allow_private=True)
         self.assertEqual((result["ok"], result["error"]), (False, "http_error"))
+
+    def test_a_slow_server_cannot_hold_the_probe(self):
+        import time
+        saved = p.PROBE_DEADLINE
+        p.PROBE_DEADLINE = 2.0
+        try:
+            started = time.monotonic()
+            result = p.probe(self.base + "/slow", allow_private=True)
+            self.assertLess(time.monotonic() - started, 4)
+            self.assertIn(result["error"], ("timeout", "read_timeout"))
+        finally:
+            p.PROBE_DEADLINE = saved
 
     def test_local_server_is_refused_by_default(self):
         self.assertEqual(p.probe(self.base + "/live")["error"], "private_address")

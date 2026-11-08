@@ -141,10 +141,7 @@ export async function handle(request, env, now = Math.floor(Date.now() / 1000)) 
   return reply(404, { error: "not found" });
 }
 
-/** Constant-time comparison of the admin token. */
-async function isAdmin(request, env) {
-  const expected = env.ADMIN_TOKEN;
-  const given = (request.headers.get("authorization") || "").replace(/^Bearer /, "");
+async function sameToken(given, expected) {
   if (typeof expected !== "string" || expected.length < 32 || !given) return false;
   const [a, b] = await Promise.all([given, expected].map((t) => crypto.subtle.digest("SHA-256", new TextEncoder().encode(t))));
   const x = new Uint8Array(a), y = new Uint8Array(b);
@@ -153,20 +150,35 @@ async function isAdmin(request, env) {
   return diff === 0;
 }
 
+/** "admin" for the maintainer, "checker" for the stream checker, or null. Constant-time comparisons. */
+async function role(request, env) {
+  const given = (request.headers.get("authorization") || "").replace(/^Bearer /, "");
+  if (await sameToken(given, env.ADMIN_TOKEN)) return "admin";
+  if (await sameToken(given, env.CHECKER_TOKEN)) return "checker";
+  return null;
+}
+
+const CHECKER_DECISIONS = new Set(["published", "duplicate", "rejected", "pending"]);
+
 /** For the stream checker and the maintainer only. */
 async function admin(request, env, url, path, now) {
-  if (!(await isAdmin(request, env))) return reply(401, { error: "unauthorized" });
+  const who = await role(request, env);
+  if (!who) return reply(401, { error: "unauthorized" });
   if (request.method === "POST" && path === "/v1/admin/station-proposals/claim") {
     return reply(200, { proposals: await claimStationProposals(env.DB, now) });
-  }
-  if (request.method === "GET" && path === "/v1/admin/station-proposals") {
-    return reply(200, { proposals: await listStationProposals(env.DB, url.searchParams.get("status") || "published") });
   }
   const decision = path.match(/^\/v1\/admin\/station-proposals\/(pr_[0-9a-z]{26})$/);
   if (request.method === "POST" && decision) {
     const bytes = await readBody(request);
-    const result = await decideStationProposal(env.DB, decision[1], bytes && parseJson(bytes), now);
+    const body = bytes && parseJson(bytes);
+    if (who === "checker" && !CHECKER_DECISIONS.has(body && body.status)) return reply(403, { error: "forbidden" });
+    const result = await decideStationProposal(env.DB, decision[1], body, now);
     return result.error ? reply(422, result) : reply(200, result);
+  }
+  // Everything below is for the maintainer only.
+  if (who !== "admin") return reply(403, { error: "forbidden" });
+  if (request.method === "GET" && path === "/v1/admin/station-proposals") {
+    return reply(200, { proposals: await listStationProposals(env.DB, url.searchParams.get("status") || "published") });
   }
   if (request.method === "GET" && path === "/v1/admin/station-reports") {
     return reply(200, { reports: await listStationReports(env.DB, url.searchParams.get("status") || "open") });

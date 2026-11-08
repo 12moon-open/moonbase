@@ -27,8 +27,29 @@ MAX_PLAYLIST = 64 * 1024
 MAX_SEGMENT = 256 * 1024
 MAX_HOPS = 5
 READ_WINDOW = 4.0  # Seconds of audio read after the first byte, at most.
+PROBE_DEADLINE = 25.0  # Whole probe, redirects and playlists included: a slow server cannot hold it.
+# Ports of services that are not streams: the checker must not become a port scanner.
+DENIED_PORTS = {22, 23, 25, 110, 135, 139, 143, 445, 465, 587, 993, 995, 1433, 2375, 2376, 3306, 3389,
+                5432, 5900, 6379, 9200, 11211, 27017}
+# Demuxers ffprobe may use on the bytes read: audio stream formats only.
+FORMATS = "mp3,aac,ogg,flac,mpegts,mov,mp4,m4a,matroska,webm,wav,asf,adts"
+CONTAINERS = {"mp3", "aac", "ogg", "flac", "mpegts", "mov", "matroska", "wav", "asf"}
 
 PLAYLIST_TYPES = ("mpegurl", "x-scpls", "pls", "m3u")
+
+
+_local = threading.local()
+
+
+def _remaining(cap):
+    """Seconds left before the probe's deadline, at most cap. Raises Failure when it has passed."""
+    deadline = getattr(_local, "deadline", None)
+    if deadline is None:
+        return cap
+    left = deadline - time.monotonic()
+    if left <= 0:
+        raise Failure("timeout")
+    return min(cap, left)
 
 
 class Failure(Exception):
@@ -131,6 +152,12 @@ class Response:
             while size < limit:
                 if deadline and time.monotonic() > deadline:
                     break
+                try:
+                    self.sock.settimeout(_remaining(READ_TIMEOUT))
+                except Failure:
+                    if chunks:
+                        break
+                    raise
                 data = self.sock.recv(min(16384, limit - size))
                 if not data:
                     break
@@ -154,6 +181,8 @@ def _get(url, allow_private=False):
     if parts.scheme not in ("http", "https") or not parts.hostname or parts.username or parts.password:
         raise Failure("bad_url")
     port = parts.port or (443 if parts.scheme == "https" else 80)
+    if port in DENIED_PORTS:
+        raise Failure("denied_port")
     if allow_private:
         addresses = [(f, s) for f, _, _, _, s in socket.getaddrinfo(parts.hostname, port, type=socket.SOCK_STREAM)]
     else:
@@ -161,15 +190,19 @@ def _get(url, allow_private=False):
     family, sockaddr = addresses[0]
     started = time.monotonic()
     sock = socket.socket(family, socket.SOCK_STREAM)
-    sock.settimeout(CONNECT_TIMEOUT)
     try:
+        sock.settimeout(_remaining(CONNECT_TIMEOUT))
         sock.connect(sockaddr)
+    except Failure:
+        sock.close()
+        raise
     except OSError:
         sock.close()
         raise Failure("connect") from None
     if parts.scheme == "https":
         context = ssl.create_default_context()
         try:
+            sock.settimeout(_remaining(READ_TIMEOUT))
             sock = context.wrap_socket(sock, server_hostname=parts.hostname)
         except ssl.SSLCertVerificationError:
             sock.close()
@@ -177,7 +210,9 @@ def _get(url, allow_private=False):
         except (ssl.SSLError, OSError):
             sock.close()
             raise Failure("tls") from None
-    sock.settimeout(READ_TIMEOUT)
+        except Failure:
+            sock.close()
+            raise
     target = (parts.path or "/") + (f"?{parts.query}" if parts.query else "")
     host = parts.hostname if parts.port is None else f"{parts.hostname}:{parts.port}"
     request = (
@@ -188,12 +223,16 @@ def _get(url, allow_private=False):
         sock.sendall(request.encode("ascii", "strict"))
         raw = b""
         while b"\r\n\r\n" not in raw and b"\n\n" not in raw:
+            sock.settimeout(_remaining(READ_TIMEOUT))
             data = sock.recv(4096)
             if not data:
                 break
             raw += data
             if len(raw) > MAX_HEADER:
                 raise Failure("bad_response")
+    except Failure:
+        sock.close()
+        raise
     except (socket.timeout, OSError, UnicodeEncodeError):
         sock.close()
         raise Failure("read_timeout") from None
@@ -290,10 +329,10 @@ def describe(audio, ffprobe="ffprobe"):
         return {}
     try:
         result = subprocess.run(
-            [ffprobe, "-v", "error", "-protocol_whitelist", "pipe", "-probesize", str(len(audio)),
+            [ffprobe, "-v", "error", "-protocol_whitelist", "pipe", "-format_whitelist", FORMATS, "-probesize", str(len(audio)),
              "-show_entries", "stream=codec_type,codec_name,profile,sample_rate,channels,bit_rate:format=format_name",
              "-of", "json", "-i", "pipe:0"],
-            input=audio, capture_output=True, timeout=15, check=False,
+            input=audio, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=15, check=False,
         )
         data = json.loads(result.stdout or b"{}")
     except (subprocess.TimeoutExpired, ValueError, OSError):
@@ -301,16 +340,17 @@ def describe(audio, ffprobe="ffprobe"):
     streams = data.get("streams") or []
     audio_streams = [s for s in streams if s.get("codec_type") == "audio"]
     out = {"video": any(s.get("codec_type") == "video" for s in streams)}
-    if data.get("format", {}).get("format_name"):
-        out["container"] = data["format"]["format_name"].split(",")[0]
+    container = str(data.get("format", {}).get("format_name", "")).split(",")[0]
+    if container in CONTAINERS:
+        out["container"] = container
     if audio_streams:
         s = audio_streams[0]
-        out["codec"] = s.get("codec_name")
-        if s.get("profile"):
+        out["codec"] = s.get("codec_name") if re.fullmatch(r"[a-z0-9_]{2,24}", str(s.get("codec_name", ""))) else None if re.fullmatch(r"[a-z0-9_]{2,24}", str(s.get("codec_name", ""))) else None
+        if re.fullmatch(r"[A-Za-z0-9 .+-]{1,24}", str(s.get("profile", ""))):
             out["profile"] = s["profile"]
-        if s.get("sample_rate"):
+        if str(s.get("sample_rate", "")).isdigit() and 0 < int(s["sample_rate"]) <= 384000:
             out["sample_rate"] = int(s["sample_rate"])
-        if s.get("channels"):
+        if isinstance(s.get("channels"), int) and 0 < s["channels"] <= 16:
             out["channels"] = s["channels"]
         if str(s.get("bit_rate", "")).isdigit():
             out["bitrate_kbps"] = round(int(s["bit_rate"]) / 1000)
@@ -333,6 +373,7 @@ def probe(url, ffprobe="ffprobe", allow_private=False):
     """Returns a dict describing the stream. Never raises."""
     result = {"ok": False}
     started = time.monotonic()
+    _local.deadline = started + PROBE_DEADLINE
     hops = []
     try:
         final, response, body = _fetch(url, MAX_BODY, READ_WINDOW, allow_private, hops)
@@ -393,6 +434,8 @@ def probe(url, ffprobe="ffprobe", allow_private=False):
         result["error"] = failure.code
     except (OSError, ValueError, UnicodeError):
         result["error"] = "bad_response"
+    finally:
+        _local.deadline = None
     result["redirects"] = len(hops)
     result["elapsed_ms"] = round((time.monotonic() - started) * 1000)
     return result

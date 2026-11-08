@@ -11,9 +11,13 @@ DATA_DIR is the directory served as data.12moon.app (it holds v1/stations/*.ndjs
 """
 import argparse
 import gzip
+import http.client
 import json
+import os
+import socket
+import ssl
 import sys
-import urllib.request
+import urllib.parse
 from collections import Counter
 from pathlib import Path
 
@@ -38,13 +42,17 @@ def known_streams(data):
     return index
 
 
+MAX_STREAMS = 5
+
+
 def decide(proposal, index, prober=probe):
-    for url in proposal["streams"]:
+    streams = [url for url in proposal["streams"] if isinstance(url, str)][:MAX_STREAMS]
+    for url in streams:
         station = index.get(stream_key(url))
         if station:
             return {"status": "duplicate", "station": station}
     playing, errors = [], Counter()
-    for url in proposal["streams"]:
+    for url in streams:
         result = prober(url)
         if not result["ok"]:
             errors[result.get("error", "unknown")] += 1
@@ -63,16 +71,36 @@ def decide(proposal, index, prober=probe):
     return {"status": "rejected", "reason": REJECTIONS.get(error, "stream_unreachable")}
 
 
+class _Connection(http.client.HTTPSConnection):
+    """HTTPS to the API host, resolved over DNS-over-HTTPS like everything else, to a public address."""
+
+    def connect(self):
+        family, sockaddr = probe_module._public_addresses(self.host, self.port)[0]
+        sock = socket.create_connection(sockaddr[:2], timeout=self.timeout)
+        self.sock = ssl.create_default_context().wrap_socket(sock, server_hostname=self.host)
+
+
 class Api:
+    """Calls to the contribution API. Never follows a redirect: the token goes to the API host only."""
+
     def __init__(self, base, token):
-        self.base, self.token = base.rstrip("/"), token
+        parts = urllib.parse.urlsplit(base)
+        if parts.scheme != "https" or not parts.hostname:
+            raise ValueError("the API must be reached over https")
+        self.host, self.token = parts.hostname, token
 
     def call(self, method, path, body=None):
-        data = None if body is None else json.dumps(body).encode()
-        request = urllib.request.Request(self.base + path, data=data, method=method, headers={
-            "Authorization": f"Bearer {self.token}", "Content-Type": "application/json", "User-Agent": USER_AGENT})
-        with urllib.request.urlopen(request, timeout=30) as response:
-            return json.loads(response.read(4 * 1024 * 1024))
+        connection = _Connection(self.host, 443, timeout=30)
+        try:
+            connection.request(method, path, body=None if body is None else json.dumps(body).encode(), headers={
+                "Authorization": f"Bearer {self.token}", "Content-Type": "application/json", "User-Agent": USER_AGENT})
+            response = connection.getresponse()
+            data = response.read(4 * 1024 * 1024)
+        finally:
+            connection.close()
+        if response.status != 200:
+            raise RuntimeError(f"API answered {response.status} on {path}")
+        return json.loads(data)
 
 
 def run(api, data, prober=probe):
@@ -88,13 +116,14 @@ def run(api, data, prober=probe):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--api", required=True)
-    parser.add_argument("--token-file", required=True, type=Path)
+    parser.add_argument("--token-file", type=Path, help="default: the systemd credential named token")
     parser.add_argument("--data", required=True, type=Path)
     args = parser.parse_args()
     if not args.api.startswith("https://"):
         sys.exit("the API must be reached over https")
     probe_module.RESOLVER = "doh"
-    token = args.token_file.read_text(encoding="ascii").strip()
+    token_file = args.token_file or Path(os.environ.get("CREDENTIALS_DIRECTORY", "/nonexistent")) / "token"
+    token = token_file.read_text(encoding="ascii").strip()
     print(json.dumps(run(Api(args.api, token), args.data)))
 
 
