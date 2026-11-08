@@ -17,7 +17,7 @@ from .normalize import clean_name, logo_url, name_key, stream_key, stream_protoc
 from .tags import clean_tags
 from .wikidata import enrich, match_groups
 
-CONTRACT = "1.5.0"
+CONTRACT = "1.6.0"
 ALLOWED_SOURCES = {"radio-browser", "wikidata", "contribution", "editor", "radioarg"}
 MIN_ROWS = 10_000
 MIN_RATIO = 0.8  # Refuse to publish when active stations drop below this ratio.

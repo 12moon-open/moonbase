@@ -30,7 +30,7 @@
         "refuses_user_agent",
         "maintainer"
       ],
-      "description": "station_request or service_request: asked to stop. robots_disallow: robots.txt disallows a request 12moon writes itself (basis public_api or public_page). refuses_user_agent: answers 403 to an identifiable User-Agent. maintainer: any other decision."
+      "description": "station_request or service_request: asked to stop. robots_disallow: no longer given since 1.6 (terms and robots.txt never block), kept valid for older lists. refuses_user_agent: answers 403 to an identifiable User-Agent. maintainer: any other decision."
     },
     "since": {
       "type": "string",

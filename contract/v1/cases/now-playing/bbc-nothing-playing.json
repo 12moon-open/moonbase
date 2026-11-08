@@ -1,0 +1,19 @@
+{
+  "description": "BBC: nothing playing now (speech, or the last song over)",
+  "adapter": {
+    "format": "12moon.now_playing/1",
+    "station": "st_dddddddddddddddddddddddddd",
+    "template": "bbc.rms/1",
+    "params": {
+      "service": "bbc_6music"
+    }
+  },
+  "response": {
+    "content_type": "application/json",
+    "body": "{\"total\": 1, \"limit\": 4, \"offset\": 0, \"data\": [{\"type\": \"segment_item\", \"id\": \"p0bbbbbb\", \"segment_type\": \"music\", \"titles\": {\"primary\": \"Other Artist\", \"secondary\": \"Other Song\", \"tertiary\": null, \"entity_title\": \"Other Artist\"}, \"offset\": {\"start\": 4940, \"end\": 5165, \"label\": \"4 Minutes Ago\", \"now_playing\": false}}]}"
+  },
+  "now": "2026-11-08T14:40:56Z",
+  "expected": {
+    "error": "no_item"
+  }
+}

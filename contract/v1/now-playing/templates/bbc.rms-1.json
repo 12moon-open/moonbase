@@ -1,0 +1,50 @@
+{
+  "format": "12moon.now_playing_template/1",
+  "id": "bbc.rms/1",
+  "status": "active",
+  "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+  },
+  "params": {
+    "service": {
+      "pattern": "^bbc_[a-z0-9_]{2,40}$"
+    }
+  },
+  "request": {
+    "url": "https://rms.api.bbc.co.uk/v2/services/{service}/segments/latest",
+    "hosts": [
+      "rms.api.bbc.co.uk"
+    ],
+    "expect": "json"
+  },
+  "extract": {
+    "items": "$.data[*]",
+    "match": {
+      "path": "$.offset.now_playing",
+      "equals": "true"
+    },
+    "pick": "first",
+    "fields": {
+      "artist": {
+        "path": "$.titles.primary"
+      },
+      "title": {
+        "path": "$.titles.secondary"
+      }
+    }
+  },
+  "freshness": {
+    "max_age_s": 900
+  },
+  "poll": {
+    "interval_s": 60,
+    "min_interval_s": 30
+  },
+  "limits": {
+    "max_bytes": 65536,
+    "timeout_ms": 8000
+  }
+}

@@ -1,4 +1,9 @@
 {
-  "description": "Pairs of station ids confirmed as one station by the audio fingerprint check, then reviewed by the maintainer. The daily build merges them and leaves a redirect.",
-  "same": []
+  "description": "Pairs of station ids confirmed as one station, by the audio fingerprint check or the maintainer's review. The daily build merges them and leaves a redirect.",
+  "same": [
+    [
+      "st_xgrkohay2rqg2mhdrdpnyvult6",
+      "st_x7kwepyj7jnyckdfs4wpamdecw"
+    ]
+  ]
 }

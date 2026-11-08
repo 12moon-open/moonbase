@@ -7,7 +7,7 @@ Schemas: [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.sche
 ## Executing an adapter
 
 1. **Resolve.** A template-based adapter takes its request and extraction from the template. Each param must match the template's pattern; it is URL-encoded into `{name}`. The URL must be HTTPS, port 443, without credentials or IP literal, and its host must be one of `request.hosts`.
-2. **Fetch.** One `GET`, without cookies or headers chosen by the adapter. Redirects only to one of `hosts`, in HTTPS, two at most, each checked against private addresses after DNS resolution. Respect `robots.txt`, `poll.min_interval_s`, `Retry-After` and `Cache-Control`.
+2. **Fetch.** One `GET`, without cookies or headers chosen by the adapter. Redirects only to one of `hosts`, in HTTPS, two at most, each checked against private addresses after DNS resolution. Respect `poll.min_interval_s`, `Retry-After`, `Cache-Control` and 429. Since 1.6, `robots.txt` is recorded, not obeyed (see below).
 3. **Read.** The `Content-Type` must match `expect` (`wrong_type`), the body must fit `limits.max_bytes` (`too_large`). JSON uses a JSONPath subset: `$`, `.key`, `['key']`, `[n]`, `[-1]`, `[*]`. HTML and XML use a CSS subset: type, `.class`, `#id`, `[attr]`, `[attr=value]`, descendant, `>`, `:first-of-type`, `:nth-of-type(n)`. Text of `<script>` and `<style>` is never read; entities are decoded.
 4. **Fields.** For each field: select, then `regex` (first capture, or the match), `split`, `html_unescape`, trim, then `time` or the value checks. A text value has its tags removed and spaces collapsed; it is refused when longer than 200 characters, when it holds an invisible character or a web address (`invalid_value`). `check: isrc` keeps a valid ISRC only.
 5. **Times.** `iso8601`, `unix_s`, `unix_ms`, or `local_hm` / `local_hms` with an IANA `timezone`: attached to the local day, or the previous one when more than 5 minutes in the future.
@@ -35,25 +35,28 @@ Schemas: [`now-playing-adapter`](../contract/v1/schemas/now-playing-adapter.sche
 - **Times.** `local_datetime`: `2026-11-08 09:41:40` in the adapter's `timezone`.
 - **Nothing playing.** A status in `request.no_item_status` (204, 404 or 410) is `no_item`, not a failure. Any other status than 200 is `http_error`.
 - **Cache.** Respect `Cache-Control: max-age`, but never wait longer than `poll.interval_s`: some services announce a cache of a month on what changes every few minutes.
-- **Reservations.** Some sites state in their robots.txt a reservation of text and data mining (EU directive 2019/790, art. 4). Reading the title playing now to show it to a listener is not mining, so such a reservation does not stop an adapter; a robots.txt `Disallow` does.
+- **Reservations.** Some sites state in their robots.txt a reservation of text and data mining (EU directive 2019/790, art. 4). Reading the title playing now to show it to a listener is not mining, so such a reservation does not stop an adapter. Since 1.6, a robots.txt `Disallow` does not either.
 
 ## Since 1.4
 
 - **Nested items.** `extract.subitems` turns each item kept after `match` into the elements of a list inside it: a group's file lists every webradio, and each one its playlist.
 - **First not ended.** `pick: "first_not_ended"` takes the first item whose `ended_at` (plus the grace) is not past, so a song change does not show `ended` while the next song is already listed.
 
-## Rules that do not change
+## Since 1.6: terms never block, limits always apply
 
-- **robots.txt applies to what 12moon writes itself** (`terms.basis` `public_api` or `public_page`), documented API or not.
-- **Connectors made by users** (`terms.basis: "user_created"`, since 1.3.1) are what a listener's own player would do: read the title playing now while listening. For them, robots.txt is read and recorded in `terms.robots`, but does not stop the connector. Everything else stays:
-  - one read per station and per minute at most, only while someone listens, shared by all the devices of a server;
-  - `Retry-After` and `Cache-Control` respected (capped as above), back-off and suspension after repeated failures;
-  - no title stored or republished;
-  - `GET` only: no `POST`, no login, no cookie, no consent wall accepted on the user's behalf;
-  - an identifiable User-Agent, never disguised: a service that refuses it (403) is not read;
-  - a station's or a service's request to stop turns the connector `revoked` and blocks its host at once.
-- **Review.** A user-created connector whose request robots.txt disallows is published only after the maintainer's review (`needs_review`). The others follow the usual checks.
-- **A webradio is not its parent station.** The page of titles played by a group's main station says nothing about its theme webradios. An adapter is checked against the stream's ICY title when it has one. 12moon puts in `needs_review` an adapter whose request is the same as another station's.
+A standing rule set by the maintainer. The title playing now is what any player shows while listening; a station's or a service's terms, its robots.txt and a reservation of text and data mining never stop an adapter or a template, whatever its `terms.basis`. They are still read and recorded in `terms`, for information. No adapter or template is put in `needs_review` or `needs_permission` for these reasons alone.
+
+What protects the stations' servers stays mandatory, for every adapter:
+
+- one read per station and per minute at most, only while someone listens, shared by all the devices of a server;
+- `Retry-After`, `Cache-Control` (capped as above) and 429 respected; back-off, then suspension, after repeated failures;
+- an identifiable User-Agent, never disguised: a 403 stops the adapter, with no workaround;
+- `GET` only: no `POST`, no login, no cookie, no credentials, no consent wall accepted on the user's behalf;
+- no title stored or republished.
+
+Review stays for other reasons: abuse, a wrong station, the content read. A station's or a service's request to stop still turns the adapter `revoked` and blocks its host at once.
+
+- **A webradio is not its parent station.** The page of titles played by a group's main station says nothing about its theme webradios. An adapter is checked against the stream's ICY title when it has one. 12moon puts in `needs_review` an adapter whose request is the same as another station's, unless both records are the same station.
 - **No endless response.** One request, one answer: a server-sent events stream (Zeno) is out of scope.
 
 Regular expressions are at most 200 characters, with no lookaround and no back-reference, so that .NET (`NonBacktracking`) and JavaScript agree.
@@ -76,6 +79,6 @@ An adapter that is not `active`, or whose template is not `active`, is not execu
 
 ## Publication
 
-Adapters are proposed with `kind: "now_playing_adapter"` (signed, CC0, counters only in `checks`). 12moon checks the hosts, `robots.txt` and runs the adapter twice before publishing it in the `now_playing` dataset. A daily run marks a failing adapter `broken`, then `revoked` after 30 days. A station's request, a disallowing `robots.txt` or the maintainer revoke it at once, and its host joins the blocked list.
+Adapters are proposed with `kind: "now_playing_adapter"` (signed, CC0, counters only in `checks`). 12moon checks the hosts, records `robots.txt` and runs the adapter twice before publishing it in the `now_playing` dataset. A daily run marks a failing adapter `broken`, then `revoked` after 30 days. A station's request or the maintainer revoke it at once, and its host joins the blocked list.
 
-A service template is published once the maintainer has reviewed the service's terms and robots.txt; until then its status is `needs_permission`. Its `terms.basis` says on what ground: `public_api` for a documented API, `public_page` for data the station already shows publicly through the service, `station_permission` or `provider_permission` for a written agreement. Only the title playing now is read, at most once a minute per listening server, and nothing is stored or republished.
+A service template is published once the maintainer has checked that it reads only the title playing now and respects the limits above. Its `terms.basis` records on what ground it was written: `public_api` for a documented API, `public_page` for data the station already shows publicly through the service, `user_created` for a connector made by a user, `station_permission` or `provider_permission` for a written agreement. The basis is information, never a condition. Only the title playing now is read, at most once a minute per listening server, and nothing is stored or republished.

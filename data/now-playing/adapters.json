@@ -3920,6 +3920,1203 @@
    },
    "source": "contribution",
    "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_2dagkqdv6aarmumn7dkrt6cwzb",
+   "rev": 1,
+   "status": "active",
+   "station": "st_25u6ymvcmjioli77krc57m4c6x",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_one_dance"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_wxtm765pa5sbt2qa5fnurkxrs3",
+   "rev": 1,
+   "status": "active",
+   "station": "st_2zvvztgqjsndq3g52tztuit3za",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_four_extra"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_yw7nfhn67p2exxof5akjz75im7",
+   "rev": 1,
+   "status": "active",
+   "station": "st_46erlxydomohdp6ycuywjz4q3k",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_world_service_europe"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_pvarv5x3hddqpvhis6drkocq46",
+   "rev": 1,
+   "status": "active",
+   "station": "st_4bw3u6tsbpghcnd4wfjbm4x63b",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_one"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_2now4mwdz5m5ww6a52feuv6byu",
+   "rev": 1,
+   "status": "active",
+   "station": "st_4veuzcspo5cmqscmiekaqplato",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_cambridge"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_6x62shu3h6kusx7ker5vmv6ojt",
+   "rev": 1,
+   "status": "active",
+   "station": "st_5czt4hefgxjmtmfb7s5qxruoqu",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_london"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_otu52s7fmkrkyi2qyw6ipeqyyi",
+   "rev": 1,
+   "status": "active",
+   "station": "st_5ncxmrwmkp72b3lr43n5st7lza",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_wales_fm"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_akme34dxifkx6skmvdd4zlu7zn",
+   "rev": 1,
+   "status": "active",
+   "station": "st_5uvnlyqtx7aghumbtvcqtkbjfs",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_gloucestershire"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_6z66zvn5sbos7yilyuwpwpaivm",
+   "rev": 1,
+   "status": "active",
+   "station": "st_67wcyqc2gmnge2a6zcwjd6xroj",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_cambridge"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_eds4zsdjifnykbal3lmvqkvb2p",
+   "rev": 1,
+   "status": "active",
+   "station": "st_6jwtclyfu4qya2pil4hn7tjkwj",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_ulster"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_qnv22wdxuykfbzzubpn6um63hn",
+   "rev": 1,
+   "status": "active",
+   "station": "st_6kvh42yawo4h5hfkc225ubtg63",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_world_service_news_internet"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_y2evdgrfzbrobytlddtwi7uayt",
+   "rev": 1,
+   "status": "active",
+   "station": "st_74frp2osedngtw5vq3jf7oapln",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_manchester"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_i6hqkeveatmxkmz66pdkc3wbcp",
+   "rev": 1,
+   "status": "active",
+   "station": "st_7gh73z3273ibhdowxtklwcv5ah",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_wm"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_my5hhwea2bpyrm3bnghln7ygju",
+   "rev": 1,
+   "status": "active",
+   "station": "st_7o5epx3rqruclanlsatmqwu6xd",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_essex"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_nsiqqtzxkiu2sobzbvazznxfqm",
+   "rev": 1,
+   "status": "active",
+   "station": "st_7rptc2qcwk3uqigo4dje37ukgv",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_merseyside"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_bqqjransvdxjxkkid4odb3rlda",
+   "rev": 1,
+   "status": "active",
+   "station": "st_a63wzmrazca2cbv4pjui23hroa",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_leicester"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_h7435orbdlu2nsdeskt77oiyqs",
+   "rev": 1,
+   "status": "active",
+   "station": "st_bdsnu3twkfkckovib3mctxfpa3",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_berkshire"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_5q2f2tjv3ksph6mhqkgvtunqa3",
+   "rev": 1,
+   "status": "active",
+   "station": "st_bjbdyi2eo7pw3d5xgollbzhiog",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_coventry_warwickshire"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_r6rjymwgqdi746spusiosnvbl5",
+   "rev": 1,
+   "status": "active",
+   "station": "st_cqgturg3v7er7q4pydjjvstlyq",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_five_sports_extra_3"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_zehbgmitk4dcwq4ndgxsuy454e",
+   "rev": 1,
+   "status": "active",
+   "station": "st_cufbx6zm56wdq5fwootethbwpu",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_three"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_cpxsbtyzgvpvgcpjbqgdqp57yr",
+   "rev": 1,
+   "status": "active",
+   "station": "st_ddgxwr7czuevjmli26j56uxwd3",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_two"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_xpw2ciaoshv77udfrs4hut2oox",
+   "rev": 1,
+   "status": "active",
+   "station": "st_fam63szzkffuef7q4t56idqa2r",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_bristol"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_m6psboyg6rjjt4ogburneui57g",
+   "rev": 1,
+   "status": "active",
+   "station": "st_gas2pjsc6wvywlh44plymnzh2k",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_world_service"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_y4c5kdylb3imoltmae4uc4nz7x",
+   "rev": 1,
+   "status": "active",
+   "station": "st_gjo55trihj4waunytgdhmp4xgu",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_five_live"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_ikc4uludzkws4cnz6wbs26qr5s",
+   "rev": 1,
+   "status": "active",
+   "station": "st_gtkpp3t4cdy4piboqfjcm3nlqb",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_nan_gaidheal"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_wqlzaaaszurw755ay34nenjh4l",
+   "rev": 1,
+   "status": "active",
+   "station": "st_hiq4vv5m2xjvenqpn3tzyzgue3",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_solent"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_mohful37yonaxnuomslc2hlpv2",
+   "rev": 1,
+   "status": "active",
+   "station": "st_hq432a2sj5jfhxfucmplacosts",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_1xtra"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_fz72gllw3b2vdrjcyzxzgu6mp3",
+   "rev": 1,
+   "status": "active",
+   "station": "st_hr4gn2istipzf75zwps64yzjyw",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_leeds"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_i77zi4veaqsc2ap7vleczzjwqn",
+   "rev": 1,
+   "status": "active",
+   "station": "st_j5wz5cn5ta3nasvz65mz4bphyr",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_lancashire"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_5ntfvfdihakjgm3tq743zunixt",
+   "rev": 1,
+   "status": "active",
+   "station": "st_k5ye2m6qgjgnkq4utnwzjgcjjh",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_humberside"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_2xbebfon5fq7dabuuxyj6zlto6",
+   "rev": 1,
+   "status": "active",
+   "station": "st_kt5qqf3kx3vcxvyl65g2ghdf4h",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_kent"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_gmzraqpxqm5cyh22yqeqbvbm27",
+   "rev": 1,
+   "status": "active",
+   "station": "st_l277f4isp47h45cpm5gj72esbd",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_northampton"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_oq2f4fn53cigjscamm55yxizjg",
+   "rev": 1,
+   "status": "active",
+   "station": "st_ldakjcrtek2awh5yrbv3yxrjww",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_fourfm"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_clqwie3sw7udawcxhhvujqjlvu",
+   "rev": 1,
+   "status": "active",
+   "station": "st_lg7so7x35tcarn5frhya2phtpg",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_six_indie_forever"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_xiduyfqsr7zpm2ljeyvv3hkd7p",
+   "rev": 1,
+   "status": "active",
+   "station": "st_n5ylhegqoplhckcibrdrrnfcyj",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_1xtra"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_svicm6tqged6j2ftvxcz6t5d2l",
+   "rev": 1,
+   "status": "active",
+   "station": "st_nwk6btnosdrj2qwf52rfzysqtm",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_nottingham"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_5nsvwwczlleplsbxu227rfp5jc",
+   "rev": 1,
+   "status": "active",
+   "station": "st_o5nst5irxi5m3if4qb7xjkwkvw",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_cymru"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_67idvmbugienhztpcfxouqprlk",
+   "rev": 1,
+   "status": "active",
+   "station": "st_oh2scg6nvym3ebqodw4o4fkfya",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_jersey"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_qlzw7wxoygju3cnaosc464u4f3",
+   "rev": 1,
+   "status": "active",
+   "station": "st_oztepfwneqbhyjjug6abbxiapy",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_sounds_news"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_ejhj2l2l6bf6j3xiuugzi2vebq",
+   "rev": 1,
+   "status": "active",
+   "station": "st_p4bijfquezl6h42sp4g4l4gswo",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_hereford_worcester"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_5vj5qjbckplzvhlt6fmzeqen5p",
+   "rev": 1,
+   "status": "active",
+   "station": "st_p6z3kez7ysiuhl4r6zvj7qi2a4",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_lincolnshire"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_f7pgnkfwpas64brdqxeyu32x3j",
+   "rev": 1,
+   "status": "active",
+   "station": "st_pv2p55u6a3cggu2cfaxkfm32gf",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_one_anthems"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_pqdy6k5wuntrjt5xlqbcq5rcfk",
+   "rev": 1,
+   "status": "active",
+   "station": "st_qaxzwwoe7xkxzemolmsbpozrcg",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_asian_network"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_6hit4i4mh6q55c3ijziojnapxr",
+   "rev": 1,
+   "status": "active",
+   "station": "st_qogpdyo3rpdjhvfn4gqbnahtld",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_1xtra"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_flvalzpye2lmpl7zxahcqzs6oc",
+   "rev": 1,
+   "status": "active",
+   "station": "st_rdaifm5pehg45evokmaqrlfzqz",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_devon"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_p7bm7yctagge4pojlhxeglq4i2",
+   "rev": 1,
+   "status": "active",
+   "station": "st_ria7a4oxckenrbfuuh4z56rb33",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_cumbria"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_yma7gfos7kdbzqhnrqgv6phu2c",
+   "rev": 1,
+   "status": "active",
+   "station": "st_rjz4jthsu5lrjibksprauowq5g",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_scotland_fm"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_d3z3kvhz5umxvmyxotnqhi4zmm",
+   "rev": 1,
+   "status": "active",
+   "station": "st_ro2ozrw4usrrwan3s3tbzwswcf",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_derby"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_gicmhqm47riakxoigqgztnrabo",
+   "rev": 1,
+   "status": "active",
+   "station": "st_snm3b6hydnnfct3w3gfufqcknz",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_orkney"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_slujxy6xxjw3j6ck5phpkiz7nd",
+   "rev": 1,
+   "status": "active",
+   "station": "st_tdczpkktznaotrsjnbjtugtnic",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_three_counties_radio"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_65srb65m66xzm2umnuwgixedjx",
+   "rev": 1,
+   "status": "active",
+   "station": "st_uxshqmnokdhmev354trxytmdhd",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_five_live"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_ji3pbogdkutp42vtu4xb3f4z57",
+   "rev": 1,
+   "status": "active",
+   "station": "st_uycqk3abnugmsee7zi4mkasc2s",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_guernsey"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_s2at3tqprbx54axwcvgrvbex5l",
+   "rev": 1,
+   "status": "active",
+   "station": "st_v26m4r6yslqubpxtn6ievbknbl",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_five_live_sports_extra"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_cplvtqf7izpunh4u5mjqjqnsf2",
+   "rev": 1,
+   "status": "active",
+   "station": "st_vr3unjufldm3tb6ovcsdc3vxr7",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_five_sports_extra_2"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_r5jc6loq67fm5znl4u3dhtm4wq",
+   "rev": 1,
+   "status": "active",
+   "station": "st_wy7jyjgherbdsuarchfp4xs5lp",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_one_dance"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_jzbo7iwpvwkjzwflqufip2vcmb",
+   "rev": 1,
+   "status": "active",
+   "station": "st_x7wriij6bx7sub752wvuhctsgq",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_cymru_2"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_4xf3jawr6s3gxgex4xshoiiz4b",
+   "rev": 1,
+   "status": "active",
+   "station": "st_xgrkohay2rqg2mhdrdpnyvult6",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_6music"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_ywz7fq7gcot2lhk7ryxqbzqyyd",
+   "rev": 1,
+   "status": "active",
+   "station": "st_ydf3n2ipfzw6wu7d3jwee2mxvn",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_three_unwind"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_xx4pwxecls2p4pq2snrup4mihn",
+   "rev": 1,
+   "status": "active",
+   "station": "st_ygiy7pwucnwqwmhs5dvbaext3s",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_norfolk"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_y7bda4el2ir45ame62jxiyuslw",
+   "rev": 1,
+   "status": "active",
+   "station": "st_yjphuzy2z6ov53pwpcd7jxxwbx",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_cornwall"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_ezdlh3fbrbceth2zjazm47xpqd",
+   "rev": 1,
+   "status": "active",
+   "station": "st_zdmh662r6svytuxmhh23v4lmnv",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_one_anthems"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_blfg4ld7jsizhtqp7xnxzdpdax",
+   "rev": 1,
+   "status": "active",
+   "station": "st_zt3fjz2z2kf2elwoxrybk6oxgm",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_foyle"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
+  },
+  {
+   "format": "12moon.now_playing/1",
+   "id": "np_kix5znih254j5tlpdg7nbxyr54",
+   "rev": 1,
+   "status": "active",
+   "station": "st_zx6w4slpdlest7f7irp4oieuxg",
+   "template": "bbc.rms/1",
+   "params": {
+    "service": "bbc_radio_newcastle"
+   },
+   "terms": {
+    "robots_txt": "https://rms.api.bbc.co.uk/robots.txt",
+    "checked_at": "2026-11-08",
+    "basis": "user_created",
+    "robots": "absent"
+   },
+   "source": "editorial",
+   "updated_at": "2026-11-08T00:00:00Z"
   }
  ]
 }

@@ -1,5 +1,15 @@
 # Contract changelog
 
+## 1.6.0 (2026-11-08)
+
+A rule change, set by the maintainer as permanent. No schema field changes.
+
+- Terms, robots.txt and reservations of text and data mining never block a now-playing adapter or template, whatever its `terms.basis`. They are still recorded in `terms`. `needs_review` and `needs_permission` are no longer used for these reasons alone.
+- The technical limits stay mandatory: one read per station and per minute, only while someone listens, shared; `Retry-After`, `Cache-Control` and 429; back-off; an identifiable User-Agent, a 403 stops; `GET` only, no cookie, no credentials, no consent wall; no title stored or republished.
+- Blocked-host reason `robots_disallow` is no longer given; it stays valid for older lists.
+- Template `bbc.rms/1` (BBC services, `terms.basis: user_created`), with 2 more shared cases.
+- The manifest says `contract: "1.6.0"`.
+
 ## 1.5.0 (2026-11-08)
 
 Additions only.
