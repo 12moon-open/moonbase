@@ -374,3 +374,33 @@ class EditsTest(unittest.TestCase):
         self.assertEqual(record["status"], "active")
         b.apply_editor(record, {"remove_streams": ["sm_2"]}, {})
         self.assertEqual(record["status"], "retired")
+
+
+class MeasuresTest(unittest.TestCase):
+    S1, S2, S3 = "sm_" + "a" * 26, "sm_" + "b" * 26, "sm_" + "c" * 26
+
+    def content(self):
+        return {"streams": [
+            {"id": self.S1, "url": "https://a.example.org/x", "codec": "he-aac", "bitrate_kbps": 101},
+            {"id": self.S2, "url": "https://b.example.org/y"},
+            {"id": self.S3, "url": "https://c.example.org/z", "codec": "mp3", "bitrate_kbps": 128},
+        ]}
+
+    def test_our_measures_replace_the_sources(self):
+        measures = b.read_health([
+            json.dumps({"id": self.S1, "codec": "aac", "bitrate_kbps": 97, "state": "ok"}),
+            json.dumps({"id": self.S2, "codec": "aac", "bitrate_kbps": 323, "state": "failing"}),
+            json.dumps({"id": "sm_bad", "codec": "aac"}),
+            json.dumps({"id": self.S3, "codec": "<b>", "bitrate_kbps": True, "state": "dead"}),
+        ])
+        self.assertEqual(sorted(measures), [self.S1, self.S2])
+        content = self.content()
+        b.apply_measures(content, measures, {})
+        self.assertEqual([(m.get("codec"), m.get("bitrate_kbps")) for m in content["streams"]],
+                         [("aac", 97), ("aac", 323), ("mp3", 128)])
+
+    def test_without_health_the_last_published_values_stay(self):
+        content = self.content()
+        b.apply_measures(content, None, {b.stream_key("https://a.example.org/x"): {"codec": "aac", "bitrate_kbps": 97}})
+        self.assertEqual((content["streams"][0]["codec"], content["streams"][0]["bitrate_kbps"]), ("aac", 97))
+        self.assertNotIn("codec", content["streams"][1])

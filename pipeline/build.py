@@ -424,13 +424,53 @@ def join_same(groups, previous, pairs):
     return list(joined.values())
 
 
-def merge(groups, previous, redirects, as_of, matches=None, editor=None):
-    """matches: {id(rows): Wikidata item}, from wikidata.match_groups. editor: {station id: correction}."""
+def apply_measures(content, measures, previous_streams):
+    """Our stream checker's codec and bitrate replace the sources' ones.
+
+    measures: {stream id: {"codec", "bitrate_kbps"}} from the published health files, or None
+    when they could not be read: each stream then keeps its last published values.
+    """
+    for stream in content["streams"]:
+        if measures is None:
+            measure = previous_streams.get(stream_key(stream["url"]), {})
+        else:
+            measure = measures.get(stream["id"], {})
+        codec, bitrate = measure.get("codec"), measure.get("bitrate_kbps")
+        if codec or bitrate:
+            stream.pop("codec", None)
+            stream.pop("bitrate_kbps", None)
+        if codec:
+            stream["codec"] = codec
+        if bitrate:
+            stream["bitrate_kbps"] = bitrate
+
+
+def read_health(lines):
+    """Codec and bitrate measured by our stream checker, by stream id, from health/*.ndjson lines."""
+    measures = {}
+    for line in lines:
+        item = json.loads(line)
+        if not isinstance(item, dict) or not re.fullmatch(r"sm_[a-z0-9]{26}", str(item.get("id", ""))):
+            continue
+        measure = {}
+        if re.fullmatch(r"[a-z0-9-]{2,16}", str(item.get("codec", ""))):
+            measure["codec"] = item["codec"]
+        bitrate = item.get("bitrate_kbps")
+        if isinstance(bitrate, int) and not isinstance(bitrate, bool) and 0 < bitrate <= MAX_BITRATE:
+            measure["bitrate_kbps"] = bitrate
+        if measure:
+            measures[item["id"]] = measure
+    return measures
+
+
+def merge(groups, previous, redirects, as_of, matches=None, editor=None, measures=False):
+    """matches: {id(rows): Wikidata item}, from wikidata.match_groups. editor: {station id: correction}.
+    measures: see apply_measures; False leaves the sources' values alone."""
     matches = matches or {}
     editor = editor or {}
     date, stamp = as_of[:10], as_of
     id_by_uuid = {u: s["id"] for s in previous.values()
-                  for key in ("radio_browser", "contributions") for u in s.get("ids", {}).get(key, [])}
+                  for key in ("radio_browser", "contributions", "radioarg") for u in s.get("ids", {}).get(key, [])}
     previous_streams = {stream_key(m["url"]): m for s in previous.values() for m in s["streams"]}
     stations, seen, new_redirects = {}, set(), list(redirects)
     # Ids never reused: those in service, those of the previous build and old redirects.
@@ -450,6 +490,8 @@ def merge(groups, previous, redirects, as_of, matches=None, editor=None):
         if item:
             enrich(content, item)
         edited = station_id in editor and apply_editor(content, editor[station_id], previous_streams)
+        if measures is not False:
+            apply_measures(content, measures, previous_streams)
         before = previous.get(station_id)
         if before and all(before.get(k) == v for k, v in content.items()) and set(before) - {"id", "rev", "sources", "updated_at"} == set(content) \
                 and [x["source"] for x in before["sources"]] == _source_names(rows, item, edited):
@@ -572,8 +614,9 @@ def write(stations, redirects, out, dist, as_of, build_date=None, now_playing=No
 
 
 def build(source, out, dist, as_of, checks=None, build_date=None, contributions=(), same=(), wikidata=(), editor=None,
-          radioarg=(), now_playing=None, edits=()):
-    """now_playing: (adapters, templates, blocked hosts) as read by now_playing.load(), or None to leave it out."""
+          radioarg=(), now_playing=None, edits=(), measures=False):
+    """now_playing: (adapters, templates, blocked hosts) as read by now_playing.load(), or None to leave it out.
+    measures: our checker's measures, see apply_measures."""
     editor = editor or {}
     rows, refused = prepare_rows(source, checks, editor.get("aggregator_homepages", ()))
     rows += contribution_rows(contributions, editor.get("aggregator_homepages", ()))
@@ -583,7 +626,7 @@ def build(source, out, dist, as_of, checks=None, build_date=None, contributions=
     groups = join_same(group_rows(rows), previous, list(same) + edited_pairs)
     found = match_groups(groups, wikidata, shared_domains(rows)) if wikidata else {}
     matches = {id(groups[index]): item for index, item in found.items()}
-    stations, redirects = merge(groups, previous, redirects, as_of, matches, editor.get("stations", {}))
+    stations, redirects = merge(groups, previous, redirects, as_of, matches, editor.get("stations", {}), measures)
     check(stations, previous, len(source))
     playing, playing_report = None, None
     if now_playing is not None:
@@ -629,6 +672,8 @@ def main():
     parser.add_argument("--edits", type=Path, help="accepted edits from the edit API (.json), optional")
     parser.add_argument("--now-playing", action="store_true",
                         help="publish the now_playing dataset from data/now-playing and the contract templates")
+    parser.add_argument("--health", type=Path,
+                        help="our checker's health files (directory of *.ndjson.gz); an empty or missing directory keeps the last values")
     parser.add_argument("--radioarg", type=Path, help="stations listed by radioarg.net, streams checked (.json.gz), optional")
     args = parser.parse_args()
     with gzip.open(args.input, "rt", encoding="utf-8") as handle:
@@ -637,6 +682,10 @@ def main():
     if args.checks:
         with gzip.open(args.checks, "rt", encoding="utf-8") as handle:
             checks = read_checks(json.load(handle))
+    measures = False
+    if args.health:
+        files = sorted(args.health.glob("*.ndjson.gz")) if args.health.is_dir() else []
+        measures = read_health(line for f in files for line in gzip.open(f, "rt", encoding="utf-8")) if files else None
     try:
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         contributions = json.loads(args.contributions.read_text(encoding="utf-8")) if args.contributions else ()
@@ -646,7 +695,7 @@ def main():
         radioarg = json.loads(gzip.decompress(args.radioarg.read_bytes())) if args.radioarg else ()
         report = build(source, args.out, args.dist, as_of_from_name(args.input.name), checks, today, contributions, same, wikidata, editor,
                        radioarg, now_playing_data.load() if args.now_playing else None,
-                       json.loads(args.edits.read_text(encoding="utf-8")) if args.edits else ())
+                       json.loads(args.edits.read_text(encoding="utf-8")) if args.edits else (), measures)
     except Refused as error:
         sys.exit(f"Refused, nothing written: {error}")
     print(json.dumps(report, indent=2))

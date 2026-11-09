@@ -113,7 +113,7 @@ The values above are illustrative.
 | `bitrate_kbps` | no | Integer |
 | `role` | no | `primary`, `alternate`, `low-bandwidth` |
 
-`codec` and `bitrate_kbps` come from the last successful check of the Radio Browser checker. A failed check publishes nothing. A codec the checker cannot name (an Ogg container, a video stream) is left out. When the measures cannot be fetched, a build keeps the last known values. A protocol measured as HLS is published as `hls`, even without `.m3u8` in the address.
+`codec` and `bitrate_kbps` come from our own stream checker, as last published in `health/`: a stream keeps its last measured values while it fails. A stream our checker has not measured yet takes those of the last successful check of the Radio Browser checker, or of the source that listed it. A codec a checker cannot name (an Ogg container, a video stream) is left out. When the measures cannot be fetched, a build keeps the last published values. A protocol measured as HLS is published as `hls`, even without `.m3u8` in the address.
 
 **Clients must treat every URL as untrusted.** They must refuse private, loopback and link-local addresses, including after DNS resolution and redirects.
 
