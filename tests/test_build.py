@@ -202,7 +202,7 @@ class Build(unittest.TestCase):
 
     def contribution(self, status="published", stream="https://stream.example.fr/live.mp3", pid="pr_" + "a" * 26):
         return {"id": pid, "status": status, "name": "Radio Exemple", "country": "FR",
-                "place": {"name": "Bordeaux", "lat": 44.8378, "lon": -0.5792}, "tags": ["jazz"],
+                "place": {"name": "Bordeaux", "wikidata": "Q1479", "lat": 44.8378, "lon": -0.5792}, "tags": ["jazz"],
                 "streams": [{"url": stream, "protocol": "http", "codec": "mp3", "bitrate_kbps": 128}]}
 
     def test_published_contribution_becomes_a_station(self):
@@ -210,7 +210,7 @@ class Build(unittest.TestCase):
         [station] = self.named("Radio Exemple")
         self.assertEqual([x["source"] for x in station["sources"]], ["contribution"])
         self.assertEqual(station["ids"], {"contributions": ["pr_" + "a" * 26]})
-        self.assertEqual(station["place"], {"name": "Bordeaux", "lat": 44.8378, "lon": -0.5792, "scope": "reported"})
+        self.assertEqual(station["place"], {"name": "Bordeaux", "wikidata": "Q1479", "lat": 44.8378, "lon": -0.5792, "scope": "reported"})
         self.assertEqual(station["streams"][0]["codec"], "mp3")
         self.assertEqual(station["tags"], ["jazz"])
 
@@ -372,6 +372,8 @@ class EditsTest(unittest.TestCase):
         self.assertNotIn("tags", record)
         self.assertEqual([(m["id"], m["role"]) for m in record["streams"]], [("sm_2", "primary")])
         self.assertEqual(record["status"], "active")
+        b.apply_editor(record, {"place": {"name": "Bordeaux", "wikidata": "Q1479", "lat": 44.8378, "lon": -0.5792}}, {})
+        self.assertEqual(record["place"], {"name": "Bordeaux", "wikidata": "Q1479", "lat": 44.8378, "lon": -0.5792, "scope": "editor"})
         b.apply_editor(record, {"remove_streams": ["sm_2"]}, {})
         self.assertEqual(record["status"], "retired")
 

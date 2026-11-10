@@ -1,0 +1,1 @@
+{ "description": "A town is a Wikidata item id, not a name or an address", "schema": "station-proposal", "input": { "kind": "station_add", "name": "Radio Exemple", "country": "FR", "streams": [{ "url": "https://stream.example.fr/live.mp3" }], "place": { "name": "Bordeaux", "wikidata": "https://www.wikidata.org/wiki/Q1479" }, "consent": "CC0-1.0" } }

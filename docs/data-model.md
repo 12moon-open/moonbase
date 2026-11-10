@@ -91,7 +91,7 @@ The values above are illustrative.
 | `alt_names` | no | Other names, with optional BCP 47 `lang` |
 | `country` | no | ISO 3166-1 alpha-2 |
 | `subdivision` | no | ISO 3166-2 |
-| `place` | no | `scope` is `city`, `region`, `country` or `reported` (coordinates as given by the source, unverified). Open list. Coordinates are not a transmitter position |
+| `place` | no | `scope` is `city`, `region`, `country`, `reported` (as given by the source, unverified) or `editor` (set by an editor). Open list. `wikidata` is the item of the town. Coordinates are not a transmitter position |
 | `languages` | no | BCP 47 |
 | `tags` | no | Lowercase, normalised |
 | `homepage` | no | `http` or `https` |

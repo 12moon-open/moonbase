@@ -83,6 +83,11 @@ test("validation keeps only known fields", () => {
   assert.equal(validateEdit({ station: A, same_as: A }, "agent").error, "invalid same_as");
   assert.deepEqual(validateEdit({ station: A, set: { place: { name: "Lyon", lat: 45.76, lon: 4.84 } } }, "maintainer").value,
     { set: { place: { name: "Lyon", lat: 45.76, lon: 4.84 } } });
+  assert.deepEqual(validateEdit({ station: A, set: { place: { name: "Lyon", wikidata: "Q456", lat: 45.76, lon: 4.84 } } }, "agent").value,
+    { set: { place: { name: "Lyon", wikidata: "Q456", lat: 45.76, lon: 4.84 } } });
+  for (const wikidata of ["Lyon", "q456", "Q0", "Q456 ", 456]) {
+    assert.equal(validateEdit({ station: A, set: { place: { name: "Lyon", wikidata } } }, "agent").error, "invalid place wikidata");
+  }
 });
 
 test("the page is served with a strict policy, and its module is up to date", async () => {

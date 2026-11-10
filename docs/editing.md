@@ -63,7 +63,7 @@ All fields but `station` are optional, at least one change is required:
 | `set.name` | the station's own name, at most 200 characters |
 | `set.homepage`, `set.logo_url` | an `http(s)` address, or `null` to remove it |
 | `set.country` | ISO 3166-1 alpha-2, `FR` |
-| `set.place` | `{ "name": "Lyon", "lat": 45.76, "lon": 4.84 }` (lat and lon together), or `null` |
+| `set.place` | `{ "name": "Lyon", "wikidata": "Q456", "lat": 45.76, "lon": 4.84 }` (lat and lon together), or `null`. It replaces the whole place: send the town with its coordinates, or the ones already there are lost |
 | `set.languages` | ISO 639 codes, `["fr", "oc"]`, at most 5 |
 | `set.tags` | from the closed list [`tags.json`](../contract/v1/tags.json), at most 10; `[]` removes them |
 | `add_streams` | up to 5 stream addresses; each is checked before it is published |
@@ -84,7 +84,7 @@ POST /v1/edit/stations
   "country": "FR",
   "streams": [ { "url": "https://stream.example.fr/live.mp3" } ],
   "homepage": "https://www.example.fr/",
-  "place": { "name": "Lyon" },
+  "place": { "name": "Lyon", "wikidata": "Q456", "lat": 45.76, "lon": 4.84 },
   "languages": ["fr"],
   "tags": ["jazz"],
   "note": "found on its site"

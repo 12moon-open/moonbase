@@ -73,7 +73,7 @@ export async function revokeEditor(db, id, now) {
 
 function cleanPlace(place) {
   if (place === null) return { value: null };
-  if (!isObject(place) || Object.keys(place).some((k) => !["name", "lat", "lon"].includes(k))) return { error: "invalid place" };
+  if (!isObject(place) || Object.keys(place).some((k) => !["name", "wikidata", "lat", "lon"].includes(k))) return { error: "invalid place" };
   const checked = validateStationAdd({ kind: "station_add", consent: "CC0-1.0", name: "x", country: "FR",
     streams: [{ url: "https://example.org/" }], place });
   return checked.error ? { error: checked.error } : { value: checked.value.place || null };

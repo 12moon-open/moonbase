@@ -17,7 +17,7 @@ from .normalize import clean_name, logo_url, name_key, stream_key, stream_protoc
 from .tags import clean_tags
 from .wikidata import enrich, match_groups
 
-CONTRACT = "1.6.0"
+CONTRACT = "1.7.0"
 ALLOWED_SOURCES = {"radio-browser", "wikidata", "contribution", "editor", "radioarg"}
 MIN_ROWS = 10_000
 MIN_RATIO = 0.8  # Refuse to publish when active stations drop below this ratio.
@@ -142,6 +142,7 @@ def contribution_rows(items, aggregators=()):
                 "languages": ",".join(item.get("languages") or []),
                 "tags": ",".join(item.get("tags") or []),
                 "lat": place.get("lat"), "lon": place.get("lon"), "place_name": clean_name(place.get("name")) or None,
+                "place_wikidata": place.get("wikidata") if re.fullmatch(r"Q[1-9][0-9]{0,11}", str(place.get("wikidata", ""))) else None,
                 "measured": "codec" in stream or "bitrate_kbps" in stream,
                 "codec": stream.get("codec") if re.fullmatch(r"[a-z0-9-]{2,16}", str(stream.get("codec", ""))) else None,
                 "bitrate": bitrate if isinstance(bitrate, int) and 0 < bitrate <= MAX_BITRATE else None,
@@ -267,6 +268,9 @@ def _content(rows, previous_streams):
     place_name = _most_common(r["place_name"] for r in rows)
     if place_name:
         record.setdefault("place", {"scope": "reported"})["name"] = place_name
+        town = _most_common(r.get("place_wikidata") for r in rows if r["place_name"] == place_name)
+        if town:
+            record["place"]["wikidata"] = town
     languages = sorted({
         code.strip().lower() for r in rows for code in r["languages"].split(",")
         if re.fullmatch(r"[a-z]{2,3}", code.strip().lower())
@@ -333,7 +337,7 @@ def apply_editor(record, edit, previous_streams):
         applied = True
     if "place" in edit:
         if edit["place"]:
-            record["place"] = {**{k: v for k, v in edit["place"].items() if k in ("name", "lat", "lon")}, "scope": "editor"}
+            record["place"] = {**{k: v for k, v in edit["place"].items() if k in ("name", "wikidata", "lat", "lon")}, "scope": "editor"}
         else:
             record.pop("place", None)
         applied = True

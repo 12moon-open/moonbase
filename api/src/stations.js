@@ -92,8 +92,12 @@ export function validateStationAdd(body) {
   }
   if (body.place !== undefined) {
     const place = body.place;
-    if (!isObject(place) || Object.keys(place).some((k) => !["name", "lat", "lon"].includes(k))) return { error: "invalid place" };
+    if (!isObject(place) || Object.keys(place).some((k) => !["name", "wikidata", "lat", "lon"].includes(k))) return { error: "invalid place" };
     const out = {};
+    if (place.wikidata !== undefined) {
+      if (typeof place.wikidata !== "string" || !/^Q[1-9][0-9]{0,11}$/.test(place.wikidata)) return { error: "invalid place wikidata" };
+      out.wikidata = place.wikidata;
+    }
     if (place.name !== undefined) {
       out.name = cleanText(place.name, 100);
       if (!out.name) return { error: "invalid place name" };

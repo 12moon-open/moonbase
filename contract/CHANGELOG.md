@@ -1,5 +1,13 @@
 # Contract changelog
 
+## 1.7.0 (2026-11-10)
+
+Additions only.
+
+- A station proposal's `place` may carry `wikidata`, the Wikidata item of the town (`Q1479` for Bordeaux). Editors may set it too.
+- A station's `place.wikidata`, already in the schema, is now filled from these proposals and edits.
+- The manifest says `contract: "1.7.0"`.
+
 ## 1.6.0 (2026-11-08)
 
 A rule change, set by the maintainer as permanent. No schema field changes.
