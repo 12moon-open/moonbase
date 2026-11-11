@@ -17,7 +17,7 @@ Keep the token in an environment variable or a secret store, never in a file tha
 - `agent`: searches, reads, adds stations and edits them. An edit that removes something (`remove_streams`, `retire`, `same_as`) waits for the maintainer; the others are applied at the next build.
 - `maintainer`: everything, plus reviewing edits and managing tokens.
 
-Limits per day: 1000 edits and 200 new stations for an agent. Over the limit: `429`.
+Limits per day: 1000 edits and 200 new stations for an agent. Over the limit: `429`. The maintainer can lift them for a while.
 
 ## Where facts may come from
 

@@ -152,14 +152,17 @@ export function validateEdit(body, role) {
   return { value, note, source, review };
 }
 
-export async function addEdit(db, editor, body, now) {
+// The maintainer can lift the daily limits for a while (EDIT_LIMITS_OFF_UNTIL, in seconds).
+export async function addEdit(db, editor, body, now, { unlimited = false } = {}) {
   const checked = validateEdit(body, editor.role);
   if (checked.error) return checked;
   // The station is not looked up here: the build follows redirects and ignores an unknown id.
   const station = body.station;
-  const recent = await db.prepare("SELECT COUNT(*) AS n FROM edits WHERE editor_id = ? AND created_at > ?")
-    .bind(editor.id, now - 86400).first();
-  if (recent.n >= DAILY_EDITS[editor.role]) return { limited: true };
+  if (!unlimited) {
+    const recent = await db.prepare("SELECT COUNT(*) AS n FROM edits WHERE editor_id = ? AND created_at > ?")
+      .bind(editor.id, now - 86400).first();
+    if (recent.n >= DAILY_EDITS[editor.role]) return { limited: true };
+  }
   const id = await randomId("ed_");
   const status = checked.review ? "pending" : "accepted";
   await db.prepare(
@@ -212,14 +215,16 @@ export async function exportEdits(db, afterUpdated, afterId, limit) {
 
 // --- New stations: checked by the stream checker like those from installations ---
 
-export async function addStation(db, editor, body, now) {
+export async function addStation(db, editor, body, now, { unlimited = false } = {}) {
   if (!isObject(body)) return { error: "body must be an object" };
   const { note, ...rest } = body;
   const checked = validateStationAdd({ ...rest, kind: "station_add", consent: "CC0-1.0" });
   if (checked.error) return checked;
-  const recent = await db.prepare("SELECT COUNT(*) AS n FROM station_proposals WHERE editor_id = ? AND created_at > ?")
-    .bind(editor.id, now - 86400).first();
-  if (recent.n >= DAILY_NEW_STATIONS) return { limited: true };
+  if (!unlimited) {
+    const recent = await db.prepare("SELECT COUNT(*) AS n FROM station_proposals WHERE editor_id = ? AND created_at > ?")
+      .bind(editor.id, now - 86400).first();
+    if (recent.n >= DAILY_NEW_STATIONS) return { limited: true };
+  }
   const fingerprint = bytesToHex(await sha256(checked.value.streams.slice().sort().join("\n"))).slice(0, 32);
   const twice = await db.prepare("SELECT id, status FROM station_proposals WHERE editor_id = ? AND fingerprint = ?")
     .bind(editor.id, fingerprint).first();

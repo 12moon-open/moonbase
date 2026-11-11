@@ -220,8 +220,9 @@ async function edit(request, env, url, path, now) {
   if (request.method === "GET" && path === "/v1/edit/me") {
     return reply(200, { name: editor.name, role: editor.role });
   }
-  if (request.method === "POST" && path === "/v1/edit/stations") return answer(await addStation(env.DB, editor, await body(), now), 202);
-  if (request.method === "POST" && path === "/v1/edit/changes") return answer(await addEdit(env.DB, editor, await body(), now), 201);
+  const limits = { unlimited: now < Number(env.EDIT_LIMITS_OFF_UNTIL || 0) };
+  if (request.method === "POST" && path === "/v1/edit/stations") return answer(await addStation(env.DB, editor, await body(), now, limits), 202);
+  if (request.method === "POST" && path === "/v1/edit/changes") return answer(await addEdit(env.DB, editor, await body(), now, limits), 201);
   if (request.method === "GET" && path === "/v1/edit/changes") {
     const status = url.searchParams.get("status") || "";
     if (status && !["pending", "accepted", "rejected", "reverted"].includes(status)) return reply(400, { error: "invalid status" });

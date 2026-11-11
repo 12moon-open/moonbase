@@ -99,3 +99,17 @@ test("the page is served with a strict policy, and its module is up to date", as
   execFileSync(process.execPath, [new URL("../edit/build.mjs", import.meta.url).pathname]);
   assert.equal(readFileSync(new URL("../src/editpage.js", import.meta.url), "utf8"), before, "run node edit/build.mjs");
 });
+
+test("the daily limit of an agent can be lifted until a date", async () => {
+  const { body: agent } = await json(await call("POST", "/v1/edit/editors", { name: "busy agent", role: "agent" }));
+  const fill = env.DB.prepare(
+    `INSERT INTO edits (id, station, body, note, source, editor_id, status, decided_by, created_at, updated_at)
+     VALUES (?, ?, '{}', NULL, NULL, ?, 'accepted', ?, ?, ?)`);
+  for (let i = 0; i < 1000; i += 1) await fill.bind(`ed_fill${i}`, A, agent.id, agent.id, NOW, NOW).run();
+  const edit = () => call("POST", "/v1/edit/changes", { station: A, set: { tags: ["jazz"] } }, agent.token);
+  assert.equal((await edit()).status, 429);
+  env.EDIT_LIMITS_OFF_UNTIL = String(NOW - 1);
+  assert.equal((await edit()).status, 429);
+  env.EDIT_LIMITS_OFF_UNTIL = String(NOW + 3600);
+  assert.equal((await edit()).status, 201);
+});
